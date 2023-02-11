@@ -37,7 +37,7 @@ public final class Constants {
   public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 0; //FIXME: get correct can id
   public static final int ELEVATOR_BASE_MOTOR_TWO_CAN_ID = 0;
   public static final int EXTENDING_ARM_MOTOR_CAN_ID = 0;
-  public static final int LOWER_ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0;
+  public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0;
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
