@@ -74,7 +74,7 @@ public class DualJoysticksOI implements OperatorInterface {
     return rotateJoystickButtons[5];
   }
 
-  @Override 
+  @Override
   public Trigger getIndexerRotateUpButton() {
     return translateJoystickButtons[4];
   }

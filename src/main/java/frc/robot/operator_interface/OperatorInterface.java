@@ -61,7 +61,6 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-
   public default Trigger getIndexerOpenButton() {
     return new Trigger(() -> false);
   }

@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +17,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private Solenoid indexerSolenoid;
   boolean IsOpen = true;
 
-  // Creates a new IntakeSubsystem. 
+  // Creates a new IntakeSubsystem.
   public IndexerSubsystem() {
     indexerRotationMotor = new CANSparkMax(Constants.INDEXER_ROTATION_CAN_ID, MotorType.kBrushless);
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
@@ -66,10 +65,10 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void eject() {
-    if(IsOpen) {
+    if (IsOpen) {
       indexerGrabbingMotor.set(1.00);
     } else {
       indexerGrabbingMotor.set(-1.00);
     }
   }
-} 
+}

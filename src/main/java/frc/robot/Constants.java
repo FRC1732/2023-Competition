@@ -28,14 +28,14 @@ public final class Constants {
 
   public static final String CAN_BUS_NAME = "Oogway";
 
-  public static final int CAN_PNEUMATIC_ID = 5; //FIXME: get correct can id
+  public static final int CAN_PNEUMATIC_ID = 5; // FIXME: get correct can id
 
-  public static final int INDEXER_SOLENOID_ID = 5; //FIXME: get correct can id
+  public static final int INDEXER_SOLENOID_ID = 5; // FIXME: get correct can id
 
   public static final int INTAKE_CAN_ID = 50;
 
-  public static final int INDEXER_ROTATION_CAN_ID = 51; //FIXME: get correct can id
-  public static final int INDEXER_GRABBER_CAN_ID = 52; //FIXME:  get correct can id
+  public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
+  public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
 
   // FIXME: specify the name of the camera used for detecting AprilTags
   public static final String CAMERA_NAME = "ov9268";
