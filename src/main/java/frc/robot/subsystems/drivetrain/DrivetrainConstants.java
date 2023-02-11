@@ -44,8 +44,6 @@ public final class DrivetrainConstants {
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET_COMPETITION = 74.7 - 48.954 + 47.901;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET_PROTOBOT = 74.7 - 48.954 + 47.901;
 
-  // FIXME: update robot dimensions
-
   /**
    * The left-to-right distance between the drivetrain wheels
    *
