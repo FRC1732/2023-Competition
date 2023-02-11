@@ -16,7 +16,7 @@ public class HolderSubsystem extends SubsystemBase {
   boolean IsOpen = true;
 
   public HolderSubsystem() {
-    holderSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
+    holderSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, Constants.HOLDER_SOLENOID_ID);
   }
 
   public void open() {

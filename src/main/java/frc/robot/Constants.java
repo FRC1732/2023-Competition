@@ -29,6 +29,8 @@ public final class Constants {
 
   public static final int INDEXER_SOLENOID_ID = 5; // FIXME: get correct can id
 
+  public static final int HOLDER_SOLENOID_ID = 0; // FIXME: get correct can id
+
   public static final int INTAKE_CAN_ID = 50;
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
