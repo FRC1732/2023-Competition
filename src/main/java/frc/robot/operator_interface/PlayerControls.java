@@ -8,24 +8,28 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /** Class for controlling the robot with two Xbox controllers. */
-public class DualJoysticksOI implements OperatorInterface {
+public class PlayerControls implements OperatorInterface {
   private final CommandJoystick translateJoystick;
   private final CommandJoystick rotateJoystick;
+  private final CommandJoystick operatorJoystick;
   private final Trigger[] translateJoystickButtons;
   private final Trigger[] rotateJoystickButtons;
+  private final Trigger[] operatorJoystickButtons;
 
-  public DualJoysticksOI(int translatePort, int rotatePort) {
+  public PlayerControls(int rotatePort, int translatePort, int operatorPort) {
     translateJoystick = new CommandJoystick(translatePort);
     rotateJoystick = new CommandJoystick(rotatePort);
-
+    operatorJoystick = new CommandJoystick(operatorPort);
     // buttons use 1-based indexing such that the index matches the button number; leave index 0 set
     // to null
     this.translateJoystickButtons = new Trigger[13];
     this.rotateJoystickButtons = new Trigger[13];
+    this.operatorJoystickButtons = new Trigger[9];
 
     for (int i = 1; i < translateJoystickButtons.length; i++) {
       translateJoystickButtons[i] = translateJoystick.button(i);
       rotateJoystickButtons[i] = rotateJoystick.button(i);
+      operatorJoystickButtons[i] = operatorJoystick.button(i);
     }
   }
 
