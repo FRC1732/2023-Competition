@@ -32,6 +32,7 @@ public final class Constants {
   public static final int INTAKE_CAN_ID = 50;
 
   public static final int EXTENDER_MOTOR_CAN_ID = 0; // FIXME: get correct can id
+  //public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get correct channel and uncomment if needed
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
