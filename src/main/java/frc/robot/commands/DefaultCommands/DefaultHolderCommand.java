@@ -19,9 +19,11 @@ public class DefaultHolderCommand extends CommandBase {
     public void initialize() {
     }
 
+    @Override
     public void execute() {
     }
 
+    @Override
     public void end(boolean interrupted) {
         System.out.println("DefaultHolderCommand - Interrupted [" + (interrupted ? "TRUE" : "FALSE") + "]");
     }
