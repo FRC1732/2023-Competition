@@ -23,8 +23,10 @@ import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -45,6 +47,7 @@ public class RobotContainer {
   private Drivetrain drivetrain;
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+  private HolderSubsystem holderSubsystem = new HolderSubsystem();
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -284,6 +287,10 @@ public class RobotContainer {
     oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
 
     oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
+
+    if(holderSubsystem != null) {
+        holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+    }
   }
 
   /** Use this method to define your commands for autonomous mode. */
