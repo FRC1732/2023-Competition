@@ -106,6 +106,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void reset() {
     relativeEncoder.setPosition(0);
   }
+  public double getPosition() {
+    return relativeEncoder.getPosition();
+  }
+  public double 
 
   private void setupShuffleboard() {
     ShuffleboardTab tab;
