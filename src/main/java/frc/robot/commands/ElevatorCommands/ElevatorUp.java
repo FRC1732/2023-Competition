@@ -23,7 +23,7 @@ public class ElevatorUp extends CommandBase {
     }
 
     public void execute() {
-        elevatorSubsystem.on();
+        elevatorSubsystem.goUp();
     }
 
     public void end(boolean interrupted) {

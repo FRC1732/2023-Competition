@@ -6,12 +6,15 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import org.ejml.equation.VariableDouble;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
+import edu.wpi.first.hal.simulation.SpiReadAutoReceiveBufferCallback;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -95,8 +98,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     return value > .25 ? .25 : value < -.25 ? -.25 : value;
   }
 
-  public void on() {
+  public void goUp() {
     elevatorBaseMotorOne.set(.1);
+    elevatorBaseMotorTwo.set(-.1);
+  }
+
+  public void goDown() {
+    elevatorBaseMotorOne.set(-.1);
+    elevatorBaseMotorTwo.set(.1);
   }
 
   public void off() {
@@ -106,10 +115,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void reset() {
     relativeEncoder.setPosition(0);
   }
-  public double getPosition() {
+
+  public Double getPosition() {
     return relativeEncoder.getPosition();
   }
-  public double 
+
+  public boolean getMagLimitSwitch() {
+    return magLimitSwitch.get();
+  }
 
   private void setupShuffleboard() {
     ShuffleboardTab tab;
