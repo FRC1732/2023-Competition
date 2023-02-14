@@ -120,10 +120,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     return relativeEncoder.getPosition();
   }
 
-  public boolean getMagLimitSwitch() {
-    return magLimitSwitch.get();
-  }
-
   private void setupShuffleboard() {
     ShuffleboardTab tab;
     tab = Shuffleboard.getTab("elevator");
