@@ -19,26 +19,30 @@ public final class DrivetrainConstants {
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 40; // module 0
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 41;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 42;
-  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 41.3;
+  public static double FRONT_LEFT_MODULE_STEER_OFFSET = 41.3;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET_COMPETITION = 41.3;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET_PROTOBOT = 41.3;
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 30; // module 1
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 31;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 32;
-  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 281.9;
+  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = 281.9;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET_COMPETITION = 281.9;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET_PROTOBOT = 41.3;
 
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 10; // module 2
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 11;
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 12;
-  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 280.1;
+  public static double BACK_LEFT_MODULE_STEER_OFFSET = 280.1;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET_COMPETITION = 280.1;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET_PROTOBOT = 280.1;
 
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 20; // module 3
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 21;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 22;
-  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 74.7 - 48.954 + 47.901;
-
-  public static final int PIGEON_ID = 18; // FIXME: change to nav x
-
-  // FIXME: update robot dimensions
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = 74.7 - 48.954 + 47.901;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET_COMPETITION = 74.7 - 48.954 + 47.901;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET_PROTOBOT = 74.7 - 48.954 + 47.901;
 
   /**
    * The left-to-right distance between the drivetrain wheels
