@@ -13,14 +13,22 @@ import frc.robot.Constants;
 
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
-  DigitalInput extenderMagneticLimitSwitch;
+  private DigitalInput extenderMagneticLimitSwitch;
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushed);
-    //extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH); FIXME: uncomment if on robot
+    extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGS_LIMIT_SWITCH); FIXME: uncomment if on robot
   }
-
+  public void moveIn() {
+    extenderMotor.set(-.1);
+  }
+  public void stop() {
+    extenderMotor.set(0);
+  }
+  public boolean getMagSwitch(){
+    return extenderMagneticLimitSwitch.get();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
