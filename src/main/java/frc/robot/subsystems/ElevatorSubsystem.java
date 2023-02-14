@@ -109,7 +109,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getPosition() {
     return relativeEncoder.getPosition();
   }
-  public double 
 
   private void setupShuffleboard() {
     ShuffleboardTab tab;
