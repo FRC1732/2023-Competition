@@ -71,4 +71,7 @@ public class IndexerSubsystem extends SubsystemBase {
       indexerGrabbingMotor.set(-1.00);
     }
   }
+  public double getArmRotation(){
+    return indexerRotationMotor.getEncoder().getPosition();
+  }
 }
