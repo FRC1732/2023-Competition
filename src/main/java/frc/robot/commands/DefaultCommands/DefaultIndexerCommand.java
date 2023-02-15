@@ -7,10 +7,10 @@ package frc.robot.commands.DefaultCommands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 
-public class DefaultIntakeCommand extends CommandBase {
+public class DefaultIndexerCommand extends CommandBase {
     IndexerSubsystem indexerSubsystem; 
     private double startingPosition;
-    public DefaultIntakeCommand(IndexerSubsystem indexerSubsystem) {
+    public DefaultIndexerCommand(IndexerSubsystem indexerSubsystem) {
         addRequirements(indexerSubsystem);
         this.indexerSubsystem = indexerSubsystem;
     }
