@@ -4,17 +4,12 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
-
-import org.ejml.equation.VariableDouble;
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.hal.simulation.SpiReadAutoReceiveBufferCallback;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
