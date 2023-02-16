@@ -8,13 +8,16 @@
 
 package frc.robot;
 
-
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -34,16 +37,15 @@ public final class Constants {
   public static final int INTAKE_CAN_ID = 50;
 
   public static final int EXTENDER_MOTOR_CAN_ID = 0; // FIXME: get correct can id
-  //public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get correct channel and uncomment if needed
+  public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get correct channel and uncomment if needed
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
-  public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
+  public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME: get correct can id
 
   public static final String CAMERA_NAME = "ov9268";
 
-  private static final RobotType ROBOT = RobotType.ROBOT_2023_PRESEASON; //TODO: toggle as nessecary
-  //private static final RobotType ROBOT = RobotType.ROBOT_2023_COMPETITION; 
-
+  private static final RobotType ROBOT = RobotType.ROBOT_2023_PRESEASON; // TODO: toggle as nessecary
+  // private static final RobotType ROBOT = RobotType.ROBOT_2023_COMPETITION;
 
   public static RobotType getRobot() {
     return ROBOT;
