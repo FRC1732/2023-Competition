@@ -6,9 +6,6 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,20 +16,19 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
-import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
-
-import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -48,6 +44,7 @@ public class RobotContainer {
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
   private HolderSubsystem holderSubsystem = new HolderSubsystem();
+  private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -60,123 +57,130 @@ public class RobotContainer {
   public RobotContainer() {
     // create real, simulated, or replay subsystems based on the mode and robot
     // specified
-      switch (Constants.getRobot()) {
-        case ROBOT_2023_PRESEASON:
-          {
-            GyroIO gyro = new GyroIoADIS16470();
-            DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET = DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET_PROTOBOT;
-            DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET = DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET_PROTOBOT;
-            DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET = DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET_PROTOBOT;
-            DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET = DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET_PROTOBOT;
-            SwerveModule flModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        0,
-                        FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_ENCODER,
-                        FRONT_LEFT_MODULE_STEER_OFFSET),
-                    0,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+    switch (Constants.getRobot()) {
+      case ROBOT_2023_PRESEASON:
+        {
+          GyroIO gyro = new GyroIoADIS16470();
+          DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET_PROTOBOT;
+          DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET_PROTOBOT;
+          DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET_PROTOBOT;
+          DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET_PROTOBOT;
+          SwerveModule flModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      0,
+                      FRONT_LEFT_MODULE_DRIVE_MOTOR,
+                      FRONT_LEFT_MODULE_STEER_MOTOR,
+                      FRONT_LEFT_MODULE_STEER_ENCODER,
+                      FRONT_LEFT_MODULE_STEER_OFFSET),
+                  0,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule frModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        1,
-                        FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_ENCODER,
-                        FRONT_RIGHT_MODULE_STEER_OFFSET),
-                    1,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule frModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      1,
+                      FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                      FRONT_RIGHT_MODULE_STEER_MOTOR,
+                      FRONT_RIGHT_MODULE_STEER_ENCODER,
+                      FRONT_RIGHT_MODULE_STEER_OFFSET),
+                  1,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule blModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        2,
-                        BACK_LEFT_MODULE_DRIVE_MOTOR,
-                        BACK_LEFT_MODULE_STEER_MOTOR,
-                        BACK_LEFT_MODULE_STEER_ENCODER,
-                        BACK_LEFT_MODULE_STEER_OFFSET),
-                    2,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule blModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      2,
+                      BACK_LEFT_MODULE_DRIVE_MOTOR,
+                      BACK_LEFT_MODULE_STEER_MOTOR,
+                      BACK_LEFT_MODULE_STEER_ENCODER,
+                      BACK_LEFT_MODULE_STEER_OFFSET),
+                  2,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule brModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        3,
-                        BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_ENCODER,
-                        BACK_RIGHT_MODULE_STEER_OFFSET),
-                    3,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule brModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      3,
+                      BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                      BACK_RIGHT_MODULE_STEER_MOTOR,
+                      BACK_RIGHT_MODULE_STEER_ENCODER,
+                      BACK_RIGHT_MODULE_STEER_OFFSET),
+                  3,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
-            // new Pneumatics(new PneumaticsIORev());
-            // new Vision(new VisionIOPhotonVision(CAMERA_NAME));
-            break;
-          }
-        case ROBOT_2023_COMPETITION:
-          {
-            GyroIO gyro = new GyroIoADIS16470();
+          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+          // new Pneumatics(new PneumaticsIORev());
+          // new Vision(new VisionIOPhotonVision(CAMERA_NAME));
+          break;
+        }
+      case ROBOT_2023_COMPETITION:
+        {
+          GyroIO gyro = new GyroIoADIS16470();
 
-            DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET = DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET_COMPETITION;
-            DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET = DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET_COMPETITION;
-            DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET = DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET_COMPETITION;
-            DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET = DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET_COMPETITION;
+          DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET_COMPETITION;
+          DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET_COMPETITION;
+          DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET_COMPETITION;
+          DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET =
+              DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET_COMPETITION;
 
-            SwerveModule flModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        0,
-                        FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_ENCODER,
-                        FRONT_LEFT_MODULE_STEER_OFFSET),
-                    0,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule flModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      0,
+                      FRONT_LEFT_MODULE_DRIVE_MOTOR,
+                      FRONT_LEFT_MODULE_STEER_MOTOR,
+                      FRONT_LEFT_MODULE_STEER_ENCODER,
+                      FRONT_LEFT_MODULE_STEER_OFFSET),
+                  0,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule frModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        1,
-                        FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_ENCODER,
-                        FRONT_RIGHT_MODULE_STEER_OFFSET),
-                    1,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule frModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      1,
+                      FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                      FRONT_RIGHT_MODULE_STEER_MOTOR,
+                      FRONT_RIGHT_MODULE_STEER_ENCODER,
+                      FRONT_RIGHT_MODULE_STEER_OFFSET),
+                  1,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule blModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        2,
-                        BACK_LEFT_MODULE_DRIVE_MOTOR,
-                        BACK_LEFT_MODULE_STEER_MOTOR,
-                        BACK_LEFT_MODULE_STEER_ENCODER,
-                        BACK_LEFT_MODULE_STEER_OFFSET),
-                    2,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule blModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      2,
+                      BACK_LEFT_MODULE_DRIVE_MOTOR,
+                      BACK_LEFT_MODULE_STEER_MOTOR,
+                      BACK_LEFT_MODULE_STEER_ENCODER,
+                      BACK_LEFT_MODULE_STEER_OFFSET),
+                  2,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            SwerveModule brModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        3,
-                        BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_ENCODER,
-                        BACK_RIGHT_MODULE_STEER_OFFSET),
-                    3,
-                    MAX_VELOCITY_METERS_PER_SECOND);
+          SwerveModule brModule =
+              new SwerveModule(
+                  new SwerveModuleIOTalonFX(
+                      3,
+                      BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                      BACK_RIGHT_MODULE_STEER_MOTOR,
+                      BACK_RIGHT_MODULE_STEER_ENCODER,
+                      BACK_RIGHT_MODULE_STEER_OFFSET),
+                  3,
+                  MAX_VELOCITY_METERS_PER_SECOND);
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
-            // new Pneumatics(new PneumaticsIORev());
-            // new Vision(new VisionIOPhotonVision(CAMERA_NAME));
-            break;
-      }
-
-    } 
+          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+          // new Pneumatics(new PneumaticsIORev());
+          // new Vision(new VisionIOPhotonVision(CAMERA_NAME));
+          break;
+        }
+    }
 
     // disable all telemetry in the LiveWindow to reduce the processing during each
     // iteration
@@ -288,8 +292,11 @@ public class RobotContainer {
 
     oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
 
-    if(holderSubsystem != null) {
-        holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+    if (holderSubsystem != null) {
+      holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+    }
+    if (elevatorSubsystem != null) {
+      elevatorSubsystem.setDefaultCommand(new DefaultElevatorCommand(elevatorSubsystem));
     }
   }
 
@@ -299,7 +306,7 @@ public class RobotContainer {
     AUTO_EVENT_MAP.put("event2", Commands.print("passed marker 2"));
 
     // build auto path commands TODO: remove path planner
-  
+
     Command autoTest =
         Commands.sequence(
             Commands.runOnce(drivetrain::enableXstance, drivetrain),
