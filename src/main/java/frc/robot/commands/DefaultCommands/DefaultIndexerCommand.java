@@ -8,37 +8,38 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class DefaultIndexerCommand extends CommandBase {
-    IndexerSubsystem indexerSubsystem; 
-    private double startingPosition;
-    public DefaultIndexerCommand(IndexerSubsystem indexerSubsystem) {
-        addRequirements(indexerSubsystem);
-        this.indexerSubsystem = indexerSubsystem;
-    }
+  IndexerSubsystem indexerSubsystem;
+  private double startingPosition;
 
-    @Override
-    public void initialize() {
-        startingPosition = indexerSubsystem.getArmRotation();
-    }
+  public DefaultIndexerCommand(IndexerSubsystem indexerSubsystem) {
+    addRequirements(indexerSubsystem);
+    this.indexerSubsystem = indexerSubsystem;
+  }
 
-    @Override
-    public void execute() {
-        if(startingPosition != indexerSubsystem.getArmRotation()){
-            if(startingPosition > indexerSubsystem.getArmRotation()){
-                indexerSubsystem.rotateDown();
-            }
-            else{
-                indexerSubsystem.rotateUp();
-            }
-        }
-    }
+  @Override
+  public void initialize() {
+    startingPosition = indexerSubsystem.getArmRotation();
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        System.out.println("DefaultIntakeCommand - Interrupted [" + (interrupted ? "TRUE" : "FALSE") + "]");
+  @Override
+  public void execute() {
+    if (startingPosition != indexerSubsystem.getArmRotation()) {
+      if (startingPosition > indexerSubsystem.getArmRotation()) {
+        indexerSubsystem.rotateDown();
+      } else {
+        indexerSubsystem.rotateUp();
+      }
     }
+  }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println(
+        "DefaultIntakeCommand - Interrupted [" + (interrupted ? "TRUE" : "FALSE") + "]");
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

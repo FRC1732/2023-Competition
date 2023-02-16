@@ -8,7 +8,6 @@
 
 package frc.robot;
 
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -21,9 +20,10 @@ public final class Constants {
 
   public static final double LOOP_PERIOD_SECS = 0.02;
 
-  public static final boolean TUNING_MODE = false;
+  public static final boolean TUNING_MODE = false; // Enable for Shuffleboard tunable values
 
-  public static final String CAN_BUS_NAME = "Oogway";
+  public static final String CAN_BUS_NAME = "Oogway"; // ROBOT_2023_COMPETITION
+  // public static final String CAN_BUS_NAME = "Po"; // ROBOT_2023_PRESEASON
 
   public static final int CAN_PNEUMATIC_ID = 5; // FIXME: get correct can id
 
@@ -36,11 +36,11 @@ public final class Constants {
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
 
-  public static final String CAMERA_NAME = "ov9268";
+  // public static final String CAMERA_NAME = "ov9268";
 
-  private static final RobotType ROBOT = RobotType.ROBOT_2023_PRESEASON; //TODO: toggle as nessecary
-  //private static final RobotType ROBOT = RobotType.ROBOT_2023_COMPETITION; 
-
+  private static final RobotType ROBOT =
+      RobotType.ROBOT_2023_PRESEASON; // TODO: toggle as nessecary
+  // private static final RobotType ROBOT = RobotType.ROBOT_2023_COMPETITION;
 
   public static RobotType getRobot() {
     return ROBOT;

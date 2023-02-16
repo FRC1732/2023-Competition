@@ -4,19 +4,21 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class HolderSubsystem extends SubsystemBase {
   /** Creates a new Holder. */
-
   private Solenoid holderSolenoid;
+
   boolean IsOpen = true;
 
   public HolderSubsystem() {
-    holderSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, Constants.HOLDER_SOLENOID_ID);
+    holderSolenoid =
+        new Solenoid(
+            Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, Constants.HOLDER_SOLENOID_ID);
   }
 
   public void open() {
