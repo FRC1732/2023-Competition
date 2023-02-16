@@ -20,6 +20,8 @@ import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
+import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.HolderSubsystem;
@@ -289,8 +291,13 @@ public class RobotContainer {
 
     oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
 
-    if (holderSubsystem != null) {
-      holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+
+    //default Commands
+    if(holderSubsystem != null) {
+        holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+    }
+    if(indexerSubsystem != null) {
+        indexerSubsystem.setDefaultCommand(new DefaultIndexerCommand(indexerSubsystem));
     }
   }
 
