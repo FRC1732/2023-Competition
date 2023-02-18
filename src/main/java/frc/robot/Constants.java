@@ -22,6 +22,8 @@ public final class Constants {
 
   public static final boolean TUNING_MODE = false;
 
+  public static final boolean DEBUGGING = false;
+
   public static final String CAN_BUS_NAME = "Oogway";
 
   public static final int CAN_PNEUMATIC_ID = 5; // FIXME: get correct can id
@@ -32,12 +34,12 @@ public final class Constants {
 
   public static final int INTAKE_CAN_ID = 50;
 
-  public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 0; //FIXME: get correct can id
-  public static final int ELEVATOR_BASE_MOTOR_TWO_CAN_ID = 0; //FIXME: get correct can id
-  public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; //FIXME: get correct can id
+  public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 0; // FIXME: get correct can id
+  public static final int ELEVATOR_BASE_MOTOR_TWO_CAN_ID = 0; // FIXME: get correct can id
+  public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get correct can id
 
-  public static final int EXTENDER_MOTOR_CAN_ID = 0; //FIXME: get correct can id
-  public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; //FIXME: get port
+  public static final int EXTENDER_MOTOR_CAN_ID = 0; // FIXME: get correct can id
+  public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get port
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id

@@ -30,6 +30,7 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
+import frc.robot.Constants;
 
 /**
  * This subsystem models the robot's drivetrain mechanism. It consists of a four MK4 swerve modules,
@@ -90,7 +91,6 @@ public class Drivetrain extends SubsystemBase {
 
   private static final String SUBSYSTEM_NAME = "Drivetrain";
   private static final boolean TESTING = true;
-  private static final boolean DEBUGGING = true;
 
   private final SwerveDrivePoseEstimator poseEstimator;
   private Timer timer;
@@ -134,7 +134,7 @@ public class Drivetrain extends SubsystemBase {
     tabMain.addBoolean("X-Stance On?", this::isXstance);
     tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
 
-    if (DEBUGGING) {
+    if (Constants.DEBUGGING) {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
       tab.add(SUBSYSTEM_NAME, this);
       tab.addNumber("vx", this::getVelocityX);

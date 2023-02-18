@@ -9,7 +9,7 @@ import frc.robot.subsystems.IndexerSubsystem;
 
 public class DefaultIndexerCommand extends CommandBase {
   IndexerSubsystem indexerSubsystem;
-  //private double startingPosition;
+  // private double startingPosition;
 
   public DefaultIndexerCommand(IndexerSubsystem indexerSubsystem) {
     addRequirements(indexerSubsystem);
@@ -18,12 +18,12 @@ public class DefaultIndexerCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    //startingPosition = indexerSubsystem.getArmRotation();
+    // startingPosition = indexerSubsystem.getArmRotation();
   }
 
   @Override
   public void execute() {
-   /* if (startingPosition != indexerSubsystem.getArmRotation()) {
+    /* if (startingPosition != indexerSubsystem.getArmRotation()) {
       if (startingPosition > indexerSubsystem.getArmRotation()) {
         indexerSubsystem.rotateDown();
       } else {

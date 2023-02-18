@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -30,15 +29,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    elevatorBaseMotorOne = new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_ONE_CAN_ID, MotorType.kBrushless);
-    elevatorBaseMotorTwo = new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
+    elevatorBaseMotorOne =
+        new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_ONE_CAN_ID, MotorType.kBrushless);
+    elevatorBaseMotorTwo =
+        new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
     magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
     // motor2.setInverted(true);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 8192);
-    relativeEncoder.setVelocityConversionFactor(1.0/300);
+    relativeEncoder.setVelocityConversionFactor(1.0 / 300);
     pidController = elevatorBaseMotorOne.getPIDController();
 
     pidController.setFeedbackDevice(relativeEncoder);
@@ -60,7 +61,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setIZone(kIz.getDouble(0));
     pidController.setFF(kFF.getDouble(0));
     pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
-
   }
 
   @Override
@@ -71,10 +71,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     double i = kI.getDouble(0);
     double d = kD.getDouble(0);
     double error = r - relativeEncoder.getVelocity();
-    //if(error < 10e-4){
+    // if(error < 10e-4){
     //  Integral = 0;
-    //}
-    Integral+=error;
+    // }
+    Integral += error;
     Derivative = error - prevError;
     pidController.setP(kP.getDouble(1));
     pidController.setI(kI.getDouble(0));
@@ -82,10 +82,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setIZone(kIz.getDouble(0));
     pidController.setFF(kFF.getDouble(0));
     pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-  //  if (r != rotationSetPoint) {
-   //   rotationSetPoint = r;
-      //pidController.setReference(r, CANSparkMax.ControlType.kVelocity);
-  elevatorBaseMotorOne.set(p *error + i * Integral + d * Derivative);
+    //  if (r != rotationSetPoint) {
+    //   rotationSetPoint = r;
+    // pidController.setReference(r, CANSparkMax.ControlType.kVelocity);
+    elevatorBaseMotorOne.set(p * error + i * Integral + d * Derivative);
   }
 
   public double limit(double value) {
@@ -135,10 +135,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
     kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    velocitySet = tab.add("Set Velocity", 0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 0)
-        .getEntry();
+    velocitySet =
+        tab.add("Set Velocity", 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withPosition(0, 0)
+            .getEntry();
 
     // tab.add("PIDController",pidController).withWidget(BuiltInWidgets.kPIDController).getEntry();
   }
-
 }
