@@ -40,7 +40,6 @@ import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
-import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
@@ -230,8 +229,21 @@ public class RobotContainer {
          * the x direction
          * and the left joystick's x axis specifies the velocity in the y direction.
          */
-        drivetrain.setDefaultCommand(
-                new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+        if(drivetrain != null) {
+           drivetrain.setDefaultCommand(new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+        }
+
+        if (holderSubsystem != null) {
+            holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+        }
+
+        if (indexerSubsystem != null) {
+            indexerSubsystem.setDefaultCommand(new DefaultIndexerCommand(indexerSubsystem));
+        }
+
+        if (extenderSubsystem != null) {
+            extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
+        }
 
         configureButtonBindings();
     }
@@ -301,13 +313,6 @@ public class RobotContainer {
         oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
 
         oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
-
-        if (holderSubsystem != null) {
-            holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
-        }
-        if (extenderSubsystem != null) {
-            extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
-        }
     }
 
     /** Use this method to define your commands for autonomous mode. */
