@@ -23,13 +23,13 @@ public class DefaultIndexerCommand extends CommandBase {
 
   @Override
   public void execute() {
-    if (startingPosition != indexerSubsystem.getArmRotation()) {
+   /* if (startingPosition != indexerSubsystem.getArmRotation()) {
       if (startingPosition > indexerSubsystem.getArmRotation()) {
         indexerSubsystem.rotateDown();
       } else {
         indexerSubsystem.rotateUp();
       }
-    }
+    } */
   }
 
   @Override
