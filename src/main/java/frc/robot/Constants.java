@@ -44,6 +44,9 @@ public final class Constants {
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
 
+  public static final double MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
+  public static final double MAX_ANGULAR_ACCELERATION = 0;
+
   public static final String CAMERA_NAME = "ov9268";
 
   private static final RobotType ROBOT =
