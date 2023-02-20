@@ -44,6 +44,27 @@ public final class DrivetrainConstants {
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET_COMPETITION = 74.7 - 48.954 + 47.901;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET_PROTOBOT = 74.7 - 48.954 + 47.901;
 
+  /* Kowalski */
+  public static final int KOWALSKI_CAN_FRONT_LEFT_MODULE_DRIVE_MOTOR = 11;
+  public static final int KOWALSKI_CAN_FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
+  public static final int KOWALSKI_CAN_BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
+  public static final int KOWALSKI_CAN_BACK_LEFT_MODULE_DRIVE_MOTOR = 14;
+
+  public static final int KOWALSKI_CAN_FRONT_LEFT_MODULE_STEER_MOTOR = 15;
+  public static final int KOWALSKI_CAN_FRONT_RIGHT_MODULE_STEER_MOTOR = 16;
+  public static final int KOWALSKI_CAN_BACK_RIGHT_MODULE_STEER_MOTOR = 17;
+  public static final int KOWALSKI_CAN_BACK_LEFT_MODULE_STEER_MOTOR = 18;
+
+  public static final int KOWALSKI_CAN_FRONT_LEFT_MODULE_STEER_ENCODER = 19;
+  public static final int KOWALSKI_CAN_FRONT_RIGHT_MODULE_STEER_ENCODER = 20;
+  public static final int KOWALSKI_CAN_BACK_RIGHT_MODULE_STEER_ENCODER = 21;
+  public static final int KOWALSKI_CAN_BACK_LEFT_MODULE_STEER_ENCODER = 22;
+
+  public static final double KOWALSKI_COMPETITION_FRONT_LEFT_MODULE_STEER_OFFSET = 139.824;
+  public static final double KOWALSKI_COMPETITION_FRONT_RIGHT_MODULE_STEER_OFFSET = 274.609 ;
+  public static final double KOWALSKI_COMPETITION_BACK_LEFT_MODULE_STEER_OFFSET = 248.842;
+  public static final double KOWALSKI_COMPETITION_BACK_RIGHT_MODULE_STEER_OFFSET = 178.849;
+
   /**
    * The left-to-right distance between the drivetrain wheels
    *
@@ -61,9 +82,11 @@ public final class DrivetrainConstants {
   public static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
   public static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
 
-  /* The geometry and coordinate systems can be confusing. Refer to this document
-  for a detailed explanation: https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1
-  */
+  /*
+   * The geometry and coordinate systems can be confusing. Refer to this document
+   * for a detailed explanation: https://docs.google.com/document/d/
+   * 17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1
+   */
   public static final SwerveDriveKinematics KINEMATICS =
       new SwerveDriveKinematics(
           // Front left
