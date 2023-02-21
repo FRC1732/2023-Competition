@@ -6,18 +6,57 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private DigitalInput extenderMagneticLimitSwitch;
+  private RelativeEncoder relativeEncoder;
+  private SparkMaxPIDController pidController;
+  private GenericEntry velocitySet;
+  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private double Integral, Derivative;
+  private double prevError;
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
-    extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushed);
+    extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
+    relativeEncoder = extenderMotor.getAlternateEncoder(Type.kQuadrature, 42);
+    relativeEncoder.setVelocityConversionFactor(
+        1.0 / 300); // TODO - how did we determine velocity conversion factor
+    pidController = extenderMotor.getPIDController();
+
+    pidController.setFeedbackDevice(relativeEncoder);
+
+    // PID coefficients
+
+    // kMaxOutput = 1;
+    // kMinOutput = -1;
+
+    setupShuffleboard();
+
+    // set PID coefficients
+    pidController.setP(kP.getDouble(1));
+    pidController.setI(kI.getDouble(0));
+    pidController.setD(kD.getDouble(0));
+    pidController.setIZone(kIz.getDouble(0));
+    pidController.setFF(kFF.getDouble(0));
+    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
+  }
+
+  public double limit(double value) {
+
+    return value > .25 ? .25 : value < -.25 ? -.25 : value; // TODO - set limit
   }
 
   public void moveIn() {
@@ -32,12 +71,66 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.set(0.1);
   }
 
+  public void reset() {
+    relativeEncoder.setPosition(0);
+  }
+
+  public Double getPosition() {
+    return relativeEncoder.getPosition();
+  }
+
   public boolean getMagSwitch() {
     return extenderMagneticLimitSwitch.get();
+  }
+
+  private void setupShuffleboard() {
+    ShuffleboardTab tab;
+    tab = Shuffleboard.getTab("extender");
+    // tab.addBoolean("MagLimitSwitch", () -> in0.get());
+    tab.addDouble("Pos", () -> relativeEncoder.getPosition());
+    tab.addDouble("Vel", () -> relativeEncoder.getVelocity());
+    tab.addDouble("PosFactor", () -> relativeEncoder.getPositionConversionFactor());
+    tab.addDouble("VelFactor", () -> relativeEncoder.getVelocityConversionFactor());
+    kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
+    kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
+    kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+
+    kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
+    kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+    velocitySet =
+        tab.add("Set Velocity", 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withPosition(0, 0)
+            .getEntry();
+
+    // tab.add("PIDController",pidController).withWidget(BuiltInWidgets.kPIDController).getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    double r = velocitySet.getDouble(0);
+    double p = kP.getDouble(1);
+    double i = kI.getDouble(0);
+    double d = kD.getDouble(0);
+    double error = r - relativeEncoder.getVelocity();
+    // if(error < 10e-4){
+    // Integral = 0;
+    // }
+    Integral += error;
+    Derivative = error - prevError;
+    pidController.setP(kP.getDouble(1));
+    pidController.setI(kI.getDouble(0));
+    pidController.setD(kD.getDouble(0));
+    pidController.setIZone(kIz.getDouble(0));
+    pidController.setFF(kFF.getDouble(0));
+    pidController.setOutputRange(
+        kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25)); // TODO - set range
+    // if (r != rotationSetPoint) {
+    // rotationSetPoint = r;
+    // pidController.setReference(r, CANSparkMax.ControlType.kVelocity);
+    extenderMotor.set(p * error + i * Integral + d * Derivative);
   }
 }

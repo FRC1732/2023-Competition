@@ -33,13 +33,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_ONE_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorTwo =
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
-    elevatorBaseMotorOne.restoreFactoryDefaults();
-    elevatorBaseMotorTwo.restoreFactoryDefaults();
     magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
-    // motor2.setInverted(true);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
-    relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 8192);
-    relativeEncoder.setVelocityConversionFactor(1.0 / 300);
+    relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 42);
+    relativeEncoder.setVelocityConversionFactor(
+        1.0 / 300); // TODO - how did we determine velocity conversion factor
     pidController = elevatorBaseMotorOne.getPIDController();
 
     pidController.setFeedbackDevice(relativeEncoder);
@@ -72,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     double d = kD.getDouble(0);
     double error = r - relativeEncoder.getVelocity();
     // if(error < 10e-4){
-    //  Integral = 0;
+    // Integral = 0;
     // }
     Integral += error;
     Derivative = error - prevError;
@@ -81,16 +79,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setD(kD.getDouble(0));
     pidController.setIZone(kIz.getDouble(0));
     pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-    //  if (r != rotationSetPoint) {
-    //   rotationSetPoint = r;
+    pidController.setOutputRange(
+        kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25)); // TODO - set range
+    // if (r != rotationSetPoint) {
+    // rotationSetPoint = r;
     // pidController.setReference(r, CANSparkMax.ControlType.kVelocity);
     elevatorBaseMotorOne.set(p * error + i * Integral + d * Derivative);
   }
 
   public double limit(double value) {
 
-    return value > .25 ? .25 : value < -.25 ? -.25 : value;
+    return value > .25 ? .25 : value < -.25 ? -.25 : value; // TODO - set limit
   }
 
   public void goUp() {
