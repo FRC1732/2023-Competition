@@ -29,8 +29,8 @@ import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
-import org.littletonrobotics.junction.Logger;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This subsystem models the robot's drivetrain mechanism. It consists of a four MK4 swerve modules,
