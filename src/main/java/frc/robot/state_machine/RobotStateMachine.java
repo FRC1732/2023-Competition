@@ -1,5 +1,7 @@
 package frc.robot.state_machine;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.SmartIntakeCommand;
 import frc.robot.state_machine.events.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +17,7 @@ public class RobotStateMachine {
   private static RobotStateMachine robotStateMachine = new RobotStateMachine();
 
   private FiniteStateMachine _stateMachine;
+  private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand();
 
   /**
    * Factory method to create the singleton robot container object.
@@ -43,10 +46,14 @@ public class RobotStateMachine {
 
     Transition transitionA =
         new TransitionBuilder()
-            .name("unlock")
-            .sourceState(readyToIntake) // if we are in state locked
+            .name("transitionA")
+            .sourceState(readyToIntake) // if we are in state readyToIntake
             .eventType(IntakePressed.class) // and the event IntakePressed occurs
-            .eventHandler(null) // we should perform the action
+            .eventHandler(
+                (event) -> {
+                  CommandScheduler.getInstance().schedule(smartIntakeCommand);
+                  ;
+                }) // we should perform the action
             .targetState(intaking) // and make a transition to the state unlocked
             .build();
 

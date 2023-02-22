@@ -58,11 +58,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   private OperatorInterface oi = new OperatorInterface() {};
 
-  private Drivetrain drivetrain;
-  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
-  private HolderSubsystem holderSubsystem = new HolderSubsystem();
-  private ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
+  public Drivetrain drivetrain;
+  public IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+  public HolderSubsystem holderSubsystem = new HolderSubsystem();
+  public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
