@@ -1,0 +1,68 @@
+package frc.robot.state_machine;
+
+import frc.robot.state_machine.events.*;
+import java.util.HashSet;
+import java.util.Set;
+import org.jeasy.states.api.FiniteStateMachine;
+import org.jeasy.states.api.FiniteStateMachineException;
+import org.jeasy.states.api.State;
+import org.jeasy.states.api.Transition;
+import org.jeasy.states.core.FiniteStateMachineBuilder;
+import org.jeasy.states.core.TransitionBuilder;
+
+public class RobotStateMachine {
+  // RobotContainer singleton
+  private static RobotStateMachine robotStateMachine = new RobotStateMachine();
+
+  private FiniteStateMachine _stateMachine;
+
+  /**
+   * Factory method to create the singleton robot container object.
+   *
+   * @return the singleton robot container object
+   */
+  public static RobotStateMachine getInstance() {
+    return robotStateMachine;
+  }
+
+  private RobotStateMachine() {
+    State readyToIntake = new State("readyToIntake");
+    State intaking = new State("intaking");
+    State holdingLow = new State("holdingLow");
+    State carrying = new State("carrying");
+    State staged = new State("staged");
+    State scoring = new State("scoring");
+
+    Set<State> states = new HashSet<>();
+    states.add(readyToIntake);
+    states.add(intaking);
+    states.add(holdingLow);
+    states.add(carrying);
+    states.add(staged);
+    states.add(scoring);
+
+    Transition transitionA =
+        new TransitionBuilder()
+            .name("unlock")
+            .sourceState(readyToIntake) // if we are in state locked
+            .eventType(IntakePressed.class) // and the event IntakePressed occurs
+            .eventHandler(null) // we should perform the action
+            .targetState(intaking) // and make a transition to the state unlocked
+            .build();
+
+    _stateMachine =
+        new FiniteStateMachineBuilder(states, readyToIntake)
+            .registerTransition(transitionA)
+            .build();
+  }
+
+  public String fireEvent(org.jeasy.states.api.Event event) {
+    String eventName;
+    try {
+      eventName = _stateMachine.fire(event).getName();
+    } catch (FiniteStateMachineException e) {
+      eventName = _stateMachine.getCurrentState().getName();
+    }
+    return eventName;
+  }
+}
