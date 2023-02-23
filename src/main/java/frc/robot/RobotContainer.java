@@ -42,6 +42,7 @@ import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizatio
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -66,6 +67,7 @@ public class RobotContainer {
   public HolderSubsystem holderSubsystem = new HolderSubsystem();
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
   public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem();
+  public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging

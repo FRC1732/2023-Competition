@@ -11,6 +11,7 @@ import org.jeasy.states.api.State;
 import org.jeasy.states.api.Transition;
 import org.jeasy.states.core.FiniteStateMachineBuilder;
 import org.jeasy.states.core.TransitionBuilder;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotStateMachine {
   // RobotContainer singleton
@@ -52,9 +53,24 @@ public class RobotStateMachine {
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(smartIntakeCommand);
-                  ;
+                  Logger.getInstance()
+                      .recordOutput("StateMachine/CurrentState", intaking.getName());
                 }) // we should perform the action
             .targetState(intaking) // and make a transition to the state unlocked
+            .build();
+
+    Transition transitionB =
+        new TransitionBuilder()
+            .name("transitionB")
+            .sourceState(intaking) // if we are in state intaking
+            .eventType(PieceDetectedMidHigh.class) // and the event IntakePressed occurs
+            .eventHandler(
+                (event) -> {
+                  CommandScheduler.getInstance().schedule(smartIntakeCommand);
+                  Logger.getInstance()
+                      .recordOutput("StateMachine/CurrentState", carrying.getName());
+                }) // we should perform the action
+            .targetState(carrying) // and make a transition to the state carrying
             .build();
 
     _stateMachine =
