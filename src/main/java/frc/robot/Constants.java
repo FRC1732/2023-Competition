@@ -17,6 +17,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  private Constants() {
+    throw new IllegalStateException("attempted to instantiate static class");
+  }
 
   public static final double LOOP_PERIOD_SECS = 0.02;
 
@@ -24,8 +27,10 @@ public final class Constants {
 
   public static final boolean DEBUGGING = false;
 
+  public static final String CAMERA_NAME = "ov9268";
   public static final String CAN_BUS_NAME = "Oogway";
 
+  // #region CAN IDs
   public static final int CAN_PNEUMATIC_ID = 5; // FIXME: get correct can id
 
   public static final int INDEXER_SOLENOID_ID = 5; // FIXME: get correct can id
@@ -43,30 +48,11 @@ public final class Constants {
 
   public static final int INDEXER_ROTATION_CAN_ID = 51; // FIXME: get correct can id
   public static final int INDEXER_GRABBER_CAN_ID = 52; // FIXME:  get correct can id
+  // #endregion CAN IDs
 
   public static final double MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
   public static final double MAX_ANGULAR_ACCELERATION = 0;
 
-  public static final String CAMERA_NAME = "ov9268";
-
-  private static final RobotType ROBOT =
-      RobotType.ROBOT_2023_PRESEASON; // TODO: toggle as nessecary
-  // private static final RobotType ROBOT = RobotType.ROBOT_2023_COMPETITION;
-
-  public static RobotType getRobot() {
-    return ROBOT;
-  }
-
-  public static Mode getMode() {
-    return Mode.REAL;
-  }
-
-  public enum RobotType {
-    ROBOT_2023_PRESEASON,
-    ROBOT_2023_COMPETITION;
-  }
-
-  public enum Mode {
-    REAL
-  }
+  public static final double DEADBAND = 0.05;
+  public static final double TRAINING_WHEELS = 1.00;
 }

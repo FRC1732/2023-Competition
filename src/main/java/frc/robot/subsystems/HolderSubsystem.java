@@ -13,7 +13,7 @@ public class HolderSubsystem extends SubsystemBase {
   /** Creates a new Holder. */
   private Solenoid holderSolenoid;
 
-  boolean IsOpen = true;
+  private boolean isOpen = true;
 
   public HolderSubsystem() {
     holderSolenoid =
@@ -23,16 +23,23 @@ public class HolderSubsystem extends SubsystemBase {
 
   public void open() {
     holderSolenoid.set(true);
-    IsOpen = true;
+    isOpen = true;
   }
 
   public void close() {
     holderSolenoid.set(false);
-    IsOpen = false;
+    isOpen = false;
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public boolean isOpen() {
+    return isOpen;
+  }
+
+  public void toggle() {
+    if (isOpen) {
+      close();
+    } else {
+      open();
+    }
   }
 }

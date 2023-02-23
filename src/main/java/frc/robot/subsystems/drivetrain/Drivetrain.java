@@ -302,6 +302,20 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public void drivePercentage(double xPercentage, double yPercentage, double rotationPercentage) {
+    double xVelocity = xPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double yVelocity = yPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotationalVelocity =
+        rotationPercentage * DrivetrainConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);
+    Logger.getInstance().recordOutput("TeleopSwerve/xVelocity", xVelocity);
+    Logger.getInstance().recordOutput("TeleopSwerve/yVelocity", yVelocity);
+    Logger.getInstance().recordOutput("TeleopSwerve/rotationalVelocity", rotationalVelocity);
+
+    drive(xVelocity, yVelocity, rotationalVelocity);
+  }
+
   /**
    * Stops the motion of the robot. Since the motors are in break mode, the robot will stop soon
    * after this method is invoked.

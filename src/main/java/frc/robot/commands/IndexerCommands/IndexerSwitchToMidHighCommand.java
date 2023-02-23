@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.PieceDetectedMidHigh;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 
 public class IndexerSwitchToMidHighCommand extends CommandBase {
-  private IntakeSubsystem intakeSubsystem;
+  private IndexerSubsystem indexerSubsystem;
 
   public IndexerSwitchToMidHighCommand() {
-    this.intakeSubsystem = RobotContainer.getInstance().intakeSubsystem;
-    addRequirements(intakeSubsystem);
+    this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;
+    addRequirements(indexerSubsystem);
   }
 
   public void initialize() {}
@@ -25,7 +25,7 @@ public class IndexerSwitchToMidHighCommand extends CommandBase {
   }
 
   public boolean isFinished() {
-    // return intakeSubsytem.hasPiece();
+    // return indexerSubsytem.hasPiece();
     return true;
   }
 }

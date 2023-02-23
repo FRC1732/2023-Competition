@@ -6,19 +6,15 @@ import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.SwitchToLow;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 
 public class StagedToLowCommand extends CommandBase {
   private ElevatorSubsystem elevatorSubsystem;
-  private IntakeSubsystem intakeSubsystem;
   private HolderSubsystem holderSubsystem;
 
   public StagedToLowCommand() {
     this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
-    this.intakeSubsystem = RobotContainer.getInstance().intakeSubsystem;
     this.holderSubsystem = RobotContainer.getInstance().holderSubsystem;
     addRequirements(elevatorSubsystem);
-    addRequirements(intakeSubsystem);
     addRequirements(holderSubsystem);
   }
 

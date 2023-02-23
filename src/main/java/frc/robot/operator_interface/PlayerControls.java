@@ -6,6 +6,7 @@ package frc.robot.operator_interface;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 
 /** Class for controlling the robot with two Xbox controllers. */
 public class PlayerControls implements OperatorInterface {
@@ -35,17 +36,17 @@ public class PlayerControls implements OperatorInterface {
 
   @Override
   public double getTranslateX() {
-    return -translateJoystick.getY();
+    return modifyAxis(-translateJoystick.getY());
   }
 
   @Override
   public double getTranslateY() {
-    return -translateJoystick.getX();
+    return modifyAxis(-translateJoystick.getX());
   }
 
   @Override
   public double getRotate() {
-    return -rotateJoystick.getX();
+    return modifyAxis(-rotateJoystick.getX());
   }
 
   @Override
@@ -101,5 +102,34 @@ public class PlayerControls implements OperatorInterface {
   @Override
   public Trigger getIndexerCloseButton() {
     return translateJoystickButtons[3];
+  }
+
+  /**
+   * Squares the specified value, while preserving the sign. This method is used on all joystick
+   * inputs. This is useful as a non-linear range is more natural for the driver.
+   *
+   * @param value
+   * @return
+   */
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, Constants.DEADBAND);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+    value *= Constants.TRAINING_WHEELS;
+    return value;
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
   }
 }

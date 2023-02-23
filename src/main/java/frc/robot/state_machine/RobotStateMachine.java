@@ -25,7 +25,7 @@ public class RobotStateMachine {
   // RobotContainer singleton
   private static RobotStateMachine robotStateMachine = new RobotStateMachine();
 
-  private FiniteStateMachine _stateMachine;
+  private FiniteStateMachine stateMachine;
   private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand();
   private IndexerCarryMidHighCommand indexerCarryMidHighCommand = new IndexerCarryMidHighCommand();
   private StageCommand stageCommand = new StageCommand();
@@ -61,7 +61,6 @@ public class RobotStateMachine {
     states.add(holdingLow);
     states.add(carrying);
     states.add(staged);
-    states.add(scoring);
 
     Transition transitionA =
         new TransitionBuilder()
@@ -78,139 +77,126 @@ public class RobotStateMachine {
     Transition transitionB =
         new TransitionBuilder()
             .name("transitionB")
-            .sourceState(intaking) // if we are in state intaking
-            .eventType(PieceDetectedMidHigh.class) // and the event IntakePressed occurs
+            .sourceState(intaking)
+            .eventType(PieceDetectedMidHigh.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(indexerCarryMidHighCommand);
-                }) // we should perform the action
-            .targetState(carrying) // and make a transition to the state carrying
+                })
+            .targetState(carrying)
             .build();
 
     Transition transitionC =
         new TransitionBuilder()
             .name("transitionC")
-            .sourceState(carrying) // if we are in state intaking
-            .eventType(ScorePressed.class) // and the event IntakePressed occurs
+            .sourceState(carrying)
+            .eventType(ScorePressed.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(stageCommand);
-                }) // we should perform the action
-            .targetState(staged) // and make a transition to the state carrying
+                })
+            .targetState(staged)
             .build();
 
     Transition transitionD =
         new TransitionBuilder()
             .name("transitionD")
-            .sourceState(staged) // if we are in state intaking
-            .eventType(FinishScorePressed.class) // and the event IntakePressed occurs
+            .sourceState(staged)
+            .eventType(FinishScorePressed.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(scoreCommand);
-                }) // we should perform the action
-            .targetState(scoring) // and make a transition to the state carrying
-            .build();
-
-    Transition transitionE =
-        new TransitionBuilder()
-            .name("transitionE")
-            .sourceState(staged) // if we are in state intaking
-            .eventType(ScoringFinishes.class) // and the event IntakePressed occurs
-            .eventHandler(
-                (event) -> {
-                  CommandScheduler.getInstance().schedule(resetFromScoringCommand);
-                }) // we should perform the action
-            .targetState(readyToIntake) // and make a transition to the state carrying
+                })
+            .targetState(readyToIntake)
             .build();
 
     Transition transitionF =
         new TransitionBuilder()
             .name("transitionF")
-            .sourceState(intaking) // if we are in state intaking
-            .eventType(PieceDetectedLow.class) // and the event IntakePressed occurs
+            .sourceState(intaking)
+            .eventType(PieceDetectedLow.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(indexerCarryLowCommand);
-                }) // we should perform the action
-            .targetState(holdingLow) // and make a transition to the state carrying
+                })
+            .targetState(holdingLow)
             .build();
 
     Transition transitionG =
         new TransitionBuilder()
             .name("transitionG")
-            .sourceState(holdingLow) // if we are in state intaking
-            .eventType(PlaceButtonPressed.class) // and the event IntakePressed occurs
+            .sourceState(holdingLow)
+            .eventType(PlaceButtonPressed.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(indexerPlaceCommand);
-                }) // we should perform the action
-            .targetState(readyToIntake) // and make a transition to the state carrying
+                })
+            .targetState(readyToIntake)
             .build();
 
     Transition transitionH =
         new TransitionBuilder()
             .name("transitionH")
-            .sourceState(holdingLow) // if we are in state intaking
-            .eventType(SwitchToLow.class) // and the event IntakePressed occurs
+            .sourceState(holdingLow)
+            .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(indexerSwitchToMidHighCommand);
-                }) // we should perform the action
-            .targetState(carrying) // and make a transition to the state carrying
+                })
+            .targetState(carrying)
             .build();
 
     Transition transitionI =
         new TransitionBuilder()
             .name("transitionI")
-            .sourceState(carrying) // if we are in state intaking
-            .eventType(SwitchToMidHigh.class) // and the event IntakePressed occurs
+            .sourceState(carrying)
+            .eventType(SwitchToMidHigh.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(indexerSwitchToLowCommand);
-                }) // we should perform the action
-            .targetState(holdingLow) // and make a transition to the state carrying
+                })
+            .targetState(holdingLow)
             .build();
 
     Transition transitionJ =
         new TransitionBuilder()
             .name("transitionJ")
-            .sourceState(staged) // if we are in state intaking
-            .eventType(IntakePressed.class) // and the event IntakePressed occurs
+            .sourceState(staged)
+            .eventType(IntakePressed.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(smartIntakeCommand);
-                }) // we should perform the action
-            .targetState(intaking) // and make a transition to the state carrying
+                })
+            .targetState(intaking)
             .build();
 
     Transition transitionK =
         new TransitionBuilder()
             .name("transitionK")
-            .sourceState(staged) // if we are in state intaking
-            .eventType(SwitchToLow.class) // and the event IntakePressed occurs
+            .sourceState(staged)
+            .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(stagedToLowCommand);
-                }) // we should perform the action
-            .targetState(readyToIntake) // and make a transition to the state carrying
+                })
+            .targetState(readyToIntake)
             .build();
 
     Transition transitionL =
         new TransitionBuilder()
             .name("transitionL")
-            .sourceState(intaking) // if we are in state intaking
-            .eventType(IntakeReleased.class) // and the event IntakePressed occurs
-            .eventHandler((event) -> {}) // we should perform the action
-            .targetState(readyToIntake) // and make a transition to the state carrying
+            .sourceState(intaking)
+            .eventType(IntakeReleased.class)
+            .eventHandler((event) -> {})
+            .targetState(readyToIntake)
             .build();
 
-    _stateMachine =
+    stateMachine =
         new FiniteStateMachineBuilder(states, readyToIntake)
             .registerTransition(transitionA)
             .registerTransition(transitionB)
             .registerTransition(transitionC)
             .registerTransition(transitionD)
-            .registerTransition(transitionE)
             .registerTransition(transitionF)
             .registerTransition(transitionG)
             .registerTransition(transitionH)
@@ -224,22 +210,22 @@ public class RobotStateMachine {
   public String fireEvent(org.jeasy.states.api.Event event) {
     String eventName;
     try {
-      eventName = _stateMachine.fire(event).getName();
+      eventName = stateMachine.fire(event).getName();
     } catch (FiniteStateMachineException e) {
-      eventName = _stateMachine.getCurrentState().getName();
+      eventName = stateMachine.getCurrentState().getName();
     }
     return eventName;
   }
 
   public String getCurrentState() {
-    return _stateMachine.getCurrentState().getName();
+    return stateMachine.getCurrentState().getName();
   }
 
   public String getLastEvent() {
-    return _stateMachine.getLastEvent().getName();
+    return stateMachine.getLastEvent().getName();
   }
 
   public String getLastTransition() {
-    return _stateMachine.getLastTransition().getName();
+    return stateMachine.getLastTransition().getName();
   }
 }
