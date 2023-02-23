@@ -59,6 +59,6 @@
     "Xstance"
   ],
   "[java]": {
-    "editor.defaultFormatter": "redhat.java"
-  }
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
+  }  
 }
