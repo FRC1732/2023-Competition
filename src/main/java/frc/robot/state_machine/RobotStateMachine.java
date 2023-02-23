@@ -9,6 +9,7 @@ import org.jeasy.states.api.FiniteStateMachine;
 import org.jeasy.states.api.FiniteStateMachineException;
 import org.jeasy.states.api.State;
 import org.jeasy.states.api.Transition;
+import org.jeasy.states.core.FiniteStateMachineBuilder;
 import org.jeasy.states.core.TransitionBuilder;
 import org.littletonrobotics.junction.Logger;
 
@@ -44,22 +45,21 @@ public class RobotStateMachine{
     states.add(staged);
     states.add(scoring);
 
-    Transition transitionA =
-        new TransitionBuilder()
-            .name("transitionA")
-            .sourceState(readyToIntake) // if we are in state readyToIntake
-            .eventType(IntakePressed.class) // and the event IntakePressed occurs
-            .eventHandler(
-                (event) -> {
-                  CommandScheduler.getInstance().schedule(smartIntakeCommand);
-                  Logger
-                      .getInstance()
-                      .recordOutput("StateMachine/CurrentState", intaking.getName());
-                }) // we should perform the action
-            .targetState(intaking) // and make a transition to the state intaking
-            .build();
-    
-    Transition transitionB = 
+    Transition transitionA = new TransitionBuilder()
+        .name("transitionA")
+        .sourceState(readyToIntake) // if we are in state readyToIntake
+        .eventType(IntakePressed.class) // and the event IntakePressed occurs
+        .eventHandler(
+            (event) -> {
+              CommandScheduler.getInstance().schedule(smartIntakeCommand);
+              Logger
+                  .getInstance()
+                  .recordOutput("StateMachine/CurrentState", intaking.getName());
+            }) // we should perform the action
+        .targetState(intaking) // and make a transition to the state unlocked
+        .build();
+
+        Transition transitionB = 
         new TransitionBuilder()
             .name("transitionB")
             .sourceState(intaking) // if we are in state intaking
@@ -73,6 +73,10 @@ public class RobotStateMachine{
                 }) // we should perform the action
             .targetState(carrying) // and make a transition to the state carrying
             .build();
+
+    _stateMachine = new FiniteStateMachineBuilder(states, readyToIntake)
+        .registerTransition(transitionA)
+        .build();
   }
 
   public String fireEvent(org.jeasy.states.api.Event event) {
