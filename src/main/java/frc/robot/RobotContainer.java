@@ -36,6 +36,7 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
+import frc.robot.commands.DefaultCommands.DefaultStateMachineCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
@@ -45,6 +46,7 @@ import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -63,6 +65,8 @@ public class RobotContainer {
   public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
   public HolderSubsystem holderSubsystem = new HolderSubsystem();
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
+  public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem();
+
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -73,6 +77,20 @@ public class RobotContainer {
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    configureDriveTrain();
+
+    // disable all telemetry in the LiveWindow to reduce the processing during each
+    // iteration
+    LiveWindow.disableAllTelemetry();
+
+    updateOI();
+    configureDefaultCommands();
+    configureButtonBindings();
+    configureAutoCommands();
+  }
+
+  private void configureDriveTrain() {
     // create real, simulated, or replay subsystems based on the mode and robot
     // specified
     switch (Constants.getRobot()) {
@@ -199,14 +217,6 @@ public class RobotContainer {
           break;
         }
     }
-
-    // disable all telemetry in the LiveWindow to reduce the processing during each
-    // iteration
-    LiveWindow.disableAllTelemetry();
-
-    updateOI();
-
-    configureAutoCommands();
   }
 
   /**
@@ -242,7 +252,9 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(
           new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
     }
+  }
 
+  private void configureDefaultCommands() {
     if (holderSubsystem != null) {
       holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
     }
@@ -255,7 +267,9 @@ public class RobotContainer {
       extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
     }
 
-    configureButtonBindings();
+    if (stateMachineSubsystem != null) {
+      stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+    }
   }
 
   /**

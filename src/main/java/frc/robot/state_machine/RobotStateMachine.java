@@ -72,4 +72,16 @@ public class RobotStateMachine {
     }
     return eventName;
   }
+
+  public String getCurrentState() {
+    return _stateMachine.getCurrentState().getName();
+  }
+
+  public String getLastEvent() {
+    return _stateMachine.getLastEvent().getName();
+  }
+
+  public String getLastTransition() {
+    return _stateMachine.getLastTransition().getName();
+  }
 }
