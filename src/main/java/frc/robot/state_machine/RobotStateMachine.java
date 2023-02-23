@@ -9,14 +9,15 @@ import org.jeasy.states.api.FiniteStateMachine;
 import org.jeasy.states.api.FiniteStateMachineException;
 import org.jeasy.states.api.State;
 import org.jeasy.states.api.Transition;
-import org.jeasy.states.core.FiniteStateMachineBuilder;
 import org.jeasy.states.core.TransitionBuilder;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotStateMachine {
   // RobotContainer singleton
   private static RobotStateMachine robotStateMachine = new RobotStateMachine();
 
   private FiniteStateMachine _stateMachine;
+  private Logger logger;
   private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand();
 
   /**
@@ -52,14 +53,11 @@ public class RobotStateMachine {
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(smartIntakeCommand);
-                  ;
+                  logger
+                      .getInstance()
+                      .recordOutput("StateMachine/CurrentState", intaking.getName());
                 }) // we should perform the action
             .targetState(intaking) // and make a transition to the state unlocked
-            .build();
-
-    _stateMachine =
-        new FiniteStateMachineBuilder(states, readyToIntake)
-            .registerTransition(transitionA)
             .build();
   }
 
