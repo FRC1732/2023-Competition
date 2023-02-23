@@ -1,17 +1,15 @@
-package frc.robot.commands.ElevatorCommands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.state_machine.RobotStateMachine;
-import frc.robot.state_machine.events.IntakePressed;
-import frc.robot.state_machine.events.PieceDetectedMidHigh;
+import frc.robot.state_machine.events.ScorePressed;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 
-public class ElevatorMidHighCommand extends CommandBase {
+public class StageCommand extends CommandBase {
   private ElevatorSubsystem elevatorSubsystem;
 
-  public ElevatorMidHighCommand() {
+  public StageCommand() {
     this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
     addRequirements(elevatorSubsystem);
   }
@@ -22,7 +20,7 @@ public class ElevatorMidHighCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance().fireEvent(new PieceDetectedMidHigh()); // TODO: make piece detected
+    RobotStateMachine.getInstance().fireEvent(new ScorePressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {
