@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -22,10 +24,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   private RelativeEncoder relativeEncoder;
   private DigitalInput magLimitSwitch;
   private SparkMaxPIDController pidController;
-  private GenericEntry velocitySet;
+  private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-  private double Integral, Derivative;
-  private double prevError;
+
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -43,9 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController = elevatorBaseMotorOne.getPIDController();
 
     pidController.setFeedbackDevice(relativeEncoder);
-    Integral = 0;
-    Derivative = 0;
-    prevError = 0;
+
 
     // PID coefficients
 
@@ -65,27 +64,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    double r = velocitySet.getDouble(0);
-    double p = kP.getDouble(1);
-    double i = kI.getDouble(0);
-    double d = kD.getDouble(0);
-    double error = r - relativeEncoder.getVelocity();
-    // if(error < 10e-4){
-    //  Integral = 0;
-    // }
-    Integral += error;
-    Derivative = error - prevError;
     pidController.setP(kP.getDouble(1));
     pidController.setI(kI.getDouble(0));
     pidController.setD(kD.getDouble(0));
     pidController.setIZone(kIz.getDouble(0));
     pidController.setFF(kFF.getDouble(0));
     pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-    //  if (r != rotationSetPoint) {
-    //   rotationSetPoint = r;
-    // pidController.setReference(r, CANSparkMax.ControlType.kVelocity);
-    elevatorBaseMotorOne.set(p * error + i * Integral + d * Derivative);
+    pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
   }
 
   public double limit(double value) {
@@ -135,12 +120,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
     kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    velocitySet =
-        tab.add("Set Velocity", 0)
+    positionSet =
+        tab.add("Set Position", 0)
             .withWidget(BuiltInWidgets.kTextView)
             .withPosition(0, 0)
             .getEntry();
-
-    // tab.add("PIDController",pidController).withWidget(BuiltInWidgets.kPIDController).getEntry();
   }
 }
