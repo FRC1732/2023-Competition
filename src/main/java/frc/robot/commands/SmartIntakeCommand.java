@@ -9,8 +9,8 @@ import frc.robot.subsystems.IndexerSubsystem;
 public class SmartIntakeCommand extends CommandBase {
   private IndexerSubsystem indexerSubsystem;
 
-  public SmartIntakeCommand() {
-    this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;
+  public SmartIntakeCommand(RobotContainer robotContainer) {
+    this.indexerSubsystem = robotContainer.indexerSubsystem;
     addRequirements(indexerSubsystem);
   }
 

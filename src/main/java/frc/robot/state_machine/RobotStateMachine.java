@@ -1,6 +1,7 @@
 package frc.robot.state_machine;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
 import frc.robot.commands.IndexerCommands.IndexerCarryLowCommand;
 import frc.robot.commands.IndexerCommands.IndexerCarryMidHighCommand;
 import frc.robot.commands.IndexerCommands.IndexerPlaceCommand;
@@ -24,9 +25,10 @@ import org.jeasy.states.core.TransitionBuilder;
 public class RobotStateMachine {
   // RobotContainer singleton
   private static RobotStateMachine robotStateMachine = new RobotStateMachine();
+  private RobotContainer robotContainer;
 
   private FiniteStateMachine stateMachine;
-  private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand();
+  private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand(robotContainer);
   private IndexerCarryMidHighCommand indexerCarryMidHighCommand = new IndexerCarryMidHighCommand();
   private StageCommand stageCommand = new StageCommand();
   private ScoreCommand scoreCommand = new ScoreCommand();

@@ -63,15 +63,11 @@ public class RobotContainer {
    * @return the singleton robot container object
    */
   public static RobotContainer getInstance() {
-    if (robotContainer == null) {
-      robotContainer = new RobotContainer();
-    }
-
     return robotContainer;
   }
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
-  private RobotContainer() {
+  public RobotContainer() {
 
     configureDriveTrain();
 

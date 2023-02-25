@@ -42,6 +42,7 @@ public class IndexerSubsystem extends SubsystemBase {
     System.out.println("!");
     System.out.println("!");
     System.out.println("!");
+    Thread.dumpStack();
 
     indexerRotationMotor = new CANSparkMax(Constants.INDEXER_ROTATION_CAN_ID, MotorType.kBrushless);
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
