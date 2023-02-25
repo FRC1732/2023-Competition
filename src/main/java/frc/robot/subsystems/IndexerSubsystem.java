@@ -35,6 +35,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
   // Creates a new IntakeSubsystem.
   public IndexerSubsystem() {
+    System.out.println("HI, INDEXER SUBSYSTEM HAS BEEN DECLAIRED");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+
     indexerRotationMotor = new CANSparkMax(Constants.INDEXER_ROTATION_CAN_ID, MotorType.kBrushless);
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
     indexerRotationMotor.restoreFactoryDefaults();
