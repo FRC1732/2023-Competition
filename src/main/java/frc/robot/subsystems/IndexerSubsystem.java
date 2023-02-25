@@ -54,12 +54,12 @@ public class IndexerSubsystem extends SubsystemBase {
 
     setupShuffleboard();
 
-    pidController.setP(kP.getDouble(1));
-    pidController.setI(kI.getDouble(0));
-    pidController.setD(kD.getDouble(0));
-    pidController.setIZone(kIz.getDouble(0));
-    pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
+    pidController.setP(Constants.INDEXER_ARM_P_VALUE);
+    pidController.setI(Constants.INDEXER_ARM_I_VALUE);
+    pidController.setD(Constants.INDEXER_ARM_D_VALUE);
+    pidController.setIZone(0);
+    pidController.setFF(0);
+    pidController.setOutputRange(-.25,.25);
 
     io =
         new IndexerIO() {
@@ -91,12 +91,12 @@ public class IndexerSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(1));
-      pidController.setI(kI.getDouble(0));
-      pidController.setD(kD.getDouble(0));
-      pidController.setIZone(kIz.getDouble(0));
-      pidController.setFF(kFF.getDouble(0));
-      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      pidController.setP(kP.getDouble(Constants.INDEXER_ARM_P_VALUE));
+      pidController.setI(kI.getDouble(Constants.INDEXER_ARM_I_VALUE));
+      pidController.setD(kD.getDouble(Constants.INDEXER_ARM_D_VALUE));
+      //pidController.setIZone(kIz.getDouble(0));
+      //pidController.setFF(kFF.getDouble(0));
+      pidController.setOutputRange(-.25,25);
       pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }

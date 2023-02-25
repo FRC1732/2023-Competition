@@ -54,24 +54,33 @@ public class ElevatorSubsystem extends SubsystemBase {
     setupShuffleboard();
 
     // set PID coefficients
-    pidController.setP(kP.getDouble(0));
-    pidController.setI(kI.getDouble(0));
-    pidController.setD(kD.getDouble(0));
-    pidController.setIZone(kIz.getDouble(0));
-    pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
+    if(Constants.TUNING_MODE){
+      pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
+      pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
+      pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
+      pidController.setIZone(kIz.getDouble(0));
+      pidController.setFF(kFF.getDouble(0));
+      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
+    }else{
+      pidController.setP(Constants.ELEVATOR_P_VALUE);
+      pidController.setI(Constants.ELEVATOR_I_VALUE);
+      pidController.setD(Constants.ELEVATOR_D_VALUE);
+      pidController.setIZone(0);
+      pidController.setFF(0);
+      pidController.setOutputRange(-.25,.25);
+    }
   }
 
   @Override
   public void periodic() {
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(1));
-      pidController.setI(kI.getDouble(0));
-      pidController.setD(kD.getDouble(0));
-      pidController.setIZone(kIz.getDouble(0));
-      pidController.setFF(kFF.getDouble(0));
-      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
+      pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
+      pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
+      //pidController.setIZone(kIz.getDouble(0));
+      //pidController.setFF(kFF.getDouble(0));
+      //pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      //pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
 
@@ -92,6 +101,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void off() {
     elevatorBaseMotorOne.set(0);
+  }
+
+  public void setToMidCone(){
+
+  }
+
+  public void setToHighCone(){
+
   }
 
   public void reset() {
@@ -115,9 +132,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     tab.addDouble("PosFactor", () -> relativeEncoder.getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> relativeEncoder.getVelocityConversionFactor());
     if (Constants.TUNING_MODE) {
-      kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kP = tab.add("P", Constants.ELEVATOR_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kI = tab.add("I", Constants.ELEVATOR_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kD = tab.add("D", Constants.ELEVATOR_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 

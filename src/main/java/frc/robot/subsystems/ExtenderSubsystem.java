@@ -8,11 +8,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,7 +27,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   private GenericEntry positionSet;
 
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-
+  private SuppliedValueWidget updatePID;
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
@@ -35,12 +38,12 @@ public class ExtenderSubsystem extends SubsystemBase {
 
     setupShuffleboard();
 
-    pidController.setP(kP.getDouble(1));
-    pidController.setI(kI.getDouble(0));
-    pidController.setD(kD.getDouble(0));
-    pidController.setIZone(kIz.getDouble(0));
-    pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
+    pidController.setP(1);
+    pidController.setI(0);
+    pidController.setD(0);
+    pidController.setIZone(0);
+    pidController.setFF(0);
+    pidController.setOutputRange(-.25,.25);
   }
 
   public void moveIn() {
@@ -62,13 +65,13 @@ public class ExtenderSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(1));
-      pidController.setI(kI.getDouble(0));
-      pidController.setD(kD.getDouble(0));
-      pidController.setIZone(kIz.getDouble(0));
-      pidController.setFF(kFF.getDouble(0));
-      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setP(kP.getDouble(Constants.EXTENDER_P_VALUE));
+      pidController.setI(kI.getDouble(Constants.EXTENDER_I_VALUE));
+      pidController.setD(kD.getDouble(Constants.EXTENDER_D_VALUE));
+      //pidController.setIZone(kIz.getDouble(0));
+      //pidController.setFF(kFF.getDouble(0));
+      //pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      //pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
 
@@ -86,7 +89,8 @@ public class ExtenderSubsystem extends SubsystemBase {
       kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-
+      //updatePID = tab.addBoolean("Update PID", ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
+  
       kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
       positionSet =
