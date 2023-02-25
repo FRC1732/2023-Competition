@@ -18,6 +18,7 @@ public class ScoreCommand extends CommandBase {
     this.holderSubsystem = robotContainer.holderSubsystem;
     this.elevatorSubsystem = robotContainer.elevatorSubsystem;
     this.extenderSubsystem = robotContainer.extenderSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(elevatorSubsystem);
     addRequirements(extenderSubsystem);
     addRequirements(holderSubsystem);

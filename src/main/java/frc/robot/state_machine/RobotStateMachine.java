@@ -36,6 +36,7 @@ public class RobotStateMachine {
   private StagedToLowCommand stagedToLowCommand;
 
   public RobotStateMachine(RobotContainer container) {
+    robotContainer = container;
     smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
     indexerCarryMidHighCommand = new IndexerCarryMidHighCommand(robotContainer, this);
     stageCommand = new StageCommand(robotContainer, this);
@@ -46,7 +47,6 @@ public class RobotStateMachine {
     indexerSwitchToLowCommand = new IndexerSwitchToLowCommand(robotContainer, this);
     stagedToLowCommand = new StagedToLowCommand(robotContainer, this);
 
-    robotContainer = container;
     State readyToIntake = new State("readyToIntake");
     State intaking = new State("intaking");
     State holdingLow = new State("holdingLow");

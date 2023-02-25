@@ -13,6 +13,7 @@ public class IndexerSwitchToMidHighCommand extends CommandBase {
   public IndexerSwitchToMidHighCommand(
       RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.indexerSubsystem = robotContainer.indexerSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(indexerSubsystem);
   }
 

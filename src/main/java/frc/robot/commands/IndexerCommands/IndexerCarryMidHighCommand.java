@@ -13,6 +13,7 @@ public class IndexerCarryMidHighCommand extends CommandBase {
   public IndexerCarryMidHighCommand(
       RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.indexerSubsystem = robotContainer.indexerSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(indexerSubsystem);
   }
 

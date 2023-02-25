@@ -12,6 +12,7 @@ public class IndexerPlaceCommand extends CommandBase {
 
   public IndexerPlaceCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.indexerSubsystem = robotContainer.indexerSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(indexerSubsystem);
   }
 

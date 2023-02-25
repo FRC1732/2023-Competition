@@ -15,6 +15,7 @@ public class StagedToLowCommand extends CommandBase {
   public StagedToLowCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.elevatorSubsystem = robotContainer.elevatorSubsystem;
     this.holderSubsystem = robotContainer.holderSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(elevatorSubsystem);
     addRequirements(holderSubsystem);
   }

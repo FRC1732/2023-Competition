@@ -13,6 +13,7 @@ public class IndexerSwitchToLowCommand extends CommandBase {
   public IndexerSwitchToLowCommand(
       RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.indexerSubsystem = robotContainer.indexerSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(indexerSubsystem);
   }
 

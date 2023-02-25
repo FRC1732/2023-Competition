@@ -16,10 +16,6 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
-import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
-import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
-import frc.robot.commands.DefaultCommands.DefaultStateMachineCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
@@ -48,7 +44,7 @@ public class RobotContainer {
   public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
   public HolderSubsystem holderSubsystem = new HolderSubsystem();
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
-  public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
+  public StateMachineSubsystem stateMachineSubsystem;
   public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
@@ -82,6 +78,7 @@ public class RobotContainer {
     configureButtonBindings();
     configureAutoCommands();
     robotStateMachine = new RobotStateMachine(this);
+    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   }
 
   private void configureDriveTrain() {
@@ -165,19 +162,19 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     if (holderSubsystem != null) {
-      holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+      // holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
     }
 
     if (indexerSubsystem != null) {
-      indexerSubsystem.setDefaultCommand(new DefaultIndexerCommand(indexerSubsystem));
+      // indexerSubsystem.setDefaultCommand(new DefaultIndexerCommand(indexerSubsystem));
     }
 
     if (extenderSubsystem != null) {
-      extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
+      // extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
     }
 
     if (stateMachineSubsystem != null) {
-      stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+      // stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
     }
   }
 
@@ -185,14 +182,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // field-relative toggle
     oi.getFieldRelativeButton()
-        .toggleOnTrue(
+        .onTrue(
             Commands.either(
                 Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
                 Commands.runOnce(drivetrain::enableFieldRelative, drivetrain),
                 drivetrain::getFieldRelative));
 
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope));
 
     // x-stance
     oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));

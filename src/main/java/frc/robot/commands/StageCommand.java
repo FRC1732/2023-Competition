@@ -12,6 +12,7 @@ public class StageCommand extends CommandBase {
 
   public StageCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.elevatorSubsystem = robotContainer.elevatorSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(elevatorSubsystem);
   }
 

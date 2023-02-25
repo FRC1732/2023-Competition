@@ -12,6 +12,8 @@ public class SmartIntakeCommand extends CommandBase {
 
   public SmartIntakeCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.indexerSubsystem = robotContainer.indexerSubsystem;
+    this.robotStateMachine = robotStateMachine;
+
     addRequirements(indexerSubsystem);
   }
 
