@@ -61,7 +61,7 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(Constants.TUNING_MODE){
+    if (Constants.TUNING_MODE) {
       pidController.setP(kP.getDouble(1));
       pidController.setI(kI.getDouble(0));
       pidController.setD(kD.getDouble(0));
@@ -80,20 +80,20 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    if(Constants.TUNING_MODE){
-        kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-        kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-        kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-        kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-        kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    if (Constants.TUNING_MODE) {
+      kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-        kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
-        kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
-        positionSet =
-            tab.add("Set Position", 0)
-                .withWidget(BuiltInWidgets.kTextView)
-                .withPosition(0, 0)
-                .getEntry();
-      }
+      kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      positionSet =
+          tab.add("Set Position", 0)
+              .withWidget(BuiltInWidgets.kTextView)
+              .withPosition(0, 0)
+              .getEntry();
     }
+  }
 }

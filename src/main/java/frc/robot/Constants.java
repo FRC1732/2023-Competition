@@ -68,8 +68,19 @@ public final class Constants {
 
   public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
   public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 20;
-
   public static final double ELEVATOR_INCHES_PER_ROTATION = 2 * Math.PI;
+  public static final double ELEVATOR_STARTING_POSITION_INCHES = 24.747;
+  public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
+  public static final double ELEVATOR_MAX_POSITION_INCHES = 39.95;
+  public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1;
+  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 2;
+  public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 27.95;
+  public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 5200;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 36000;
+  public static final double ELEVATOR_P_VALUE = 0.1;
+  public static final double ELEVATOR_I_VALUE = 0;
+  public static final double ELEVATOR_D_VALUE = 0;
 
   // #endregion
 

@@ -17,12 +17,11 @@ public class HolderSubsystem extends SubsystemBase {
 
   private boolean isOpen = true;
 
-  
   public HolderSubsystem() {
     holderSolenoid =
         new Solenoid(
             Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, Constants.HOLDER_SOLENOID_ID);
-    
+
     setupShuffleboard();
   }
 
@@ -53,5 +52,5 @@ public class HolderSubsystem extends SubsystemBase {
     tab = Shuffleboard.getTab("Holder");
     // tab.addBoolean("MagLimitSwitch", () -> in0.get());
     tab.addBoolean("isOpen", () -> isOpen);
-    }
+  }
 }

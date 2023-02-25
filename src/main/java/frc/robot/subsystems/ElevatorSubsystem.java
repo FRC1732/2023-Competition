@@ -35,15 +35,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
     // magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
-    // motor2.setInverted(true);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     relativeEncoder =
         elevatorBaseMotorOne.getAlternateEncoder(
             Type.kQuadrature, Constants.ELEVATOR_TICKS_PER_ROTATION);
     relativeEncoder.setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
     relativeEncoder.setMeasurementPeriod(Constants.ELEVATOR_MEAUSREMENT_PERIOD_MS);
+    relativeEncoder.setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
     pidController = elevatorBaseMotorOne.getPIDController();
-    
 
     pidController.setFeedbackDevice(relativeEncoder);
 
@@ -65,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(Constants.TUNING_MODE){
+    if (Constants.TUNING_MODE) {
       pidController.setP(kP.getDouble(1));
       pidController.setI(kI.getDouble(0));
       pidController.setD(kD.getDouble(0));
@@ -115,7 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> relativeEncoder.getVelocity());
     tab.addDouble("PosFactor", () -> relativeEncoder.getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> relativeEncoder.getVelocityConversionFactor());
-    if (Constants.TUNING_MODE){
+    if (Constants.TUNING_MODE) {
       kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();

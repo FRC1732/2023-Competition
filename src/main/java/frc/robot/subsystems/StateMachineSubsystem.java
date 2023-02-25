@@ -38,5 +38,5 @@ public class StateMachineSubsystem extends SubsystemBase {
     tab.addString("State", () -> robotStateMachine.getCurrentState());
     tab.addString("Last Event", () -> robotStateMachine.getLastEvent());
     tab.addString("Last Transition", () -> robotStateMachine.getLastEvent());
-    }
+  }
 }
