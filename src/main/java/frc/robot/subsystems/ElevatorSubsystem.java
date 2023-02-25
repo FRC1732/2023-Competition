@@ -37,9 +37,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
     // motor2.setInverted(true);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
-    relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 8192);
-    relativeEncoder.setVelocityConversionFactor(1.0 / 300);
-    
+    relativeEncoder =
+        elevatorBaseMotorOne.getAlternateEncoder(
+            Type.kQuadrature, Constants.ELEVATOR_TICKS_PER_ROTATION);
+    relativeEncoder.setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
+    relativeEncoder.setMeasurementPeriod(Constants.ELEVATOR_MEAUSREMENT_PERIOD_MS);
     pidController = elevatorBaseMotorOne.getPIDController();
     
 
