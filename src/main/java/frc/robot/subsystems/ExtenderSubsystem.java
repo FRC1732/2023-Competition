@@ -36,11 +36,12 @@ public class ExtenderSubsystem extends SubsystemBase {
 
     // setupShuffleboard();
 
-    pidController.setP(1);
-    pidController.setI(0);
-    pidController.setD(0);
+    pidController.setP(Constants.EXTENDER_P_VALUE);
+    pidController.setI(Constants.EXTENDER_I_VALUE);
+    pidController.setD(Constants.EXTENDER_D_VALUE);
     pidController.setIZone(0);
     pidController.setFF(0);
+    pidController.setOutputRange(-.25, .25);
     pidController.setOutputRange(-.25, .25);
   }
 
@@ -69,7 +70,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      // pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
 
@@ -87,6 +88,9 @@ public class ExtenderSubsystem extends SubsystemBase {
       kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      // updatePID = tab.addBoolean("Update PID",
+      // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
+
       // updatePID = tab.addBoolean("Update PID",
       // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
 

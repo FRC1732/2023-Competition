@@ -102,7 +102,6 @@ public final class Constants {
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
 
-
   // #region Extender Constants
 
   // #endregion

@@ -79,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      // pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
 
@@ -102,9 +102,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorOne.set(0);
   }
 
-  public void setToMidCone() {}
+  public void setToMidCone(){
 
-  public void setToHighCone() {}
+  }
+
+  public void setToHighCone(){
+
+  }
 
   public void reset() {
     relativeEncoder.setPosition(0);
