@@ -39,7 +39,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 8192);
     relativeEncoder.setVelocityConversionFactor(1.0 / 300);
+    
     pidController = elevatorBaseMotorOne.getPIDController();
+    
 
     pidController.setFeedbackDevice(relativeEncoder);
 
@@ -51,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     setupShuffleboard();
 
     // set PID coefficients
-    pidController.setP(kP.getDouble(1));
+    pidController.setP(kP.getDouble(0));
     pidController.setI(kI.getDouble(0));
     pidController.setD(kD.getDouble(0));
     pidController.setIZone(kIz.getDouble(0));
@@ -61,13 +63,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pidController.setP(kP.getDouble(1));
-    pidController.setI(kI.getDouble(0));
-    pidController.setD(kD.getDouble(0));
-    pidController.setIZone(kIz.getDouble(0));
-    pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-    pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+    if(Constants.TUNING_MODE){
+      pidController.setP(kP.getDouble(1));
+      pidController.setI(kI.getDouble(0));
+      pidController.setD(kD.getDouble(0));
+      pidController.setIZone(kIz.getDouble(0));
+      pidController.setFF(kFF.getDouble(0));
+      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+    }
   }
 
   public double limit(double value) {
@@ -109,18 +113,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> relativeEncoder.getVelocity());
     tab.addDouble("PosFactor", () -> relativeEncoder.getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> relativeEncoder.getVelocityConversionFactor());
-    kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    if (Constants.TUNING_MODE){
+      kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-    kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    positionSet =
-        tab.add("Set Position", 0)
-            .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(0, 0)
-            .getEntry();
+      kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      positionSet =
+          tab.add("Set Position", 0)
+              .withWidget(BuiltInWidgets.kTextView)
+              .withPosition(0, 0)
+              .getEntry();
+    }
   }
 }

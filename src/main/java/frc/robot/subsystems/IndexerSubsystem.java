@@ -90,13 +90,15 @@ public class IndexerSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
-    pidController.setP(kP.getDouble(1));
-    pidController.setI(kI.getDouble(0));
-    pidController.setD(kD.getDouble(0));
-    pidController.setIZone(kIz.getDouble(0));
-    pidController.setFF(kFF.getDouble(0));
-    pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-    pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+    if (Constants.TUNING_MODE){
+      pidController.setP(kP.getDouble(1));
+      pidController.setI(kI.getDouble(0));
+      pidController.setD(kD.getDouble(0));
+      pidController.setIZone(kIz.getDouble(0));
+      pidController.setFF(kFF.getDouble(0));
+      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+    }
   }
 
   public void grabberOn() {
@@ -148,26 +150,26 @@ public class IndexerSubsystem extends SubsystemBase {
   private void setupShuffleboard() {
     ShuffleboardTab tab;
     tab = Shuffleboard.getTab("Indexer");
-    // tab.addBoolean("MagLimitSwitch", () -> in0.get());
     tab.addDouble("Pos", () -> indexerRotationMotor.getEncoder().getPosition());
     tab.addDouble("Vel", () -> indexerRotationMotor.getEncoder().getVelocity());
     tab.addDouble(
         "PosFactor", () -> indexerRotationMotor.getEncoder().getPositionConversionFactor());
-    tab.addDouble(
-        "VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
+    tab.addDouble("VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
     tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
-    kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    if(Constants.TUNING_MODE){
+        kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
+        kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
+        kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+        kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+        kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-    kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
-    positionSet =
-        tab.add("Set Position", 0)
-            .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(0, 0)
-            .getEntry();
-  }
+        kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
+        kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+        positionSet =
+            tab.add("Set Position", 0)
+                .withWidget(BuiltInWidgets.kTextView)
+                .withPosition(0, 0)
+                .getEntry();
+      }
+    }
 }

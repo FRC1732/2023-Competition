@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.state_machine.RobotStateMachine;
 import org.littletonrobotics.junction.Logger;
@@ -18,6 +20,7 @@ public class StateMachineSubsystem extends SubsystemBase {
    */
   public StateMachineSubsystem(RobotStateMachine stateMachine) {
     robotStateMachine = stateMachine;
+    setupShuffleboard();
   }
 
   @Override
@@ -28,4 +31,12 @@ public class StateMachineSubsystem extends SubsystemBase {
     Logger.getInstance()
         .recordOutput("StateMachine/lastTransition", robotStateMachine.getLastTransition());
   }
+
+  private void setupShuffleboard() {
+    ShuffleboardTab tab;
+    tab = Shuffleboard.getTab("StateMachine");
+    tab.addString("State", () -> robotStateMachine.getCurrentState());
+    tab.addString("Last Event", () -> robotStateMachine.getLastEvent());
+    tab.addString("Last Transition", () -> robotStateMachine.getLastEvent());
+    }
 }
