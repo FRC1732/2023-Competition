@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -29,23 +31,19 @@ public class IndexerSubsystem extends SubsystemBase {
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private boolean brakeMode;
 
   private final IndexerIO io;
   private final IndexerIOInputsAutoLoggedv2 inputs = new IndexerIOInputsAutoLoggedv2();
 
   // Creates a new IntakeSubsystem.
   public IndexerSubsystem() {
-    // System.out.println("HI, INDEXER SUBSYSTEM HAS BEEN DECLAIRED");
-    // System.out.println("!");
-    // System.out.println("!");
-    // System.out.println("!");
-    // System.out.println("!");
-    // System.out.println("!");
-    // System.out.println("!");
-    // Thread.dumpStack();
     indexerRotationMotor = new CANSparkMax(Constants.INDEXER_ROTATION_CAN_ID, MotorType.kBrushless);
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
     indexerRotationMotor.restoreFactoryDefaults();
+    indexerRotationMotor
+        .getEncoder()
+        .setPositionConversionFactor(Constants.INDEXER_POSITION_CONVERSION_FACTOR);
     indexerGrabbingMotor.restoreFactoryDefaults();
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
     pidController = indexerRotationMotor.getPIDController();
@@ -83,12 +81,29 @@ public class IndexerSubsystem extends SubsystemBase {
         };
   }
 
+  public void setBrakeMode() {
+    indexerRotationMotor.setIdleMode(IdleMode.kBrake);
+    indexerGrabbingMotor.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setCoastMode() {
+    indexerRotationMotor.setIdleMode(IdleMode.kCoast);
+    indexerGrabbingMotor.setIdleMode(IdleMode.kCoast);
+  }
+
   protected boolean isOpen() {
     return isOpen;
   }
 
   @Override
   public void periodic() {
+    if (DriverStation.isEnabled() && !brakeMode) {
+      brakeMode = true;
+      setBrakeMode();
+    } else if (DriverStation.isDisabled() && brakeMode) {
+      brakeMode = false;
+      setCoastMode();
+    }
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {

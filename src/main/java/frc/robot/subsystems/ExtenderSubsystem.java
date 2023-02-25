@@ -6,10 +6,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -26,11 +28,13 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   private SuppliedValueWidget updatePID;
+  private boolean brakeMode;
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
+    extenderMotor.setInverted(true);
     pidController = extenderMotor.getPIDController();
     pidController.setReference(extenderMotor.getEncoder().getPosition(), ControlType.kPosition);
 
@@ -41,8 +45,17 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setD(Constants.EXTENDER_D_VALUE);
     pidController.setIZone(0);
     pidController.setFF(0);
-    pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
+    pidController.setSmartMotionMaxVelocity(Constants.EXTENDER_MAX_SPEED_RPM, 0);
+    pidController.setSmartMotionMaxAccel(Constants.EXTENDER_MAX_ACCELERATION_RPM2, 0);
     pidController.setOutputRange(-.25, .25);
+  }
+
+  public void setCoastMode() {
+    extenderMotor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void setBrakeMode() {
+    extenderMotor.setIdleMode(IdleMode.kBrake);
   }
 
   public void moveIn() {
@@ -63,6 +76,13 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (DriverStation.isEnabled() && !brakeMode) {
+      brakeMode = true;
+      setBrakeMode();
+    } else if (DriverStation.isDisabled() && brakeMode) {
+      brakeMode = false;
+      setCoastMode();
+    }
     if (Constants.TUNING_MODE) {
       pidController.setP(kP.getDouble(Constants.EXTENDER_P_VALUE));
       pidController.setI(kI.getDouble(Constants.EXTENDER_I_VALUE));

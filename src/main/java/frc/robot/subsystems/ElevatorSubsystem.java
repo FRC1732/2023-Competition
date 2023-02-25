@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,6 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private boolean brakeMode;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -53,17 +56,25 @@ public class ElevatorSubsystem extends SubsystemBase {
     setupShuffleboard();
 
     // set PID coefficients
-      pidController.setP(Constants.ELEVATOR_P_VALUE);
-      pidController.setI(Constants.ELEVATOR_I_VALUE);
-      pidController.setD(Constants.ELEVATOR_D_VALUE);
-      pidController.setIZone(0);
-      pidController.setFF(0);
-      pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
-      pidController.setOutputRange(-.25, .25);
+    pidController.setP(Constants.ELEVATOR_P_VALUE);
+    pidController.setI(Constants.ELEVATOR_I_VALUE);
+    pidController.setD(Constants.ELEVATOR_D_VALUE);
+    pidController.setIZone(0);
+    pidController.setFF(0);
+    pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
+    pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
+    pidController.setOutputRange(-.25, .25);
   }
 
   @Override
   public void periodic() {
+    if (DriverStation.isEnabled() && !brakeMode) {
+      brakeMode = true;
+      setBrakeMode();
+    } else if (DriverStation.isDisabled() && brakeMode) {
+      brakeMode = false;
+      setCoastMode();
+    }
     if (Constants.TUNING_MODE) {
       pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
       pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
@@ -80,6 +91,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     return value > .25 ? .25 : value < -.25 ? -.25 : value;
   }
 
+  public void setBrakeMode() {
+    elevatorBaseMotorOne.setIdleMode(IdleMode.kBrake);
+    elevatorBaseMotorTwo.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setCoastMode() {
+    elevatorBaseMotorOne.setIdleMode(IdleMode.kCoast);
+    elevatorBaseMotorTwo.setIdleMode(IdleMode.kCoast);
+  }
+
   public void goUp() {
     elevatorBaseMotorOne.set(.1);
     elevatorBaseMotorTwo.set(-.1);
@@ -94,12 +115,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorOne.set(0);
   }
 
-  public void setToMidCone(){
-    pidController.setReference(Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+  public void setToMidCone() {
+    pidController.setReference(
+        Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
   }
 
-  public void setToHighCone(){
-    pidController.setReference(Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+  public void setToHighCone() {
+    pidController.setReference(
+        Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
   }
 
   public void reset() {
