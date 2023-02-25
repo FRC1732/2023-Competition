@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
@@ -51,23 +50,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     // kMaxOutput = 1;
     // kMinOutput = -1;
 
-    setupShuffleboard();
+    // setupShuffleboard();
 
     // set PID coefficients
-    if(Constants.TUNING_MODE){
+    if (Constants.TUNING_MODE) {
       pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
       pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
       pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
       pidController.setIZone(kIz.getDouble(0));
       pidController.setFF(kFF.getDouble(0));
       pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
-    }else{
+    } else {
       pidController.setP(Constants.ELEVATOR_P_VALUE);
       pidController.setI(Constants.ELEVATOR_I_VALUE);
       pidController.setD(Constants.ELEVATOR_D_VALUE);
       pidController.setIZone(0);
       pidController.setFF(0);
-      pidController.setOutputRange(-.25,.25);
+      pidController.setOutputRange(-.25, .25);
     }
   }
 
@@ -77,10 +76,10 @@ public class ElevatorSubsystem extends SubsystemBase {
       pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
       pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
       pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
-      //pidController.setIZone(kIz.getDouble(0));
-      //pidController.setFF(kFF.getDouble(0));
-      //pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      //pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      // pidController.setIZone(kIz.getDouble(0));
+      // pidController.setFF(kFF.getDouble(0));
+      // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
+      // pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
 
@@ -103,13 +102,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorOne.set(0);
   }
 
-  public void setToMidCone(){
+  public void setToMidCone() {}
 
-  }
-
-  public void setToHighCone(){
-
-  }
+  public void setToHighCone() {}
 
   public void reset() {
     relativeEncoder.setPosition(0);

@@ -20,7 +20,7 @@ public class StateMachineSubsystem extends SubsystemBase {
    */
   public StateMachineSubsystem(RobotStateMachine stateMachine) {
     robotStateMachine = stateMachine;
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   @Override

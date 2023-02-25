@@ -63,7 +63,7 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    logger.addDataReceiver(new WPILOGWriter("/media/sda"));
+    logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
 
     // Provide log data over the network, viewable in Advantage Scope.
     logger.addDataReceiver(new NT4Publisher());

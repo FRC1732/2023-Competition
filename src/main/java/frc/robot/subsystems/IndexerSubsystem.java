@@ -52,14 +52,14 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setReference(
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
 
-    setupShuffleboard();
+    // setupShuffleboard();
 
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
     pidController.setIZone(0);
     pidController.setFF(0);
-    pidController.setOutputRange(-.25,.25);
+    pidController.setOutputRange(-.25, .25);
 
     io =
         new IndexerIO() {
@@ -94,9 +94,9 @@ public class IndexerSubsystem extends SubsystemBase {
       pidController.setP(kP.getDouble(Constants.INDEXER_ARM_P_VALUE));
       pidController.setI(kI.getDouble(Constants.INDEXER_ARM_I_VALUE));
       pidController.setD(kD.getDouble(Constants.INDEXER_ARM_D_VALUE));
-      //pidController.setIZone(kIz.getDouble(0));
-      //pidController.setFF(kFF.getDouble(0));
-      pidController.setOutputRange(-.25,25);
+      // pidController.setIZone(kIz.getDouble(0));
+      // pidController.setFF(kFF.getDouble(0));
+      pidController.setOutputRange(-.25, 25);
       pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
     }
   }
