@@ -216,14 +216,26 @@ public class RobotStateMachine {
   }
 
   public String getCurrentState() {
-    return stateMachine.getCurrentState().getName();
+    try {
+      return stateMachine.getCurrentState().getName();
+    } catch (Exception e) {
+      return "Unknown State";
+    }
   }
 
   public String getLastEvent() {
-    return stateMachine.getLastEvent().getName();
+    try {
+      return stateMachine.getLastEvent().getName();
+    } catch (Exception e) {
+      return "Unknown Last Event";
+    }
   }
 
   public String getLastTransition() {
-    return stateMachine.getLastTransition().getName();
+    try {
+      return stateMachine.getLastTransition().getName();
+    } catch (Exception e) {
+      return "Unknown Transition";
+    }
   }
 }

@@ -50,4 +50,25 @@ public final class Constants {
 
   public static final double DEADBAND = 0.05;
   public static final double TRAINING_WHEELS = 1.00;
+
+  // #region Indexer Constants
+
+  public static final double INDEXER_INTAKE_SPEED = -0.5;
+  public static final double INDEXER_PLACEMENT_SPEED = 0.2;
+  public static final double INDEXER_HOLD_SPEED = -0.1;
+  public static final double INDEXER_TRANSFER_SPEED = 0.1;
+  public static final double INDEXER_CONE_POSITION = 200;
+  public static final double INDEXER_CUBE_POSITION = 150;
+  public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 0.5;
+  public static final double INDEXER_ARM_P_VALUE = 0.001;
+
+  // #endregion
+
+  // #region Elevator Constants
+
+  // #endregion
+
+  // #region Extender Constants
+
+  // #endregion
 }
