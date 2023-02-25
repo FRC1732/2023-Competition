@@ -44,6 +44,10 @@ public class RobotStateMachine {
    * @return the singleton robot container object
    */
   public static RobotStateMachine getInstance() {
+    if (robotStateMachine == null) {
+      robotStateMachine = new RobotStateMachine();
+    }
+
     return robotStateMachine;
   }
 

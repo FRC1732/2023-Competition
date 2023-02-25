@@ -7,7 +7,7 @@ import frc.robot.state_machine.events.IntakePressed;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class SmartIntakeCommand extends CommandBase {
-  private IndexerSubsystem indexerSubsystem;
+  private static IndexerSubsystem indexerSubsystem;
 
   public SmartIntakeCommand() {
     this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;

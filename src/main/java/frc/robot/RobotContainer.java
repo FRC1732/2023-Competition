@@ -63,6 +63,10 @@ public class RobotContainer {
    * @return the singleton robot container object
    */
   public static RobotContainer getInstance() {
+    if (robotContainer == null) {
+      robotContainer = new RobotContainer();
+    }
+
     return robotContainer;
   }
 

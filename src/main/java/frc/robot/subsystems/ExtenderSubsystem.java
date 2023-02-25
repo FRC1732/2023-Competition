@@ -27,7 +27,7 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
-    extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushed);
+    extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
     pidController = extenderMotor.getPIDController();

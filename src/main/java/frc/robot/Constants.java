@@ -40,9 +40,9 @@ public final class Constants {
 
   public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 50;
   public static final int ELEVATOR_BASE_MOTOR_TWO_CAN_ID = 51;
-  public static final int EXTENDER_MOTOR_CAN_ID = 52;
+  public static final int EXTENDER_MOTOR_CAN_ID = 54;
   public static final int INDEXER_ROTATION_CAN_ID = 53;
-  public static final int INDEXER_GRABBER_CAN_ID = 54;
+  public static final int INDEXER_GRABBER_CAN_ID = 56;
   // #endregion CAN IDs
 
   public static final double MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
