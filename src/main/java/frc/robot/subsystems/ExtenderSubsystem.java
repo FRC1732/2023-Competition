@@ -36,7 +36,8 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
     pidController = extenderMotor.getPIDController();
-    pidController.setReference(extenderMotor.getEncoder().getPosition(), ControlType.kPosition);
+    pidController.setFeedbackDevice(extenderMotor.getEncoder());
+    pidController.setReference(0, ControlType.kPosition);
 
     setupShuffleboard();
 
@@ -103,9 +104,9 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
     if (Constants.TUNING_MODE) {
-      kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       // updatePID = tab.addBoolean("Update PID",

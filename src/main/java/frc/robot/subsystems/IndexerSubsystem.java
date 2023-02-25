@@ -174,9 +174,18 @@ public class IndexerSubsystem extends SubsystemBase {
         "VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
     tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
     if (Constants.TUNING_MODE) {
-      kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kD = tab.add("D", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kP =
+          tab.add("P", Constants.INDEXER_ARM_P_VALUE)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kI =
+          tab.add("I", Constants.INDEXER_ARM_I_VALUE)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kD =
+          tab.add("D", Constants.INDEXER_ARM_D_VALUE)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
