@@ -5,12 +5,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -26,7 +25,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -44,7 +42,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController = elevatorBaseMotorOne.getPIDController();
 
     pidController.setFeedbackDevice(relativeEncoder);
-
 
     // PID coefficients
 

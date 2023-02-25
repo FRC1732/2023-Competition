@@ -5,10 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -26,7 +25,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private CANSparkMax indexerGrabbingMotor;
   private Solenoid indexerSolenoid;
   private boolean isOpen = true;
-  
+
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
@@ -42,7 +41,8 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerGrabbingMotor.restoreFactoryDefaults();
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
     pidController = indexerRotationMotor.getPIDController();
-    pidController.setReference(indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
+    pidController.setReference(
+        indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
 
     setupShuffleboard();
 
@@ -143,8 +143,10 @@ public class IndexerSubsystem extends SubsystemBase {
     // tab.addBoolean("MagLimitSwitch", () -> in0.get());
     tab.addDouble("Pos", () -> indexerRotationMotor.getEncoder().getPosition());
     tab.addDouble("Vel", () -> indexerRotationMotor.getEncoder().getVelocity());
-    tab.addDouble("PosFactor", () -> indexerRotationMotor.getEncoder().getPositionConversionFactor());
-    tab.addDouble("VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
+    tab.addDouble(
+        "PosFactor", () -> indexerRotationMotor.getEncoder().getPositionConversionFactor());
+    tab.addDouble(
+        "VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
     tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
     kP = tab.add("P", .9).withWidget(BuiltInWidgets.kTextView).getEntry();
     kI = tab.add("I", .1).withWidget(BuiltInWidgets.kTextView).getEntry();
