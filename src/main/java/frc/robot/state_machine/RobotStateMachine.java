@@ -7,7 +7,6 @@ import frc.robot.commands.IndexerCommands.IndexerCarryMidHighCommand;
 import frc.robot.commands.IndexerCommands.IndexerPlaceCommand;
 import frc.robot.commands.IndexerCommands.IndexerSwitchToLowCommand;
 import frc.robot.commands.IndexerCommands.IndexerSwitchToMidHighCommand;
-import frc.robot.commands.ResetFromScoringCommand;
 import frc.robot.commands.ScoreCommand;
 import frc.robot.commands.SmartIntakeCommand;
 import frc.robot.commands.StageCommand;
@@ -23,43 +22,36 @@ import org.jeasy.states.core.FiniteStateMachineBuilder;
 import org.jeasy.states.core.TransitionBuilder;
 
 public class RobotStateMachine {
-  // RobotContainer singleton
-  private static RobotStateMachine robotStateMachine = new RobotStateMachine();
   private RobotContainer robotContainer;
 
   private FiniteStateMachine stateMachine;
-  private SmartIntakeCommand smartIntakeCommand = new SmartIntakeCommand(robotContainer);
-  private IndexerCarryMidHighCommand indexerCarryMidHighCommand = new IndexerCarryMidHighCommand();
-  private StageCommand stageCommand = new StageCommand();
-  private ScoreCommand scoreCommand = new ScoreCommand();
-  private ResetFromScoringCommand resetFromScoringCommand = new ResetFromScoringCommand();
-  private IndexerCarryLowCommand indexerCarryLowCommand = new IndexerCarryLowCommand();
-  private IndexerPlaceCommand indexerPlaceCommand = new IndexerPlaceCommand();
-  private IndexerSwitchToMidHighCommand indexerSwitchToMidHighCommand =
-      new IndexerSwitchToMidHighCommand();
-  private IndexerSwitchToLowCommand indexerSwitchToLowCommand = new IndexerSwitchToLowCommand();
-  private StagedToLowCommand stagedToLowCommand = new StagedToLowCommand();
+  private SmartIntakeCommand smartIntakeCommand;
+  private IndexerCarryMidHighCommand indexerCarryMidHighCommand;
+  private StageCommand stageCommand;
+  private ScoreCommand scoreCommand;
+  private IndexerCarryLowCommand indexerCarryLowCommand;
+  private IndexerPlaceCommand indexerPlaceCommand;
+  private IndexerSwitchToMidHighCommand indexerSwitchToMidHighCommand;
+  private IndexerSwitchToLowCommand indexerSwitchToLowCommand;
+  private StagedToLowCommand stagedToLowCommand;
 
-  /**
-   * Factory method to create the singleton robot container object.
-   *
-   * @return the singleton robot container object
-   */
-  public static RobotStateMachine getInstance() {
-    if (robotStateMachine == null) {
-      robotStateMachine = new RobotStateMachine();
-    }
+  public RobotStateMachine(RobotContainer container) {
+    smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
+    indexerCarryMidHighCommand = new IndexerCarryMidHighCommand(robotContainer, this);
+    stageCommand = new StageCommand(robotContainer, this);
+    scoreCommand = new ScoreCommand(robotContainer, this);
+    indexerCarryLowCommand = new IndexerCarryLowCommand(robotContainer, this);
+    indexerPlaceCommand = new IndexerPlaceCommand(robotContainer, this);
+    indexerSwitchToMidHighCommand = new IndexerSwitchToMidHighCommand(robotContainer, this);
+    indexerSwitchToLowCommand = new IndexerSwitchToLowCommand(robotContainer, this);
+    stagedToLowCommand = new StagedToLowCommand(robotContainer, this);
 
-    return robotStateMachine;
-  }
-
-  private RobotStateMachine() {
+    robotContainer = container;
     State readyToIntake = new State("readyToIntake");
     State intaking = new State("intaking");
     State holdingLow = new State("holdingLow");
     State carrying = new State("carrying");
     State staged = new State("staged");
-    State scoring = new State("scoring");
 
     Set<State> states = new HashSet<>();
     states.add(readyToIntake);

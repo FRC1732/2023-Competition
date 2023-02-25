@@ -7,10 +7,11 @@ import frc.robot.state_machine.events.PlaceButtonPressed;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class IndexerPlaceCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private IndexerSubsystem indexerSubsystem;
 
-  public IndexerPlaceCommand() {
-    this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;
+  public IndexerPlaceCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.indexerSubsystem = robotContainer.indexerSubsystem;
     addRequirements(indexerSubsystem);
   }
 
@@ -20,8 +21,7 @@ public class IndexerPlaceCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance()
-        .fireEvent(new PlaceButtonPressed()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new PlaceButtonPressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

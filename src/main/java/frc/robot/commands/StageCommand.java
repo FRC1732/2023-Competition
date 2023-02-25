@@ -7,10 +7,11 @@ import frc.robot.state_machine.events.ScorePressed;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class StageCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private ElevatorSubsystem elevatorSubsystem;
 
-  public StageCommand() {
-    this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
+  public StageCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.elevatorSubsystem = robotContainer.elevatorSubsystem;
     addRequirements(elevatorSubsystem);
   }
 
@@ -20,7 +21,7 @@ public class StageCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance().fireEvent(new ScorePressed()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new ScorePressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

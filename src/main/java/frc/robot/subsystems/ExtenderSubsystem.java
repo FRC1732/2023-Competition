@@ -27,6 +27,14 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
+    System.out.println("HI, INDEXER SUBSYSTEM HAS BEEN DECLAIRED");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    System.out.println("!");
+    Thread.dumpStack();
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();

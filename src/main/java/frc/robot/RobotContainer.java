@@ -25,6 +25,7 @@ import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizatio
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
@@ -41,12 +42,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   private OperatorInterface oi = new OperatorInterface() {};
+  private RobotStateMachine robotStateMachine;
 
   public Drivetrain drivetrain;
   public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
   public HolderSubsystem holderSubsystem = new HolderSubsystem();
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
-  public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem();
+  public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
@@ -68,7 +70,7 @@ public class RobotContainer {
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
+    robotStateMachine = new RobotStateMachine(this);
     configureDriveTrain();
 
     // disable all telemetry in the LiveWindow to reduce the processing during each

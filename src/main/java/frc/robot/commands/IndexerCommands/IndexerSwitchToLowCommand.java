@@ -7,10 +7,12 @@ import frc.robot.state_machine.events.SwitchToLow;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class IndexerSwitchToLowCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private IndexerSubsystem indexerSubsystem;
 
-  public IndexerSwitchToLowCommand() {
-    this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;
+  public IndexerSwitchToLowCommand(
+      RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.indexerSubsystem = robotContainer.indexerSubsystem;
     addRequirements(indexerSubsystem);
   }
 
@@ -20,7 +22,7 @@ public class IndexerSwitchToLowCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance().fireEvent(new SwitchToLow()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new SwitchToLow()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

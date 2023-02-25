@@ -9,14 +9,15 @@ import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 
 public class ScoreCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private ElevatorSubsystem elevatorSubsystem;
   private ExtenderSubsystem extenderSubsystem;
   private HolderSubsystem holderSubsystem;
 
-  public ScoreCommand() {
-    this.holderSubsystem = RobotContainer.getInstance().holderSubsystem;
-    this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
-    this.extenderSubsystem = RobotContainer.getInstance().extenderSubsystem;
+  public ScoreCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.holderSubsystem = robotContainer.holderSubsystem;
+    this.elevatorSubsystem = robotContainer.elevatorSubsystem;
+    this.extenderSubsystem = robotContainer.extenderSubsystem;
     addRequirements(elevatorSubsystem);
     addRequirements(extenderSubsystem);
     addRequirements(holderSubsystem);
@@ -28,8 +29,7 @@ public class ScoreCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance()
-        .fireEvent(new FinishScorePressed()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new FinishScorePressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

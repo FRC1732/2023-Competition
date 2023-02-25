@@ -16,8 +16,8 @@ public class StateMachineSubsystem extends SubsystemBase {
    * periodic level logging. If this proves not helpful, then the default command for this subsystem
    * can be unscheduled to disable this logging.
    */
-  public StateMachineSubsystem() {
-    robotStateMachine = RobotStateMachine.getInstance();
+  public StateMachineSubsystem(RobotStateMachine stateMachine) {
+    robotStateMachine = stateMachine;
   }
 
   @Override

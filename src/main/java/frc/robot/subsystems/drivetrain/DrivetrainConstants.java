@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import frc.lib.team3061.swerve.SwerveModuleConstants;
 
 public final class DrivetrainConstants {
 
@@ -37,17 +36,17 @@ public final class DrivetrainConstants {
    *
    * <p>Should be measured from center to center.
    */
-  public static final double TRACKWIDTH_METERS = 0.5207;
+  public static final double TRACKWIDTH_METERS = 0.55245; // 21.75 inches
 
   /**
    * The front-to-back distance between the drivetrain wheels.
    *
    * <p>Should be measured from center to center.
    */
-  public static final double WHEELBASE_METERS = 0.5207;
+  public static final double WHEELBASE_METERS = 0.55245; // 21.75 inches
 
-  public static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
-  public static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
+  public static final double ROBOT_WIDTH_WITH_BUMPERS = 0.8382; // meters
+  public static final double ROBOT_LENGTH_WITH_BUMPERS = 0.8382; // meters
 
   /* The geometry and coordinate systems can be confusing. Refer to this document
   for a detailed explanation: https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1
@@ -64,23 +63,11 @@ public final class DrivetrainConstants {
           new Translation2d(-WHEELBASE_METERS / 2.0, -TRACKWIDTH_METERS / 2.0));
 
   /**
-   * The formula for calculating the theoretical maximum velocity is: <Motor free speed RPM> / 60 *
-   * <Drive reduction> * <Wheel diameter meters> * pi By default this value is setup for a Mk3
-   * standard module using Falcon500s to drive.
-   */
-
-  // FIXME: determine maximum velocities empirically
-
-  /**
    * The maximum velocity of the robot in meters per second.
    *
    * <p>This is a measure of how fast the robot should be able to drive in a straight line.
    */
-  public static final double MAX_VELOCITY_METERS_PER_SECOND =
-      6380.0
-          / 60.0
-          / SwerveModuleConstants.DRIVE_GEAR_RATIO
-          * SwerveModuleConstants.WHEEL_CIRCUMFERENCE;
+  public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.96824; // 16.3 fps
 
   /**
    * The maximum angular velocity of the robot in radians per second.

@@ -8,12 +8,13 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 
 public class StagedToLowCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private ElevatorSubsystem elevatorSubsystem;
   private HolderSubsystem holderSubsystem;
 
-  public StagedToLowCommand() {
-    this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
-    this.holderSubsystem = RobotContainer.getInstance().holderSubsystem;
+  public StagedToLowCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.elevatorSubsystem = robotContainer.elevatorSubsystem;
+    this.holderSubsystem = robotContainer.holderSubsystem;
     addRequirements(elevatorSubsystem);
     addRequirements(holderSubsystem);
   }
@@ -24,7 +25,7 @@ public class StagedToLowCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance().fireEvent(new SwitchToLow()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new SwitchToLow()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

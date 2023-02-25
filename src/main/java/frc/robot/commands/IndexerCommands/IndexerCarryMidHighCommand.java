@@ -7,10 +7,12 @@ import frc.robot.state_machine.events.SwitchToMidHigh;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class IndexerCarryMidHighCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private IndexerSubsystem indexerSubsystem;
 
-  public IndexerCarryMidHighCommand() {
-    this.indexerSubsystem = RobotContainer.getInstance().indexerSubsystem;
+  public IndexerCarryMidHighCommand(
+      RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.indexerSubsystem = robotContainer.indexerSubsystem;
     addRequirements(indexerSubsystem);
   }
 
@@ -20,7 +22,7 @@ public class IndexerCarryMidHighCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance().fireEvent(new SwitchToMidHigh()); // TODO: make piece detected
+    robotStateMachine.fireEvent(new SwitchToMidHigh()); // TODO: make piece detected
   }
 
   public boolean isFinished() {
