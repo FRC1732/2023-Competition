@@ -50,24 +50,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     // kMaxOutput = 1;
     // kMinOutput = -1;
 
-    // setupShuffleboard();
+    setupShuffleboard();
 
     // set PID coefficients
-    if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
-      pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
-      pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
-      pidController.setIZone(kIz.getDouble(0));
-      pidController.setFF(kFF.getDouble(0));
-      pidController.setOutputRange(kMinOutput.getDouble(-.25), kMinOutput.getDouble(.25));
-    } else {
       pidController.setP(Constants.ELEVATOR_P_VALUE);
       pidController.setI(Constants.ELEVATOR_I_VALUE);
       pidController.setD(Constants.ELEVATOR_D_VALUE);
       pidController.setIZone(0);
       pidController.setFF(0);
+      pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
       pidController.setOutputRange(-.25, .25);
-    }
   }
 
   @Override
@@ -79,7 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setReference(positionSet.getDouble(0), CANSparkMax.ControlType.kSmartMotion);
     }
   }
 
@@ -103,11 +95,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setToMidCone(){
-
+    pidController.setReference(Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
   }
 
   public void setToHighCone(){
-
+    pidController.setReference(Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
   }
 
   public void reset() {

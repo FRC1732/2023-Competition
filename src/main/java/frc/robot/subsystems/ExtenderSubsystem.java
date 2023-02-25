@@ -34,14 +34,14 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController = extenderMotor.getPIDController();
     pidController.setReference(extenderMotor.getEncoder().getPosition(), ControlType.kPosition);
 
-    // setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
     pidController.setD(Constants.EXTENDER_D_VALUE);
     pidController.setIZone(0);
     pidController.setFF(0);
-    pidController.setOutputRange(-.25, .25);
+    pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setOutputRange(-.25, .25);
   }
 
@@ -70,7 +70,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
     }
   }
 

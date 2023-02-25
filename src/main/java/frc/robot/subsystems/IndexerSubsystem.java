@@ -52,14 +52,14 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setReference(
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
 
-    // setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
     pidController.setIZone(0);
     pidController.setFF(0);
-    pidController.setOutputRange(-.25, .25);
+    pidController.setSmartMotionMaxVelocity(Constants.INDEXER_ARM_ROTATE_MAX_SPEED, 0);
     pidController.setOutputRange(-.25, .25);
 
     io =
@@ -98,7 +98,7 @@ public class IndexerSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(-.25,25);
-      pidController.setReference(positionSet.getDouble(0), ControlType.kPosition);
+      pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
     }
   }
 
