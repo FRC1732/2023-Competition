@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
-    magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
+    // magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
     // motor2.setInverted(true);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     relativeEncoder = elevatorBaseMotorOne.getAlternateEncoder(Type.kQuadrature, 8192);

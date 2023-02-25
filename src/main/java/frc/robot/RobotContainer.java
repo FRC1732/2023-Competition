@@ -70,7 +70,7 @@ public class RobotContainer {
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    robotStateMachine = new RobotStateMachine(this);
+
     configureDriveTrain();
 
     // disable all telemetry in the LiveWindow to reduce the processing during each
@@ -81,6 +81,7 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindings();
     configureAutoCommands();
+    robotStateMachine = new RobotStateMachine(this);
   }
 
   private void configureDriveTrain() {
