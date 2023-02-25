@@ -200,12 +200,12 @@ public class RobotContainer {
     // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off, intakeSubsystem));
 
     // Indexer buttons
-    oi.getGrabberConeButton()
-        .onTrue(
-            Commands.runOnce(indexerSubsystem::open, indexerSubsystem)
-                .andThen(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem)));
-    oi.getGrabberConeButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+    // oi.getGrabberConeButton()
+    //     .onTrue(
+    //         Commands.runOnce(indexerSubsystem::open, indexerSubsystem)
+    //             .andThen(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem)));
+    // oi.getGrabberConeButton()
+    //     .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
     // oi.getGrabberCubeButton()
     //     .onTrue(
@@ -217,9 +217,10 @@ public class RobotContainer {
     //         Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem)
     //             .andThen(Commands.runOnce(intakeSubsystem::off, intakeSubsystem)));
 
-    oi.getGrabberEjectButton().onTrue(Commands.runOnce(indexerSubsystem::eject, indexerSubsystem));
-    oi.getGrabberEjectButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+    // oi.getGrabberEjectButton().onTrue(Commands.runOnce(indexerSubsystem::eject,
+    // indexerSubsystem));
+    // oi.getGrabberEjectButton()
+    //     .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
     oi.getIndexerRotateUpButton()
         .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
@@ -231,9 +232,10 @@ public class RobotContainer {
     oi.getIndexerRotateDownButton()
         .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
 
-    oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
+    // oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
 
-    oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
+    // oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close,
+    // indexerSubsystem));
   }
 
   /** Use this method to define your commands for autonomous mode. */
