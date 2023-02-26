@@ -70,7 +70,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setFF(0);
     // pidController.setSmartMotionMaxVelocity(Constants.INDEXER_ARM_ROTATE_MAX_SPEED, 0);
     // pidController.setSmartMotionMaxAccel(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION, 0);
-    pidController.setOutputRange(-.25, .25);
+    pidController.setOutputRange(Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
     motorSpeed = .05;
     io =
@@ -125,8 +125,8 @@ public class IndexerSubsystem extends SubsystemBase {
       double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
       double iz = kIz.getDouble(0);
       double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(-.25);
-      double maxOut = kMaxOutput.getDouble(.25);
+      double minOut = kMinOutput.getDouble(Constants.INDEXER_ARM_PID_MIN_OUTPUT);
+      double maxOut = kMaxOutput.getDouble(Constants.INDEXER_ARM_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
       double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
       double setpoint = positionSet.getDouble(0);
@@ -198,11 +198,11 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void rotateUp() {
-    indexerRotationMotor.set(0.1);
+    //indexerRotationMotor.set(0.1);
   }
 
   public void rotateDown() {
-    indexerRotationMotor.set(-0.1);
+   // indexerRotationMotor.set(-0.1);
   }
 
   public void rotateOff() {

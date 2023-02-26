@@ -67,6 +67,8 @@ public final class Constants {
   public static final double INDEXER_ARM_P_VALUE = 0.0;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
+  public static final double INDEXER_ARM_PID_MAX_OUTPUT = 0;
+  public static final double INDEXER_ARM_PID_MIN_OUTPUT = 0;
   public static final double INDEXER_POSITION_CONVERSION_FACTOR = 3.89189189;
 
   // #endregion
@@ -88,6 +90,8 @@ public final class Constants {
   public static final double ELEVATOR_P_VALUE = 0.001;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
 
   // #endregion
 
@@ -106,6 +110,8 @@ public final class Constants {
   public static final double EXTENDER_P_VALUE = 0.0001;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
+  public static final double EXTENDER_PID_MAX_OUTPUT = 1;
+  public static final double EXTENDER_PID_MIN_OUTPUT = -1;
 
   // #endregion
 }

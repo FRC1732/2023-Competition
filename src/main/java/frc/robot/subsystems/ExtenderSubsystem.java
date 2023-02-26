@@ -58,7 +58,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.EXTENDER_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.EXTENDER_MAX_ACCELERATION_RPM2, 0);
-    // pidController.setOutputRange(-.25, .25);
+    pidController.setOutputRange(Constants.EXTENDER_PID_MIN_OUTPUT, Constants.EXTENDER_PID_MAX_OUTPUT);
     pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
   }
 
@@ -101,8 +101,8 @@ public class ExtenderSubsystem extends SubsystemBase {
       double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
       double iz = kIz.getDouble(0);
       double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(-.25);
-      double maxOut = kMaxOutput.getDouble(.25);
+      double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
+      double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
       double setpoint = positionSet.getDouble(0);
@@ -132,7 +132,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       }
 
       if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        // pidController.setOutputRange(minOut, maxOut);
+        pidController.setOutputRange(minOut, maxOut);
         preMinOutput = minOut;
         preMaxOutput = maxOut;
       }

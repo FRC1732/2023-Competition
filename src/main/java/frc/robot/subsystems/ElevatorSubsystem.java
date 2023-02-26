@@ -63,6 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setP(Constants.ELEVATOR_P_VALUE);
     pidController.setI(Constants.ELEVATOR_I_VALUE);
     pidController.setD(Constants.ELEVATOR_D_VALUE);
+    pidController.setOutputRange(Constants.ELEVATOR_PID_MIN_OUTPUT, Constants.ELEVATOR_PID_MAX_OUTPUT);
     pidController.setIZone(0);
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
@@ -86,8 +87,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
       double iz = kIz.getDouble(0);
       double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(-.25);
-      double maxOut = kMaxOutput.getDouble(.25);
+      double minOut = kMinOutput.getDouble(Constants.ELEVATOR_PID_MIN_OUTPUT);
+      double maxOut = kMaxOutput.getDouble(Constants.ELEVATOR_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
       double setpoint = positionSet.getDouble(0);
@@ -117,7 +118,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       }
 
       if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        // pidController.setOutputRange(minOut, maxOut);
+        pidController.setOutputRange(minOut, maxOut);
         preMinOutput = minOut;
         preMaxOutput = maxOut;
       }
