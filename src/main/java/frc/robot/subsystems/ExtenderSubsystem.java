@@ -97,7 +97,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       brakeMode = false;
       setCoastMode();
     }
-    if (Constants.TUNING_MODE) {
+    if (DriverStation.isEnabled() && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
       double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
       double d = kD.getDouble(Constants.EXTENDER_D_VALUE);

@@ -219,6 +219,10 @@ public class RobotContainer {
     oi.getIndexerToggleOpenButton()
         .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
 
+    // Holder Open
+    oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
+    oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+
     // Intake buttons
     // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on, intakeSubsystem));
     // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off, intakeSubsystem));

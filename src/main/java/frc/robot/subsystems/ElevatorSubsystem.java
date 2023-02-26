@@ -84,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       brakeMode = false;
       setCoastMode();
     }
-    if (Constants.TUNING_MODE) {
+    if (DriverStation.isEnabled() && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);

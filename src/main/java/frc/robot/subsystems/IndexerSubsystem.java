@@ -123,8 +123,8 @@ public class IndexerSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
-      double setpoint = positionSet.getDouble(0);
-      double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
+      // double setpoint = positionSet.getDouble(0);
+      // double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
       /*double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
       double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
       double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
@@ -176,23 +176,23 @@ public class IndexerSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }*/
 
-      if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
-        if (motorSpeed < 10e-4) {
-          indexerRotationMotor.setVoltage(0);
+      // if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
+      //   if (motorSpeed < 10e-4) {
+      //     indexerRotationMotor.setVoltage(0);
 
-        } else {
-          indexerRotationMotor.setVoltage(
-              motorSpeed
-                  * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
-        }
-      }
-      if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
-        motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
-      }
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        // pidController.setReference(setpoint, ControlType.kPosition);
-        prevSetpoint = setpoint;
-      }
+      //   } else {
+      //     indexerRotationMotor.setVoltage(
+      //         motorSpeed
+      //             * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
+      //   }
+      // }
+      // if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
+      //   motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
+      // }
+      // if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+      //   // pidController.setReference(setpoint, ControlType.kPosition);
+      //   prevSetpoint = setpoint;
+      // }
     }
   }
 

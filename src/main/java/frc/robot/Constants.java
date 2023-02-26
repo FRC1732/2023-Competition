@@ -23,7 +23,7 @@ public final class Constants {
 
   public static final double LOOP_PERIOD_SECS = 0.02;
 
-  public static final boolean TUNING_MODE = false;
+  public static final boolean TUNING_MODE = true;
 
   public static final boolean DEBUGGING = false;
 
@@ -67,8 +67,8 @@ public final class Constants {
   public static final double INDEXER_ARM_P_VALUE = 0.0;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
-  public static final double INDEXER_ARM_PID_MAX_OUTPUT = 0;
-  public static final double INDEXER_ARM_PID_MIN_OUTPUT = 0;
+  public static final double INDEXER_ARM_PID_MAX_OUTPUT = 1;
+  public static final double INDEXER_ARM_PID_MIN_OUTPUT = -1;
   public static final double INDEXER_POSITION_CONVERSION_FACTOR = 3.89189189;
 
   // #endregion
@@ -77,7 +77,7 @@ public final class Constants {
 
   // public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
   // public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
-  public static final double ELEVATOR_INCHES_PER_ROTATION = 7.1795;
+  public static final double ELEVATOR_INCHES_PER_ROTATION = 7.1795 / 20;
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
@@ -87,11 +87,11 @@ public final class Constants {
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
   public static final double ELEVATOR_MAX_SPEED_RPM = 1500;
   public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 2000;
-  public static final double ELEVATOR_P_VALUE = 0.000;
+  public static final double ELEVATOR_P_VALUE = 0.001;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
-  public static final double ELEVATOR_PID_MAX_OUTPUT = 0;
-  public static final double ELEVATOR_PID_MIN_OUTPUT = 0;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
 
   // #endregion
 
@@ -107,11 +107,11 @@ public final class Constants {
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 40000;
   public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 35000;
-  public static final double EXTENDER_P_VALUE = 0.0000;
+  public static final double EXTENDER_P_VALUE = 0.0001;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
-  public static final double EXTENDER_PID_MAX_OUTPUT = 0;
-  public static final double EXTENDER_PID_MIN_OUTPUT = 0;
+  public static final double EXTENDER_PID_MAX_OUTPUT = 1;
+  public static final double EXTENDER_PID_MIN_OUTPUT = -1;
 
   // #endregion
 }
