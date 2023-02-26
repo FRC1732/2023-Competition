@@ -71,7 +71,7 @@ public final class Constants {
   // #region Elevator Constants
 
   public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
-  public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 20;
+  public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
   public static final double ELEVATOR_INCHES_PER_ROTATION = 2 * Math.PI;
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;

@@ -30,7 +30,16 @@ public class IndexerSubsystem extends SubsystemBase {
 
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
+  private double preP,
+      preI,
+      preD,
+      preIz,
+      preFF,
+      preMaxOutput,
+      preMinOutput,
+      preMaxVelocity,
+      preMaxAccel;
   private boolean brakeMode;
   private double prevSetpoint = 0;
 
@@ -60,7 +69,8 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.INDEXER_ARM_ROTATE_MAX_SPEED, 0);
     pidController.setSmartMotionMaxAccel(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION, 0);
-    pidController.setOutputRange(-.25, .25);
+    // pidController.setOutputRange(-.25, .25);
+    pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
 
     io =
         new IndexerIO() {
@@ -109,12 +119,57 @@ public class IndexerSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(Constants.INDEXER_ARM_P_VALUE));
-      pidController.setI(kI.getDouble(Constants.INDEXER_ARM_I_VALUE));
-      pidController.setD(kD.getDouble(Constants.INDEXER_ARM_D_VALUE));
-      // pidController.setIZone(kIz.getDouble(0));
-      // pidController.setFF(kFF.getDouble(0));
-      // pidController.setOutputRange(-.25,25);
+      double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
+      double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
+      double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
+      double iz = kIz.getDouble(0);
+      double ff = kFF.getDouble(0);
+      double minOut = kMinOutput.getDouble(-.25);
+      double maxOut = kMaxOutput.getDouble(.25);
+      double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
+      double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
+
+      if (preP != p) {
+        pidController.setP(p);
+        preP = p;
+      }
+
+      if (preI != i) {
+        pidController.setI(i);
+        preI = i;
+      }
+
+      if (preD != d) {
+        pidController.setD(d);
+        preD = d;
+      }
+
+      if (preIz != iz) {
+        // pidController.setIZone(iz);
+        preIz = iz;
+      }
+
+      if (preFF != ff) {
+        // pidController.setFF(ff);
+        preFF = ff;
+      }
+
+      if (preMinOutput != minOut || preMaxOutput != maxOut) {
+        // pidController.setOutputRange(minOut, maxOut);
+        preMinOutput = minOut;
+        preMaxOutput = maxOut;
+      }
+
+      if (preMaxVelocity != maxVelocity) {
+        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+        preMaxVelocity = maxVelocity;
+      }
+
+      if (preMaxAccel != maxAccel) {
+        pidController.setSmartMotionMaxAccel(maxAccel, 0);
+        preMaxAccel = maxAccel;
+      }
+
       if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
         pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
         prevSetpoint = positionSet.getDouble(0);
@@ -196,6 +251,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
       kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxVelocity =
+          tab.add("Max Velocity", Constants.INDEXER_ARM_ROTATE_MAX_SPEED)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxAccel =
+          tab.add("Max Accell", Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
       positionSet =
           tab.add("Set Position", 0)
               .withWidget(BuiltInWidgets.kTextView)

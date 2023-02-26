@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -26,8 +25,17 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   private GenericEntry positionSet;
 
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-  private SuppliedValueWidget updatePID;
+  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
+  private double preP,
+      preI,
+      preD,
+      preIz,
+      preFF,
+      preMaxOutput,
+      preMinOutput,
+      preMaxVelocity,
+      preMaxAccel;
+  // private SuppliedValueWidget updatePID;
   private boolean brakeMode;
   private double prevSetpoint;
   /** Creates a new IntakeSubsystem. */
@@ -50,6 +58,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(Constants.EXTENDER_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.EXTENDER_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
+    pidController.setSmartMotionAllowedClosedLoopError(1.0, 0);
   }
 
   public void setCoastMode() {
@@ -86,13 +95,58 @@ public class ExtenderSubsystem extends SubsystemBase {
       setCoastMode();
     }
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(Constants.EXTENDER_P_VALUE));
-      pidController.setI(kI.getDouble(Constants.EXTENDER_I_VALUE));
-      pidController.setD(kD.getDouble(Constants.EXTENDER_D_VALUE));
-      // pidController.setIZone(kIz.getDouble(0));
-      // pidController.setFF(kFF.getDouble(0));
-      // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) > 10e-7) {
+      double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
+      double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
+      double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
+      double iz = kIz.getDouble(0);
+      double ff = kFF.getDouble(0);
+      double minOut = kMinOutput.getDouble(-.25);
+      double maxOut = kMaxOutput.getDouble(.25);
+      double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+      double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+
+      if (preP != p) {
+        pidController.setP(p);
+        preP = p;
+      }
+
+      if (preI != i) {
+        pidController.setI(i);
+        preI = i;
+      }
+
+      if (preD != d) {
+        pidController.setD(d);
+        preD = d;
+      }
+
+      if (preIz != iz) {
+        // pidController.setIZone(iz);
+        preIz = iz;
+      }
+
+      if (preFF != ff) {
+        // pidController.setFF(ff);
+        preFF = ff;
+      }
+
+      if (preMinOutput != minOut || preMaxOutput != maxOut) {
+        // pidController.setOutputRange(minOut, maxOut);
+        preMinOutput = minOut;
+        preMaxOutput = maxOut;
+      }
+
+      if (preMaxVelocity != maxVelocity) {
+        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+        preMaxVelocity = maxVelocity;
+      }
+
+      if (preMaxAccel != maxAccel) {
+        pidController.setSmartMotionMaxAccel(maxAccel, 0);
+        preMaxAccel = maxAccel;
+      }
+
+      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
         pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
         prevSetpoint = positionSet.getDouble(0);
       }
@@ -121,6 +175,14 @@ public class ExtenderSubsystem extends SubsystemBase {
 
       kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxVelocity =
+          tab.add("Max Velocity", Constants.EXTENDER_MAX_SPEED_RPM)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxAccel =
+          tab.add("Max Accell", Constants.EXTENDER_MAX_ACCELERATION_RPM2)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
       positionSet =
           tab.add("Set Position", 0)
               .withWidget(BuiltInWidgets.kTextView)

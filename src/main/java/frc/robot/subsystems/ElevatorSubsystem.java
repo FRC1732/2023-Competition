@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -25,7 +26,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   private DigitalInput magLimitSwitch;
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
+  private double preP,
+      preI,
+      preD,
+      preIz,
+      preFF,
+      preMaxOutput,
+      preMinOutput,
+      preMaxVelocity,
+      preMaxAccel;
   private boolean brakeMode;
   private double prevSetpoint;
 
@@ -65,6 +75,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
+    pidController.setSmartMotionAllowedClosedLoopError(1.0, 0);
   }
 
   @Override
@@ -77,21 +88,65 @@ public class ElevatorSubsystem extends SubsystemBase {
       setCoastMode();
     }
     if (Constants.TUNING_MODE) {
-      // pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
-      // pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
-      // pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
-      // pidController.setIZone(kIz.getDouble(0));
-      // pidController.setFF(kFF.getDouble(0));
-      // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) > 10e-7) {
-        pidController.setReference(positionSet.getDouble(0), CANSparkMax.ControlType.kSmartMotion);
+      double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
+      double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
+      double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
+      double iz = kIz.getDouble(0);
+      double ff = kFF.getDouble(0);
+      double minOut = kMinOutput.getDouble(-.25);
+      double maxOut = kMaxOutput.getDouble(.25);
+      double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+      double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+
+      if (preP != p) {
+        pidController.setP(p);
+        preP = p;
+      }
+
+      if (preI != i) {
+        pidController.setI(i);
+        preI = i;
+      }
+
+      if (preD != d) {
+        pidController.setD(d);
+        preD = d;
+      }
+
+      if (preIz != iz) {
+        // pidController.setIZone(iz);
+        preIz = iz;
+      }
+
+      if (preFF != ff) {
+        // pidController.setFF(ff);
+        preFF = ff;
+      }
+
+      if (preMinOutput != minOut || preMaxOutput != maxOut) {
+        // pidController.setOutputRange(minOut, maxOut);
+        preMinOutput = minOut;
+        preMaxOutput = maxOut;
+      }
+
+      if (preMaxVelocity != maxVelocity) {
+        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+        preMaxVelocity = maxVelocity;
+      }
+
+      if (preMaxAccel != maxAccel) {
+        pidController.setSmartMotionMaxAccel(maxAccel, 0);
+        preMaxAccel = maxAccel;
+      }
+
+      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
+        pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
         prevSetpoint = positionSet.getDouble(0);
       }
     }
   }
 
   public double limit(double value) {
-
     return value > .25 ? .25 : value < -.25 ? -.25 : value;
   }
 
@@ -158,6 +213,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxVelocity =
+          tab.add("Max Velocity", Constants.ELEVATOR_MAX_SPEED_RPM)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxAccel =
+          tab.add("Max Accell", Constants.ELEVATOR_MAX_ACCELERATION_RPM2)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
       positionSet =
           tab.add("Set Position", 0)
               .withWidget(BuiltInWidgets.kTextView)
