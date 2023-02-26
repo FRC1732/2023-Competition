@@ -29,7 +29,7 @@ public final class Constants {
 
   public static final String CAN_BUS_NAME = "Oogway";
 
-  public static final double MAX_PRESSURE = 125.0;
+  public static final double MAX_PRESSURE = 120.0;
   public static final double MIN_PRESSURE = 100.0;
 
   // #region CAN IDs
@@ -64,7 +64,7 @@ public final class Constants {
   public static final double INDEXER_CUBE_POSITION = 150;
   public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
   public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
-  public static final double INDEXER_ARM_P_VALUE = 0.0005;
+  public static final double INDEXER_ARM_P_VALUE = 0.0;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
   public static final double INDEXER_POSITION_CONVERSION_FACTOR = 3.89189189;

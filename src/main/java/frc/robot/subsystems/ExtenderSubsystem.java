@@ -105,7 +105,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(.25);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-
+      double setpoint = positionSet.getDouble(0);
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -147,9 +147,9 @@ public class ExtenderSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }
 
-      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
-        pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
-        prevSetpoint = positionSet.getDouble(0);
+      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+        pidController.setReference(setpoint, ControlType.kSmartMotion);
+        prevSetpoint = setpoint;
       }
     }
   }

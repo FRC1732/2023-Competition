@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(.25);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-
+      double setpoint = positionSet.getDouble(0);
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -132,9 +132,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }
 
-      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
-        pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
-        prevSetpoint = positionSet.getDouble(0);
+      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+        pidController.setReference(setpoint, ControlType.kSmartMotion);
+        prevSetpoint = setpoint;
       }
     }
   }
@@ -178,11 +178,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void reset() {
-    relativeEncoder.setPosition(0);
+    elevatorBaseMotorOne.getEncoder().setPosition(0);
   }
 
   public Double getPosition() {
-    return relativeEncoder.getPosition();
+    return elevatorBaseMotorOne.getEncoder().getPosition();
   }
 
   public boolean getMagLimitSwitch() {
@@ -193,10 +193,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     ShuffleboardTab tab;
     tab = Shuffleboard.getTab("elevator");
     // tab.addBoolean("MagLimitSwitch", () -> in0.get());
-    tab.addDouble("Pos", () -> relativeEncoder.getPosition());
-    tab.addDouble("Vel", () -> relativeEncoder.getVelocity());
-    tab.addDouble("PosFactor", () -> relativeEncoder.getPositionConversionFactor());
-    tab.addDouble("VelFactor", () -> relativeEncoder.getVelocityConversionFactor());
+    tab.addDouble("Pos", () -> elevatorBaseMotorOne.getEncoder().getPosition());
+    tab.addDouble("Vel", () -> elevatorBaseMotorOne.getEncoder().getVelocity());
+    tab.addDouble("PosFactor", () -> elevatorBaseMotorOne.getEncoder().getPositionConversionFactor());
+    tab.addDouble("VelFactor", () -> elevatorBaseMotorOne.getEncoder().getVelocityConversionFactor());
     if (Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.ELEVATOR_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.ELEVATOR_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
