@@ -90,8 +90,8 @@ public final class Constants {
   public static final double ELEVATOR_P_VALUE = 0.000;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
-  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
-  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 0;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = 0;
 
   // #endregion
 
@@ -110,8 +110,8 @@ public final class Constants {
   public static final double EXTENDER_P_VALUE = 0.0000;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
-  public static final double EXTENDER_PID_MAX_OUTPUT = 1;
-  public static final double EXTENDER_PID_MIN_OUTPUT = -1;
+  public static final double EXTENDER_PID_MAX_OUTPUT = 0;
+  public static final double EXTENDER_PID_MIN_OUTPUT = 0;
 
   // #endregion
 }
