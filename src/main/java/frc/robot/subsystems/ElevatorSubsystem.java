@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -49,21 +48,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorTwo.restoreFactoryDefaults();
     // magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
-    relativeEncoder =
-        elevatorBaseMotorOne.getAlternateEncoder(
-            Type.kQuadrature, Constants.ELEVATOR_TICKS_PER_ROTATION);
-    relativeEncoder.setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
-    relativeEncoder.setMeasurementPeriod(Constants.ELEVATOR_MEAUSREMENT_PERIOD_MS);
-    // relativeEncoder.setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
+    elevatorBaseMotorOne
+        .getEncoder()
+        .setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
+    elevatorBaseMotorOne.getEncoder().setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
     pidController = elevatorBaseMotorOne.getPIDController();
-    prevSetpoint = 0;
-    pidController.setFeedbackDevice(relativeEncoder);
-
-    // PID coefficients
-
-    // kMaxOutput = 1;
-    // kMinOutput = -1;
-
+    pidController.setFeedbackDevice(elevatorBaseMotorOne.getEncoder());
+    pidController.setReference(
+        Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
+    prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setupShuffleboard();
 
     // set PID coefficients
@@ -75,7 +68,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
-    pidController.setSmartMotionAllowedClosedLoopError(1.0, 0);
+    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
   }
 
   @Override

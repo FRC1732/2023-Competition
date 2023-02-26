@@ -59,9 +59,9 @@ public final class Constants {
   public static final double INDEXER_TRANSFER_SPEED = 0.1;
   public static final double INDEXER_CONE_POSITION = 200;
   public static final double INDEXER_CUBE_POSITION = 150;
-  public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 55 * 100;
-  public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 100 * 1000;
-  public static final double INDEXER_ARM_P_VALUE = 0;
+  public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
+  public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
+  public static final double INDEXER_ARM_P_VALUE = 0.0005;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
   public static final double INDEXER_POSITION_CONVERSION_FACTOR = 3.89189189;
@@ -70,9 +70,9 @@ public final class Constants {
 
   // #region Elevator Constants
 
-  public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
-  public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
-  public static final double ELEVATOR_INCHES_PER_ROTATION = 2 * Math.PI;
+  // public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
+  // public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
+  public static final double ELEVATOR_INCHES_PER_ROTATION = 7.1795;
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
@@ -80,8 +80,8 @@ public final class Constants {
   public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.75;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
-  public static final double ELEVATOR_MAX_SPEED_RPM = 5200;
-  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 36000;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 1500;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 2000;
   public static final double ELEVATOR_P_VALUE = 0.001;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
@@ -92,15 +92,15 @@ public final class Constants {
 
   public static final int EXTENDER_TICKS_PER_ROTATION = 42;
   public static final int EXTENDER_MEAUSREMENT_PERIOD_MS = 20;
-  public static final double EXTENDER_INCHES_PER_ROTATION = 0.8375; // fully extended .9625
-  public static final double EXTENDER_STARTING_POSITION_INCHES = 24.747;
+  public static final double EXTENDER_INCHES_PER_ROTATION = 0.852;
+  public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 48;
   public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 47.5;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.25;
-  public static final double EXTENDER_MAX_SPEED_RPM = 5200;
-  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 36000;
-  public static final double EXTENDER_P_VALUE = 0;
+  public static final double EXTENDER_MAX_SPEED_RPM = 40000;
+  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 35000;
+  public static final double EXTENDER_P_VALUE = 0.0001;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
 

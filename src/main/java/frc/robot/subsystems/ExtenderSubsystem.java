@@ -44,6 +44,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
+    extenderMotor.getEncoder().setPositionConversionFactor(Constants.EXTENDER_INCHES_PER_ROTATION);
     pidController = extenderMotor.getPIDController();
     pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
@@ -58,7 +59,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(Constants.EXTENDER_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.EXTENDER_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
-    pidController.setSmartMotionAllowedClosedLoopError(1.0, 0);
+    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
   }
 
   public void setCoastMode() {
