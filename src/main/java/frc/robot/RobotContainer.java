@@ -195,6 +195,30 @@ public class RobotContainer {
     oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
     oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
+    // Raise/Lower Indexer Arm
+    oi.getIndexerRotateUpButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
+    oi.getIndexerRotateUpButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
+    oi.getIndexerRotateDownButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
+    oi.getIndexerRotateDownButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
+
+    // Indexer Intake/Eject
+    oi.getIndexerIntakeButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::grabberIntake, indexerSubsystem));
+    oi.getIndexerIntakeButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+    oi.getIndexerEjectButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem));
+    oi.getIndexerEjectButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+
+    // Indexer Open/Close
+    oi.getIndexerToggleOpenButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
+
     // Intake buttons
     // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on, intakeSubsystem));
     // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off, intakeSubsystem));

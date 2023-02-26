@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
@@ -24,7 +22,6 @@ public class Robot extends LoggedRobot {
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-  private Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   private final Alert logReceiverQueueAlert =
       new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
@@ -90,9 +87,6 @@ public class Robot extends LoggedRobot {
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();
-
-    // Enable compressor
-    compressor.enableAnalog(Constants.MIN_PRESSURE, Constants.MAX_PRESSURE);
   }
 
   /**

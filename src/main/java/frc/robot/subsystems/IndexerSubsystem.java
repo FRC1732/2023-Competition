@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
@@ -53,16 +52,16 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerRotationMotor = new CANSparkMax(Constants.INDEXER_ROTATION_CAN_ID, MotorType.kBrushless);
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
     indexerRotationMotor.restoreFactoryDefaults();
-    indexerRotationMotor
-        .getEncoder()
-        .setPositionConversionFactor(Constants.INDEXER_POSITION_CONVERSION_FACTOR);
+    // indexerRotationMotor
+    //     .getEncoder()
+    //     .setPositionConversionFactor(Constants.INDEXER_POSITION_CONVERSION_FACTOR);
     indexerGrabbingMotor.restoreFactoryDefaults();
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
-    pidController = indexerRotationMotor.getPIDController();
+    // pidController = indexerRotationMotor.getPIDController();
     // pidController.setReference(
     //     indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
-    prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
-    setupShuffleboard();
+    // prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
+    // setupShuffleboard();
     /*pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
@@ -74,9 +73,9 @@ public class IndexerSubsystem extends SubsystemBase {
         Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
     */
-    motorSpeed = 0;
-    indexerRotationMotor.burnFlash();
-    indexerGrabbingMotor.burnFlash();
+    // motorSpeed = 0;
+    // indexerRotationMotor.burnFlash();
+    // indexerGrabbingMotor.burnFlash();
     io =
         new IndexerIO() {
 
@@ -96,7 +95,6 @@ public class IndexerSubsystem extends SubsystemBase {
             inputs.isOpen = isOpen();
           }
         };
-        
   }
 
   public void setBrakeMode() {
@@ -136,7 +134,7 @@ public class IndexerSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(Constants.INDEXER_ARM_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
       double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
-      
+
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -179,46 +177,55 @@ public class IndexerSubsystem extends SubsystemBase {
       }*/
 
       if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
-        if(motorSpeed < 10e-4){
+        if (motorSpeed < 10e-4) {
           indexerRotationMotor.setVoltage(0);
-        
-        }else{
-        indexerRotationMotor.setVoltage(
-            motorSpeed * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
+
+        } else {
+          indexerRotationMotor.setVoltage(
+              motorSpeed
+                  * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
         }
       }
       if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
-        motorSpeed = motorSpeedEntryDouble;//motorSpeedEntry.getDouble(0);
+        motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
       }
       if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        //pidController.setReference(setpoint, ControlType.kPosition);
+        // pidController.setReference(setpoint, ControlType.kPosition);
         prevSetpoint = setpoint;
       }
     }
   }
 
-  public void grabberOn() {
-    indexerGrabbingMotor.set(0.25);
+  public void grabberIntake() {
+    if (isOpen) {
+      indexerGrabbingMotor.set(-0.25);
+    } else {
+      indexerGrabbingMotor.set(0.25);
+    }
   }
 
   public void grabberOff() {
-    indexerGrabbingMotor.set(0);
+    indexerGrabbingMotor.stopMotor();
   }
 
   public void grabberEject() {
-    indexerGrabbingMotor.set(-0.25);
+    if (isOpen) {
+      indexerGrabbingMotor.set(0.25);
+    } else {
+      indexerGrabbingMotor.set(-0.25);
+    }
   }
 
   public void rotateUp() {
-    // indexerRotationMotor.set(0.1);
+    indexerRotationMotor.set(0.1);
   }
 
   public void rotateDown() {
-    // indexerRotationMotor.set(-0.1);
+    indexerRotationMotor.set(-0.1);
   }
 
   public void rotateOff() {
-    indexerRotationMotor.set(0);
+    indexerRotationMotor.stopMotor();
   }
 
   public void open() {
@@ -229,6 +236,11 @@ public class IndexerSubsystem extends SubsystemBase {
   public void close() {
     indexerSolenoid.set(false);
     isOpen = false;
+  }
+
+  public void toggleOpenClose() {
+    isOpen = !isOpen;
+    indexerSolenoid.set(isOpen);
   }
 
   public void eject() {
@@ -255,33 +267,32 @@ public class IndexerSubsystem extends SubsystemBase {
     tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
     if (Constants.TUNING_MODE) {
       /*kP =
-          tab.add("P", Constants.INDEXER_ARM_P_VALUE)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
-      kI =
-          tab.add("I", Constants.INDEXER_ARM_I_VALUE)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
-      kD =
-          tab.add("D", Constants.INDEXER_ARM_D_VALUE)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
-      kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+                tab.add("P", Constants.INDEXER_ARM_P_VALUE)
+                    .withWidget(BuiltInWidgets.kTextView)
+                    .getEntry();
+            kI =
+                tab.add("I", Constants.INDEXER_ARM_I_VALUE)
+                    .withWidget(BuiltInWidgets.kTextView)
+                    .getEntry();
+            kD =
+                tab.add("D", Constants.INDEXER_ARM_D_VALUE)
+                    .withWidget(BuiltInWidgets.kTextView)
+                    .getEntry();
+            kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-      kMinOutput = tab.add("Max Output", Constants.INDEXER_ARM_PID_MAX_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kMaxOutput = tab.add("Min Output", Constants.INDEXER_ARM_PID_MIN_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kMaxVelocity =
-          tab.add("Max Velocity", Constants.INDEXER_ARM_ROTATE_MAX_SPEED)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
-      kMaxAccel =
-          tab.add("Max Accell", Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
-*/
-      motorSpeedEntry = tab.add("Motor Speed",
-      0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            kMinOutput = tab.add("Max Output", Constants.INDEXER_ARM_PID_MAX_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
+            kMaxOutput = tab.add("Min Output", Constants.INDEXER_ARM_PID_MIN_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
+            kMaxVelocity =
+                tab.add("Max Velocity", Constants.INDEXER_ARM_ROTATE_MAX_SPEED)
+                    .withWidget(BuiltInWidgets.kTextView)
+                    .getEntry();
+            kMaxAccel =
+                tab.add("Max Accell", Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION)
+                    .withWidget(BuiltInWidgets.kTextView)
+                    .getEntry();
+      */
+      motorSpeedEntry = tab.add("Motor Speed", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
       positionSet =
           tab.add("Set Position", 0)

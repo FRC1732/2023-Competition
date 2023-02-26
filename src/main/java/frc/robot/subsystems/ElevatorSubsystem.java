@@ -210,8 +210,14 @@ public class ElevatorSubsystem extends SubsystemBase {
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-      kMinOutput = tab.add("Max Output", Constants.ELEVATOR_PID_MAX_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kMaxOutput = tab.add("Min Output", Constants.ELEVATOR_PID_MIN_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMinOutput =
+          tab.add("Max Output", Constants.ELEVATOR_PID_MAX_OUTPUT)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxOutput =
+          tab.add("Min Output", Constants.ELEVATOR_PID_MIN_OUTPUT)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
       kMaxVelocity =
           tab.add("Max Velocity", Constants.ELEVATOR_MAX_SPEED_RPM)
               .withWidget(BuiltInWidgets.kTextView)
