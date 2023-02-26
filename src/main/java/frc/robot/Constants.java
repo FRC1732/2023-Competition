@@ -87,7 +87,7 @@ public final class Constants {
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
   public static final double ELEVATOR_MAX_SPEED_RPM = 1500;
   public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 2000;
-  public static final double ELEVATOR_P_VALUE = 0.001;
+  public static final double ELEVATOR_P_VALUE = 0.000;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
   public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
@@ -107,7 +107,7 @@ public final class Constants {
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 40000;
   public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 35000;
-  public static final double EXTENDER_P_VALUE = 0.0001;
+  public static final double EXTENDER_P_VALUE = 0.0000;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
   public static final double EXTENDER_PID_MAX_OUTPUT = 1;

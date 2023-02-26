@@ -74,6 +74,8 @@ public class IndexerSubsystem extends SubsystemBase {
         Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
     motorSpeed = .05;
+    indexerRotationMotor.burnFlash();
+    indexerGrabbingMotor.burnFlash();
     io =
         new IndexerIO() {
 
@@ -93,6 +95,7 @@ public class IndexerSubsystem extends SubsystemBase {
             inputs.isOpen = isOpen();
           }
         };
+        
   }
 
   public void setBrakeMode() {

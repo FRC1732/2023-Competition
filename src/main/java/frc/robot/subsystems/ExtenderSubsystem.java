@@ -61,6 +61,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setOutputRange(
         Constants.EXTENDER_PID_MIN_OUTPUT, Constants.EXTENDER_PID_MAX_OUTPUT);
     pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
+    extenderMotor.burnFlash();
   }
 
   public void setCoastMode() {
