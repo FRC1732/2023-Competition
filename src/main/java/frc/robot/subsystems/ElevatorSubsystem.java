@@ -63,7 +63,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setP(Constants.ELEVATOR_P_VALUE);
     pidController.setI(Constants.ELEVATOR_I_VALUE);
     pidController.setD(Constants.ELEVATOR_D_VALUE);
-    pidController.setOutputRange(Constants.ELEVATOR_PID_MIN_OUTPUT, Constants.ELEVATOR_PID_MAX_OUTPUT);
+    pidController.setOutputRange(
+        Constants.ELEVATOR_PID_MIN_OUTPUT, Constants.ELEVATOR_PID_MAX_OUTPUT);
     pidController.setIZone(0);
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
@@ -198,8 +199,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     // tab.addBoolean("MagLimitSwitch", () -> in0.get());
     tab.addDouble("Pos", () -> elevatorBaseMotorOne.getEncoder().getPosition());
     tab.addDouble("Vel", () -> elevatorBaseMotorOne.getEncoder().getVelocity());
-    tab.addDouble("PosFactor", () -> elevatorBaseMotorOne.getEncoder().getPositionConversionFactor());
-    tab.addDouble("VelFactor", () -> elevatorBaseMotorOne.getEncoder().getVelocityConversionFactor());
+    tab.addDouble(
+        "PosFactor", () -> elevatorBaseMotorOne.getEncoder().getPositionConversionFactor());
+    tab.addDouble(
+        "VelFactor", () -> elevatorBaseMotorOne.getEncoder().getVelocityConversionFactor());
     if (Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.ELEVATOR_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.ELEVATOR_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
