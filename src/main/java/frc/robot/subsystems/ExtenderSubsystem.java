@@ -29,6 +29,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   private SuppliedValueWidget updatePID;
   private boolean brakeMode;
+  private double prevSetpoint;
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
@@ -37,8 +38,8 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.setInverted(true);
     pidController = extenderMotor.getPIDController();
     pidController.setFeedbackDevice(extenderMotor.getEncoder());
-    pidController.setReference(0, ControlType.kPosition);
-
+    pidController.setReference(0, ControlType.kSmartMotion);
+    prevSetpoint = 0;
     setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
@@ -48,7 +49,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.EXTENDER_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.EXTENDER_MAX_ACCELERATION_RPM2, 0);
-    pidController.setOutputRange(-.25, .25);
+    // pidController.setOutputRange(-.25, .25);
   }
 
   public void setCoastMode() {
@@ -91,7 +92,10 @@ public class ExtenderSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
+      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) > 10e-7) {
+        pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
+        prevSetpoint = positionSet.getDouble(0);
+      }
     }
   }
 

@@ -59,11 +59,12 @@ public final class Constants {
   public static final double INDEXER_TRANSFER_SPEED = 0.1;
   public static final double INDEXER_CONE_POSITION = 200;
   public static final double INDEXER_CUBE_POSITION = 150;
-  public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 0.5;
+  public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 55 * 100;
+  public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 100 * 1000;
   public static final double INDEXER_ARM_P_VALUE = 0;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
-  public static final double INDEXER_POSITION_CONVERSION_FACTOR = 4.8;
+  public static final double INDEXER_POSITION_CONVERSION_FACTOR = 3.89189189;
 
   // #endregion
 
@@ -79,9 +80,9 @@ public final class Constants {
   public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.75;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
-  public static final double ELEVATOR_MAX_SPEED_RPM = 5200 / 20;
-  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 36000 / 400;
-  public static final double ELEVATOR_P_VALUE = 0;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 5200;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 36000;
+  public static final double ELEVATOR_P_VALUE = 0.001;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
 

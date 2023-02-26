@@ -32,6 +32,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   private boolean brakeMode;
+  private double prevSetpoint = 0;
 
   private final IndexerIO io;
   private final IndexerIOInputsAutoLoggedv2 inputs = new IndexerIOInputsAutoLoggedv2();
@@ -48,8 +49,8 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
     pidController = indexerRotationMotor.getPIDController();
     pidController.setReference(
-        indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
-
+        indexerRotationMotor.getEncoder().getPosition(), ControlType.kSmartMotion);
+    prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     setupShuffleboard();
 
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
@@ -58,6 +59,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setIZone(0);
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.INDEXER_ARM_ROTATE_MAX_SPEED, 0);
+    pidController.setSmartMotionMaxAccel(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION, 0);
     pidController.setOutputRange(-.25, .25);
 
     io =
@@ -113,7 +115,10 @@ public class IndexerSubsystem extends SubsystemBase {
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(-.25,25);
-      pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
+      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) >= 10e-7) {
+        pidController.setReference(positionSet.getDouble(0), ControlType.kSmartMotion);
+        prevSetpoint = positionSet.getDouble(0);
+      }
     }
   }
 

@@ -27,6 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private GenericEntry positionSet;
   private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   private boolean brakeMode;
+  private double prevSetpoint;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -43,9 +44,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             Type.kQuadrature, Constants.ELEVATOR_TICKS_PER_ROTATION);
     relativeEncoder.setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
     relativeEncoder.setMeasurementPeriod(Constants.ELEVATOR_MEAUSREMENT_PERIOD_MS);
-    relativeEncoder.setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
+    // relativeEncoder.setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
     pidController = elevatorBaseMotorOne.getPIDController();
-
+    prevSetpoint = 0;
     pidController.setFeedbackDevice(relativeEncoder);
 
     // PID coefficients
@@ -63,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
-    pidController.setOutputRange(-.25, .25);
+    // pidController.setOutputRange(-.25, .25);
   }
 
   @Override
@@ -76,13 +77,16 @@ public class ElevatorSubsystem extends SubsystemBase {
       setCoastMode();
     }
     if (Constants.TUNING_MODE) {
-      pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
-      pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
-      pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
+      // pidController.setP(kP.getDouble(Constants.ELEVATOR_P_VALUE));
+      // pidController.setI(kI.getDouble(Constants.ELEVATOR_I_VALUE));
+      // pidController.setD(kD.getDouble(Constants.ELEVATOR_D_VALUE));
       // pidController.setIZone(kIz.getDouble(0));
       // pidController.setFF(kFF.getDouble(0));
       // pidController.setOutputRange(kMinOutput.getDouble(-.25), kMaxOutput.getDouble(.25));
-      pidController.setReference(positionSet.getDouble(0), CANSparkMax.ControlType.kSmartMotion);
+      if (Math.abs(prevSetpoint - positionSet.getDouble(0)) > 10e-7) {
+        pidController.setReference(positionSet.getDouble(0), CANSparkMax.ControlType.kSmartMotion);
+        prevSetpoint = positionSet.getDouble(0);
+      }
     }
   }
 

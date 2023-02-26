@@ -222,15 +222,15 @@ public class RobotContainer {
     // oi.getGrabberEjectButton()
     //     .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
-    oi.getIndexerRotateUpButton()
-        .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
-    oi.getIndexerRotateUpButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
+    // oi.getIndexerRotateUpButton()
+    //     .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
+    // oi.getIndexerRotateUpButton()
+    //     .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
 
-    oi.getIndexerRotateDownButton()
-        .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
-    oi.getIndexerRotateDownButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
+    // oi.getIndexerRotateDownButton()
+    //     .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
+    // oi.getIndexerRotateDownButton()
+    //     .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
 
     // oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
 
