@@ -120,8 +120,8 @@ public class IndexerSubsystem extends SubsystemBase {
       brakeMode = false;
       setCoastMode();
     }
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Indexer", inputs);
+    //io.updateInputs(inputs);
+    //Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
       // double setpoint = positionSet.getDouble(0);
       // double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);

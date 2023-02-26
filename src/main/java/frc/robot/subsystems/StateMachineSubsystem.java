@@ -20,16 +20,17 @@ public class StateMachineSubsystem extends SubsystemBase {
    */
   public StateMachineSubsystem(RobotStateMachine stateMachine) {
     robotStateMachine = stateMachine;
-    setupShuffleboard();
+    //setupShuffleboard();
   }
 
   @Override
   public void periodic() {
-    Logger.getInstance()
+    /*Logger.getInstance()
         .recordOutput("StateMachine/currentState", robotStateMachine.getCurrentState());
     Logger.getInstance().recordOutput("StateMachine/lastEvent", robotStateMachine.getLastEvent());
     Logger.getInstance()
         .recordOutput("StateMachine/lastTransition", robotStateMachine.getLastTransition());
+    */
   }
 
   private void setupShuffleboard() {

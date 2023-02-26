@@ -49,7 +49,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    setupShuffleboard();
+    //setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);

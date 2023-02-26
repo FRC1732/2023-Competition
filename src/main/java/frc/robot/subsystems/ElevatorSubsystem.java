@@ -52,7 +52,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         .getEncoder()
         .setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
     elevatorBaseMotorOne.getEncoder().setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
-    pidController = elevatorBaseMotorOne.getPIDController();
+    /*pidController = elevatorBaseMotorOne.getPIDController();
     pidController.setFeedbackDevice(elevatorBaseMotorOne.getEncoder());
     pidController.setReference(
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
@@ -70,9 +70,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
-    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
-    elevatorBaseMotorOne.burnFlash();
-    elevatorBaseMotorTwo.burnFlash();
+    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);*/
+    //elevatorBaseMotorOne.burnFlash();
+    //elevatorBaseMotorTwo.burnFlash();
   }
 
   @Override
@@ -158,8 +158,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void goUp() {
-    elevatorBaseMotorOne.set(.1);
-    elevatorBaseMotorTwo.set(-.1);
+    System.out.println("ELEVATOR UP!!!!!!!!!");
+    elevatorBaseMotorOne.set(1);
+    elevatorBaseMotorTwo.set(-1);
   }
 
   public void goDown() {
@@ -167,8 +168,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorTwo.set(.1);
   }
 
+  public void doNothing() {
+  }
+
   public void off() {
+    System.out.println("ELEVATOR OFF!!!!!!!!!");
     elevatorBaseMotorOne.set(0);
+    elevatorBaseMotorTwo.set(0);
   }
 
   public void setToMidCone() {
