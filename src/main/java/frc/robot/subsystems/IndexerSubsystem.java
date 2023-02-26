@@ -30,7 +30,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
+  /*private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
   private double preP,
       preI,
       preD,
@@ -39,7 +39,7 @@ public class IndexerSubsystem extends SubsystemBase {
       preMaxOutput,
       preMinOutput,
       preMaxVelocity,
-      preMaxAccel;
+      preMaxAccel;*/
   private double motorSpeed;
   private GenericEntry motorSpeedEntry;
   private boolean brakeMode;
@@ -73,7 +73,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setOutputRange(
         Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
-    motorSpeed = .05;
+    motorSpeed = 0;
     indexerRotationMotor.burnFlash();
     indexerGrabbingMotor.burnFlash();
     io =
@@ -124,7 +124,8 @@ public class IndexerSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
-      double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
+      double setpoint = positionSet.getDouble(0);
+      /*double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
       double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
       double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
       double iz = kIz.getDouble(0);
@@ -133,7 +134,7 @@ public class IndexerSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(Constants.INDEXER_ARM_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
       double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
-      double setpoint = positionSet.getDouble(0);
+      
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -173,15 +174,15 @@ public class IndexerSubsystem extends SubsystemBase {
       if (preMaxAccel != maxAccel) {
         pidController.setSmartMotionMaxAccel(maxAccel, 0);
         preMaxAccel = maxAccel;
-      }
+      }*/
 
-      /*if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
+      if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
         indexerRotationMotor.set(
             motorSpeed * indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1);
       }
       if (Math.abs(motorSpeedEntry.getDouble(0) - motorSpeed) >= 10e-7) {
         motorSpeed = motorSpeedEntry.getDouble(0);
-      }*/
+      }
       if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
         pidController.setReference(setpoint, ControlType.kPosition);
         prevSetpoint = setpoint;
@@ -246,7 +247,7 @@ public class IndexerSubsystem extends SubsystemBase {
         "VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
     tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
     if (Constants.TUNING_MODE) {
-      kP =
+      /*kP =
           tab.add("P", Constants.INDEXER_ARM_P_VALUE)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
@@ -271,9 +272,9 @@ public class IndexerSubsystem extends SubsystemBase {
           tab.add("Max Accell", Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
-
-      // motorSpeedEntry = tab.add("Motor Speed",
-      // .05).withWidget(BuiltInWidgets.kTextView).getEntry();
+*/
+      motorSpeedEntry = tab.add("Motor Speed",
+      0).withWidget(BuiltInWidgets.kTextView).getEntry();
       positionSet =
           tab.add("Set Position", 0)
               .withWidget(BuiltInWidgets.kTextView)
