@@ -70,6 +70,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
     // pidController.setOutputRange(-.25, .25);
     pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
+    elevatorBaseMotorOne.burnFlash();
+    elevatorBaseMotorTwo.burnFlash();
   }
 
   @Override
