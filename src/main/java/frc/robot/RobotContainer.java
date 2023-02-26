@@ -6,6 +6,8 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +48,7 @@ public class RobotContainer {
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
   public StateMachineSubsystem stateMachineSubsystem;
   public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -77,6 +80,7 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindings();
     configureAutoCommands();
+    compressor.enableAnalog(Constants.MIN_PRESSURE, Constants.MAX_PRESSURE);
     robotStateMachine = new RobotStateMachine(this);
     stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   }

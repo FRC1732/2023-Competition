@@ -29,6 +29,9 @@ public final class Constants {
 
   public static final String CAN_BUS_NAME = "Oogway";
 
+  public static final double MAX_PRESSURE = 125.0;
+  public static final double MIN_PRESSURE = 100.0;
+
   // #region CAN IDs
   public static final int CAN_PNEUMATIC_ID = 60;
 
