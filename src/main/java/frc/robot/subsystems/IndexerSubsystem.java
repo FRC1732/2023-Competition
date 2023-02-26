@@ -59,8 +59,8 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerGrabbingMotor.restoreFactoryDefaults();
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
     pidController = indexerRotationMotor.getPIDController();
-   // pidController.setReference(
-   //     indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
+    // pidController.setReference(
+    //     indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
@@ -70,7 +70,8 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setFF(0);
     // pidController.setSmartMotionMaxVelocity(Constants.INDEXER_ARM_ROTATE_MAX_SPEED, 0);
     // pidController.setSmartMotionMaxAccel(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION, 0);
-    pidController.setOutputRange(Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
+    pidController.setOutputRange(
+        Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
     motorSpeed = .05;
     io =
@@ -198,11 +199,11 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void rotateUp() {
-    //indexerRotationMotor.set(0.1);
+    // indexerRotationMotor.set(0.1);
   }
 
   public void rotateDown() {
-   // indexerRotationMotor.set(-0.1);
+    // indexerRotationMotor.set(-0.1);
   }
 
   public void rotateOff() {
