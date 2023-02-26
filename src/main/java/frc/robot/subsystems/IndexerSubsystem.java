@@ -260,8 +260,8 @@ public class IndexerSubsystem extends SubsystemBase {
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-      kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMinOutput = tab.add("Max Output", Constants.INDEXER_ARM_PID_MAX_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxOutput = tab.add("Min Output", Constants.INDEXER_ARM_PID_MIN_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxVelocity =
           tab.add("Max Velocity", Constants.INDEXER_ARM_ROTATE_MAX_SPEED)
               .withWidget(BuiltInWidgets.kTextView)

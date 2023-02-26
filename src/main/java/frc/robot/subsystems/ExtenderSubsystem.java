@@ -175,8 +175,8 @@ public class ExtenderSubsystem extends SubsystemBase {
       // updatePID = tab.addBoolean("Update PID",
       // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
 
-      kMinOutput = tab.add("Max Output", .25).withWidget(BuiltInWidgets.kTextView).getEntry();
-      kMaxOutput = tab.add("Min Output", -.25).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMinOutput = tab.add("Max Output", Constants.EXTENDER_PID_MAX_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kMaxOutput = tab.add("Min Output", Constants.EXTENDER_PID_MIN_OUTPUT).withWidget(BuiltInWidgets.kTextView).getEntry();
       kMaxVelocity =
           tab.add("Max Velocity", Constants.EXTENDER_MAX_SPEED_RPM)
               .withWidget(BuiltInWidgets.kTextView)
