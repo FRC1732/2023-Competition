@@ -12,7 +12,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -52,7 +51,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         .getEncoder()
         .setPositionConversionFactor(Constants.ELEVATOR_INCHES_PER_ROTATION);
     elevatorBaseMotorOne.getEncoder().setPosition(Constants.ELEVATOR_STARTING_POSITION_INCHES);
-    /*pidController = elevatorBaseMotorOne.getPIDController();
+    setBrakeMode();
+    pidController = elevatorBaseMotorOne.getPIDController();
     pidController.setFeedbackDevice(elevatorBaseMotorOne.getEncoder());
     pidController.setReference(
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
@@ -69,22 +69,21 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
-    // pidController.setOutputRange(-.25, .25);
-    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);*/
+    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
     elevatorBaseMotorOne.burnFlash();
     elevatorBaseMotorTwo.burnFlash();
   }
 
   @Override
   public void periodic() {
-    if (DriverStation.isEnabled() && !brakeMode) {
-      brakeMode = true;
-      setBrakeMode();
-    } else if (DriverStation.isDisabled() && brakeMode) {
-      brakeMode = false;
-      setCoastMode();
-    }
-    if (DriverStation.isEnabled() && Constants.TUNING_MODE) {
+    // if (DriverStation.isEnabled() && !brakeMode) {
+    //   brakeMode = true;
+    //   setBrakeMode();
+    // } else if (DriverStation.isDisabled() && brakeMode) {
+    //   brakeMode = false;
+    //   setCoastMode();
+    // }
+    /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
@@ -140,7 +139,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController.setReference(setpoint, ControlType.kSmartMotion);
         prevSetpoint = setpoint;
       }
-    }
+    }*/
   }
 
   public double limit(double value) {
@@ -159,18 +158,18 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void goUp() {
     System.out.println("ELEVATOR UP!!!!!!!!!");
-    elevatorBaseMotorOne.set(.2);
+    // elevatorBaseMotorOne.set(.2);
   }
 
   public void goDown() {
-    elevatorBaseMotorOne.set(-.2);
+    // elevatorBaseMotorOne.set(-.2);
   }
 
   public void doNothing() {}
 
   public void off() {
     System.out.println("ELEVATOR OFF!!!!!!!!!");
-    elevatorBaseMotorOne.set(0);
+    // elevatorBaseMotorOne.set(0);
   }
 
   public void setToMidCone() {
@@ -205,18 +204,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         "PosFactor", () -> elevatorBaseMotorOne.getEncoder().getPositionConversionFactor());
     tab.addDouble(
         "VelFactor", () -> elevatorBaseMotorOne.getEncoder().getVelocityConversionFactor());
-    if (Constants.TUNING_MODE) {
+    if (true) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.ELEVATOR_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.ELEVATOR_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", Constants.ELEVATOR_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
       kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-      kMinOutput =
+      kMaxOutput =
           tab.add("Max Output", Constants.ELEVATOR_PID_MAX_OUTPUT)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
-      kMaxOutput =
+      kMinOutput =
           tab.add("Min Output", Constants.ELEVATOR_PID_MIN_OUTPUT)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();

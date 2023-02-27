@@ -77,21 +77,21 @@ public final class Constants {
 
   // public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
   // public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
-  public static final double ELEVATOR_INCHES_PER_ROTATION = 7.1795 / 20;
+  public static final double ELEVATOR_INCHES_PER_ROTATION = 0.275199;
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
   public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1;
-  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.75;
+  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.5;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
-  public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 39.70;
-  public static final double ELEVATOR_MAX_SPEED_RPM = 1500;
-  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 2000;
-  public static final double ELEVATOR_P_VALUE = 0.000;
+  public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 50000;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 60000;
+  public static final double ELEVATOR_P_VALUE = 0.00025;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
-  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
-  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 0.85;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = -0.85;
 
   // #endregion
 
@@ -102,12 +102,12 @@ public final class Constants {
   public static final double EXTENDER_INCHES_PER_ROTATION = 0.852;
   public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
-  public static final double EXTENDER_MAX_POSITION_INCHES = 48;
-  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 47.5;
+  public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
+  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 46.5;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.25;
-  public static final double EXTENDER_MAX_SPEED_RPM = 40000;
-  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 35000;
-  public static final double EXTENDER_P_VALUE = 0.0000;
+  public static final double EXTENDER_MAX_SPEED_RPM = 50000;
+  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 70000;
+  public static final double EXTENDER_P_VALUE = 0.000075;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
   public static final double EXTENDER_PID_MAX_OUTPUT = 1;

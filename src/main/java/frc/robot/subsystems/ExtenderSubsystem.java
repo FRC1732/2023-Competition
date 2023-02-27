@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -46,11 +45,12 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.setInverted(true);
     extenderMotor.getEncoder().setPositionConversionFactor(Constants.EXTENDER_INCHES_PER_ROTATION);
     extenderMotor.getEncoder().setPosition(0);
+    setBrakeMode();
     pidController = extenderMotor.getPIDController();
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    setupShuffleboard();
+    // setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -91,14 +91,14 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (DriverStation.isEnabled() && !brakeMode) {
-      brakeMode = true;
-      setBrakeMode();
-    } else if (DriverStation.isDisabled() && brakeMode) {
-      brakeMode = false;
-      setCoastMode();
-    }
-    if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
+    // if (DriverStation.isEnabled() && !brakeMode) {
+    //   brakeMode = true;
+    //   setBrakeMode();
+    // } else if (DriverStation.isDisabled() && brakeMode) {
+    //   brakeMode = false;
+    //   setCoastMode();
+    // }
+    /*if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
       double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
       double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
@@ -154,7 +154,7 @@ public class ExtenderSubsystem extends SubsystemBase {
         pidController.setReference(setpoint, ControlType.kSmartMotion);
         prevSetpoint = setpoint;
       }
-    }
+    }*/
   }
 
   private void setupShuffleboard() {
@@ -177,11 +177,11 @@ public class ExtenderSubsystem extends SubsystemBase {
       // updatePID = tab.addBoolean("Update PID",
       // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
 
-      kMinOutput =
+      kMaxOutput =
           tab.add("Max Output", Constants.EXTENDER_PID_MAX_OUTPUT)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
-      kMaxOutput =
+      kMinOutput =
           tab.add("Min Output", Constants.EXTENDER_PID_MIN_OUTPUT)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
