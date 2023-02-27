@@ -17,7 +17,7 @@ public class RGBStatus extends SubsystemBase {
   private ScoreColors scoreColors;
   private GamePiece gamePiece;
 
-  /** Creates a new LedStatus. */
+  /** Creates a new RGBStatus. */
   public RGBStatus() {
     scoreColors = ScoreColors.NONE;
     gamePiece = GamePiece.NONE;
@@ -27,42 +27,42 @@ public class RGBStatus extends SubsystemBase {
   public void periodic() {
     switch (scoreColors) {
       case HIGH:
-        out0.set(!true);
-        out1.set(!true);
+        out0.set(true);
+        out1.set(true);
         break;
       case LOW:
-        out0.set(!true);
-        out1.set(!false);
+        out0.set(true);
+        out1.set(false);
         break;
       case MEDIUM:
-        out0.set(!false);
-        out1.set(!true);
+        out0.set(false);
+        out1.set(true);
         break;
       case NONE:
       default:
-        out0.set(!false);
-        out1.set(!false);
+        out0.set(false);
+        out1.set(false);
         break;
     }
     switch (gamePiece) {
       case CONE:
-        out2.set(!false);
-        out3.set(!true);
+        out2.set(false);
+        out3.set(true);
         break;
       case CUBE:
-        out2.set(!true);
-        out3.set(!false);
+        out2.set(true);
+        out3.set(false);
         break;
       case NONE:
       default:
-        out2.set(!false);
-        out3.set(!false);
+        out2.set(false);
+        out3.set(false);
         break;
     }
     out4.set(!false);
   }
 
-  public void hasPiece(boolean gamePiece) {}
+  // public void hasPiece(boolean gamePiece) {}
 
   public void off() {
     scoreColors = ScoreColors.NONE;
