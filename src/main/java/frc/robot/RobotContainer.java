@@ -19,6 +19,7 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
 import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
+import frc.robot.commands.DefaultCommands.DefaultRgbStatusCommand;
 import frc.robot.commands.DefaultCommands.DefaultStateMachineCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.RGBStatusSubsytem;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -48,6 +50,7 @@ public class RobotContainer {
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
   public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem();
   public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public RGBStatusSubsytem rgbStatusSubsytem = new RGBStatusSubsytem();
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -175,6 +178,10 @@ public class RobotContainer {
 
     if (stateMachineSubsystem != null) {
       stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+    }
+
+    if (rgbStatusSubsytem != null) {
+      rgbStatusSubsytem.setDefaultCommand(new DefaultRgbStatusCommand());
     }
   }
 
