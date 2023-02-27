@@ -55,7 +55,7 @@ public class IndexerSubsystem extends SubsystemBase {
     //     .getEncoder()
     //     .setPositionConversionFactor(Constants.INDEXER_POSITION_CONVERSION_FACTOR);
     indexerGrabbingMotor.restoreFactoryDefaults();
-    indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
+    indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.CTREPCM, 0);
     // pidController = indexerRotationMotor.getPIDController();
     // pidController.setReference(
     //     indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
