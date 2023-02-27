@@ -10,12 +10,18 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.io.IndexerIO;
+import frc.robot.subsystems.io.IndexerIOInputsAutoLoggedv2;
+import org.littletonrobotics.junction.Logger;
 
 public class IndexerSubsystem extends SubsystemBase {
   private CANSparkMax indexerRotationMotor;
   private CANSparkMax indexerGrabbingMotor;
   private Solenoid indexerSolenoid;
-  boolean IsOpen = true;
+  private boolean isOpen = true;
+
+  private final IndexerIO io;
+  private final IndexerIOInputsAutoLoggedv2 inputs = new IndexerIOInputsAutoLoggedv2();
 
   // Creates a new IntakeSubsystem.
   public IndexerSubsystem() {
@@ -23,11 +29,36 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerGrabbingMotor = new CANSparkMax(Constants.INDEXER_GRABBER_CAN_ID, MotorType.kBrushless);
 
     indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
+
+    io =
+        new IndexerIO() {
+
+          @Override
+          public void updateInputs(IndexerIOInputs inputs) {
+            inputs.grabberSpeed = indexerGrabbingMotor.get();
+            inputs.grabberCurrent = indexerGrabbingMotor.getOutputCurrent();
+            inputs.grabberPosition = indexerGrabbingMotor.getEncoder().getPosition();
+            inputs.grabberVelocity = indexerGrabbingMotor.getEncoder().getVelocity();
+
+            inputs.rotationSpeed = indexerRotationMotor.get();
+            inputs.rotationCurrent = indexerRotationMotor.getOutputCurrent();
+            inputs.rotationPosition = indexerRotationMotor.getEncoder().getPosition();
+            inputs.rotationVelocity = indexerRotationMotor.getEncoder().getVelocity();
+
+            inputs.solenoidState = indexerSolenoid.get();
+            inputs.isOpen = isOpen();
+          }
+        };
+  }
+
+  protected boolean isOpen() {
+    return isOpen;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Indexer", inputs);
   }
 
   public void grabberOn() {
@@ -56,19 +87,23 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void open() {
     indexerSolenoid.set(true);
-    IsOpen = true;
+    isOpen = true;
   }
 
   public void close() {
     indexerSolenoid.set(false);
-    IsOpen = false;
+    isOpen = false;
   }
 
   public void eject() {
-    if (IsOpen) {
+    if (isOpen) {
       indexerGrabbingMotor.set(1.00);
     } else {
       indexerGrabbingMotor.set(-1.00);
     }
+  }
+
+  public double getArmRotation() {
+    return indexerRotationMotor.getEncoder().getPosition();
   }
 }

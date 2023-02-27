@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -50,62 +49,19 @@ public class TeleopSwerve extends CommandBase {
 
   @Override
   public void execute() {
-
-    // invert the controller input and apply the deadband and squaring to make the
-    // robot more
+    // invert the controller input and apply the deadband and squaring to make the robot more
     // responsive to small changes in the controller
-    double xPercentage = modifyAxis(translationXSupplier.getAsDouble());
-    double yPercentage = modifyAxis(translationYSupplier.getAsDouble());
-    double rotationPercentage = modifyAxis(rotationSupplier.getAsDouble());
+    double xPercentage = translationXSupplier.getAsDouble();
+    double yPercentage = translationYSupplier.getAsDouble();
+    double rotationPercentage = rotationSupplier.getAsDouble();
 
-    double xVelocity = xPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double yVelocity = yPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double rotationalVelocity =
-        rotationPercentage * DrivetrainConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-
-    Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);
-    Logger.getInstance().recordOutput("TeleopSwerve/xVelocity", xVelocity);
-    Logger.getInstance().recordOutput("TeleopSwerve/yVelocity", yVelocity);
-    Logger.getInstance().recordOutput("TeleopSwerve/rotationalVelocity", rotationalVelocity);
-
-    drivetrain.drive(xVelocity, yVelocity, rotationalVelocity);
+    drivetrain.drivePercentage(xPercentage, yPercentage, rotationPercentage);
   }
 
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.stop();
-
     super.end(interrupted);
 
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", false);
-  }
-
-  /**
-   * Squares the specified value, while preserving the sign. This method is used on all joystick
-   * inputs. This is useful as a non-linear range is more natural for the driver.
-   *
-   * @param value
-   * @return
-   */
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, DrivetrainConstants.DEADBAND);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-    value *= DrivetrainConstants.TRAINING_WHEELS;
-    return value;
-  }
-
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
   }
 }
