@@ -22,7 +22,7 @@ public class HolderSubsystem extends SubsystemBase {
         new Solenoid(
             Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, Constants.HOLDER_SOLENOID_ID);
 
-    //setupShuffleboard();
+    // setupShuffleboard();
   }
 
   public void open() {

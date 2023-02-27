@@ -45,11 +45,12 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
     extenderMotor.getEncoder().setPositionConversionFactor(Constants.EXTENDER_INCHES_PER_ROTATION);
+    extenderMotor.getEncoder().setPosition(0);
     pidController = extenderMotor.getPIDController();
-    pidController.setFeedbackDevice(extenderMotor.getEncoder());
+    // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    //setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -97,7 +98,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       brakeMode = false;
       setCoastMode();
     }
-    if (DriverStation.isEnabled() && Constants.TUNING_MODE) {
+    if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
       double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
       double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
@@ -164,7 +165,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    if (Constants.TUNING_MODE) {
+    if (true) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();

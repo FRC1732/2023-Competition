@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.io.IndexerIO;
 import frc.robot.subsystems.io.IndexerIOInputsAutoLoggedv2;
-import org.littletonrobotics.junction.Logger;
 
 public class IndexerSubsystem extends SubsystemBase {
   private CANSparkMax indexerRotationMotor;
@@ -120,8 +119,8 @@ public class IndexerSubsystem extends SubsystemBase {
       brakeMode = false;
       setCoastMode();
     }
-    //io.updateInputs(inputs);
-    //Logger.getInstance().processInputs("Indexer", inputs);
+    // io.updateInputs(inputs);
+    // Logger.getInstance().processInputs("Indexer", inputs);
     if (Constants.TUNING_MODE) {
       // double setpoint = positionSet.getDouble(0);
       // double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
