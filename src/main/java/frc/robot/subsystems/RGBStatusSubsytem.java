@@ -48,7 +48,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Invert the digital sigs for HIGH is 0, LOW is 1
+    // Invert the digital sigs;  HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
       if (timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
@@ -69,6 +69,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (specialMode == SpecialMode.NONE) {
+      out4.set(!false);
+
       switch (scoreColors) {
         case HIGH: // 3
           out0.set(!true);
@@ -108,12 +110,11 @@ public class RGBStatusSubsytem extends SubsystemBase {
           out2.set(!false);
           out3.set(!false);
           break;
-      }
-      out4.set(!false);
+      }      
     }
   }
 
-  public void captureGamePiece() {
+  public void capturedGamePiece() {
     timer.reset();
     timer.start();
     targetElapsedTimeSeconds = 2.0;
@@ -124,6 +125,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     scoreColors = ScoreColors.NONE;
     gamePiece = GamePiece.NONE;
     specialMode = SpecialMode.NONE;
+    timer.stop();
   }
 
   public void humanSignals(GamePiece gamePiece) {
