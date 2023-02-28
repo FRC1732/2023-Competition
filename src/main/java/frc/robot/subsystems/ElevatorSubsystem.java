@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -76,13 +77,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (DriverStation.isEnabled() && !brakeMode) {
-    //   brakeMode = true;
-    //   setBrakeMode();
-    // } else if (DriverStation.isDisabled() && brakeMode) {
-    //   brakeMode = false;
-    //   setCoastMode();
-    // }
+     if (DriverStation.isEnabled() && !brakeMode) {
+       brakeMode = true;
+       setBrakeMode();
+     } else if (DriverStation.isDisabled() && brakeMode) {
+       brakeMode = false;
+       setCoastMode();
+     }
     /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
@@ -158,18 +159,18 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void goUp() {
     System.out.println("ELEVATOR UP!!!!!!!!!");
-    // elevatorBaseMotorOne.set(.2);
+    elevatorBaseMotorOne.set(.2);
   }
 
   public void goDown() {
-    // elevatorBaseMotorOne.set(-.2);
+    elevatorBaseMotorOne.set(-.2);
   }
 
   public void doNothing() {}
 
   public void off() {
     System.out.println("ELEVATOR OFF!!!!!!!!!");
-    // elevatorBaseMotorOne.set(0);
+    elevatorBaseMotorOne.set(0);
   }
 
   public void setToMidCone() {
