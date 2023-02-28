@@ -32,9 +32,19 @@ public final class Constants {
   public static final double MAX_PRESSURE = 120.0;
   public static final double MIN_PRESSURE = 100.0;
 
+  // #region Subsystem Config
+
+  public static final boolean HARDWARE_CONFIG_HAS_DRIVETRAIN = true;
+  public static final boolean HARDWARE_CONFIG_HAS_ELEVATOR = true;
+  public static final boolean HARDWARE_CONFIG_HAS_EXTENDER = true;
+  public static final boolean HARDWARE_CONFIG_HAS_HOLDER = true;
+  public static final boolean HARDWARE_CONFIG_HAS_INDEXER = true;
+  public static final boolean HARDWARE_CONFIG_HAS_STATEMACHINE = true;
+
+  // #endregion Subsystem Config
+
   // #region CAN IDs
   public static final int CAN_PNEUMATIC_ID = 60;
-
   public static final int INDEXER_SOLENOID_ID = 0;
   public static final int HOLDER_SOLENOID_ID = 1;
 

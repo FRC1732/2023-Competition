@@ -40,12 +40,18 @@ public class RobotContainer {
   private OperatorInterface oi = new OperatorInterface() {};
   private RobotStateMachine robotStateMachine;
 
-  public Drivetrain drivetrain;
-  public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
-  public HolderSubsystem holderSubsystem = new HolderSubsystem();
-  public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
+  public Drivetrain drivetrainSubsystem;
+  public IndexerSubsystem indexerSubsystem;
+  public HolderSubsystem holderSubsystem;
+  public ExtenderSubsystem extenderSubsystem;
   public StateMachineSubsystem stateMachineSubsystem;
-  public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public ElevatorSubsystem elevatorSubsystem;
+
+  public SwerveModule flModule;
+  public SwerveModule frModule;
+  public SwerveModule blModule;
+  public SwerveModule brModule;
+  public GyroIO gyro;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -66,8 +72,8 @@ public class RobotContainer {
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     configureDriveTrain();
+    defineSubsystems();
 
     // disable all telemetry in the LiveWindow to reduce the processing during each
     // iteration
@@ -82,9 +88,9 @@ public class RobotContainer {
   }
 
   private void configureDriveTrain() {
-    GyroIO gyro = new GyroIoADIS16470();
+    gyro = new GyroIoADIS16470();
 
-    SwerveModule flModule =
+    flModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 0,
@@ -95,7 +101,7 @@ public class RobotContainer {
             0,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule frModule =
+    frModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 1,
@@ -106,7 +112,7 @@ public class RobotContainer {
             1,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule blModule =
+    blModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 2,
@@ -117,7 +123,7 @@ public class RobotContainer {
             2,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule brModule =
+    brModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 3,
@@ -128,7 +134,7 @@ public class RobotContainer {
             3,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+    drivetrainSubsystem = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
   }
 
   /**
@@ -154,9 +160,10 @@ public class RobotContainer {
      *      |    |    | ^
      * (0,0).____|____| y, x-> 0->
      */
-    if (drivetrain != null) {
-      drivetrain.setDefaultCommand(
-          new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+    if (drivetrainSubsystem != null) {
+      drivetrainSubsystem.setDefaultCommand(
+          new TeleopSwerve(
+              drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
     }
   }
 
@@ -184,16 +191,18 @@ public class RobotContainer {
     oi.getFieldRelativeButton()
         .onTrue(
             Commands.either(
-                Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
-                Commands.runOnce(drivetrain::enableFieldRelative, drivetrain),
-                drivetrain::getFieldRelative));
+                Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
+                Commands.runOnce(drivetrainSubsystem::enableFieldRelative, drivetrainSubsystem),
+                drivetrainSubsystem::getFieldRelative));
 
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope));
+    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrainSubsystem::zeroGyroscope));
 
     // x-stance
-    oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
-    oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    oi.getXStanceButton()
+        .onTrue(Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem));
+    oi.getXStanceButton()
+        .onFalse(Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
     // Raise/Lower Indexer Arm
     oi.getIndexerRotateUpButton()
@@ -280,9 +289,9 @@ public class RobotContainer {
   private void configureAutoCommands() {
     Command autoTest =
         Commands.sequence(
-            Commands.runOnce(drivetrain::enableXstance, drivetrain),
+            Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem),
             Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain));
+            Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
@@ -294,22 +303,45 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive Velocity Tuning",
         Commands.sequence(
-            Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
+            Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
             Commands.deadline(
                 Commands.waitSeconds(5.0),
-                Commands.run(() -> drivetrain.drive(1.5, 0.0, 0.0), drivetrain))));
+                Commands.run(
+                    () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
     autoChooser.addOption(
         "Drive Characterization",
         new FeedForwardCharacterization(
-            drivetrain,
+            drivetrainSubsystem,
             true,
             new FeedForwardCharacterizationData("drive"),
-            drivetrain::runCharacterizationVolts,
-            drivetrain::getCharacterizationVelocity));
+            drivetrainSubsystem::runCharacterizationVolts,
+            drivetrainSubsystem::getCharacterizationVelocity));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
+  }
+
+  private void defineSubsystems() {
+    if (Constants.HARDWARE_CONFIG_HAS_DRIVETRAIN) {
+      drivetrainSubsystem = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_ELEVATOR) {
+      elevatorSubsystem = new ElevatorSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_EXTENDER) {
+      extenderSubsystem = new ExtenderSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_HOLDER) {
+      holderSubsystem = new HolderSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_INDEXER) {
+      indexerSubsystem = new IndexerSubsystem();
+    }
   }
 
   /**
