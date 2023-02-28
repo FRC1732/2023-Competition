@@ -74,7 +74,7 @@ public final class Constants {
   public static final double INDEXER_CUBE_POSITION = 150;
   public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
   public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
-  public static final double INDEXER_ARM_P_VALUE = 0.0;
+  public static final double INDEXER_ARM_P_VALUE = 0.01;
   public static final double INDEXER_ARM_I_VALUE = 0;
   public static final double INDEXER_ARM_D_VALUE = 0;
   public static final double INDEXER_ARM_PID_MAX_OUTPUT = 1;
