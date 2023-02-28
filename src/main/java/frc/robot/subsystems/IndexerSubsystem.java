@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer.PieceMode;
 import frc.robot.subsystems.io.IndexerIO;
 import frc.robot.subsystems.io.IndexerIOInputsAutoLoggedv2;
 
@@ -62,7 +63,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setReference(
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
-    indexerRotationMotor.getEncoder().setPosition(0);
+    indexerRotationMotor.getEncoder().setPosition(Constants.INDEXER_STARTING_POSITION);
     setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
@@ -73,11 +74,11 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setSmartMotionMaxAccel(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION, 0);
     pidController.setOutputRange(
         Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
-    // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
-    setpoint = 0;
-     motorSpeed = .015;
-    // indexerRotationMotor.burnFlash();
-    // indexerGrabbingMotor.burnFlash();
+    pidController.setSmartMotionAllowedClosedLoopError(0, 0);
+    setpoint = Constants.INDEXER_STARTING_POSITION;
+    motorSpeed = .015;
+    indexerRotationMotor.burnFlash();
+    indexerGrabbingMotor.burnFlash();
     io =
         new IndexerIO() {
 
@@ -109,8 +110,17 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerGrabbingMotor.setIdleMode(IdleMode.kCoast);
   }
 
-  protected boolean isOpen() {
+  public boolean isAtSetpoint() {
+    return indexerRotationMotor.getEncoder().getPosition() - setpoint
+        < Constants.INDEXER_ARM_DEADBAND;
+  }
+
+  public boolean isOpen() {
     return isOpen;
+  }
+
+  public boolean hasPiece() {
+    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
   }
 
   @Override
@@ -125,7 +135,7 @@ public class IndexerSubsystem extends SubsystemBase {
     // io.updateInputs(inputs);
     // Logger.getInstance().processInputs("Indexer", inputs);
     if (true) {
-      //double setpoint = positionSet.getDouble(0);
+      // double setpoint = positionSet.getDouble(0);
       double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
       double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
       double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
@@ -190,7 +200,7 @@ public class IndexerSubsystem extends SubsystemBase {
       // }
       if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
         motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
-       }
+      }
       if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
         pidController.setReference(setpoint, ControlType.kPosition);
         prevSetpoint = setpoint;
@@ -230,19 +240,61 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerRotationMotor.stopMotor();
   }
 
-  public void setDown(){
-    if (isOpen) {
-    setpoint = Constants.INDEXER_CUBE_POSITION;
-    }else{
-      setpoint = Constants.INDEXER_CONE_POSITION;
+  public void intake(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      close();
+    } else {
+      open();
     }
     grabberIntake();
-
+    setDown();
   }
 
-  public void setUp(){
-    setpoint = 0;
-    grabberOff();
+  public void setCarrying() {
+    grabberHoldPiece();
+    setUp();
+  }
+
+  public void setHoldingLow() {
+    grabberHoldPiece();
+    setScoringPosition();
+  }
+
+  public void score() {
+    setScoringPosition();
+    grabberEject();
+  }
+
+  public void grabberHoldPiece() {
+    if (isOpen) {
+      indexerGrabbingMotor.set(-1 * Constants.INDEXER_HOLD_SPEED);
+    } else {
+      indexerGrabbingMotor.set(Constants.INDEXER_HOLD_SPEED);
+    }
+  }
+
+  public void transferPiece() {
+    if (isOpen) {
+      indexerGrabbingMotor.set(Constants.INDEXER_TRANSFER_SPEED);
+    } else {
+      indexerGrabbingMotor.set(-Constants.INDEXER_TRANSFER_SPEED);
+    }
+  }
+
+  public void setDown() {
+    if (isOpen) {
+      setpoint = Constants.INDEXER_CUBE_POSITION;
+    } else {
+      setpoint = Constants.INDEXER_CONE_POSITION;
+    }
+  }
+
+  public void setUp() {
+    setpoint = Constants.INDEXER_STARTING_POSITION;
+  }
+
+  public void setScoringPosition() {
+    setpoint = Constants.INDEXER_SCORING_POSITION;
   }
 
   public void open() {
@@ -258,14 +310,6 @@ public class IndexerSubsystem extends SubsystemBase {
   public void toggleOpenClose() {
     isOpen = !isOpen;
     indexerSolenoid.set(isOpen);
-  }
-
-  public void eject() {
-    if (isOpen) {
-      indexerGrabbingMotor.set(1.00);
-    } else {
-      indexerGrabbingMotor.set(-1.00);
-    }
   }
 
   public double getArmRotation() {
@@ -315,7 +359,8 @@ public class IndexerSubsystem extends SubsystemBase {
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
 
-      motorSpeedEntry = tab.add("Motor Speed", .015).withWidget(BuiltInWidgets.kTextView).getEntry();
+      motorSpeedEntry =
+          tab.add("Motor Speed", .015).withWidget(BuiltInWidgets.kTextView).getEntry();
 
       positionSet =
           tab.add("Set Position", 0)

@@ -25,7 +25,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   private DigitalInput magLimitSwitch;
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel, motorSpeedEntry;
+  private GenericEntry kP,
+      kI,
+      kD,
+      kIz,
+      kFF,
+      kMaxOutput,
+      kMinOutput,
+      kMaxVelocity,
+      kMaxAccel,
+      motorSpeedEntry;
   private double preP,
       preI,
       preD,
@@ -78,15 +87,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-     if (DriverStation.isEnabled() && !brakeMode) {
-       brakeMode = true;
-       setBrakeMode();
-     } else if (DriverStation.isDisabled() && brakeMode) {
-       brakeMode = false;
-       setCoastMode();
-     }
-     double motorSpeedEntryDouble = motorSpeedEntry.getDouble(.2);
-     if (motorSpeed != motorSpeedEntryDouble) {
+    if (DriverStation.isEnabled() && !brakeMode) {
+      brakeMode = true;
+      setBrakeMode();
+    } else if (DriverStation.isDisabled() && brakeMode) {
+      brakeMode = false;
+      setCoastMode();
+    }
+    double motorSpeedEntryDouble = motorSpeedEntry.getDouble(.2);
+    if (motorSpeed != motorSpeedEntryDouble) {
       motorSpeed = motorSpeedEntryDouble;
     }
     /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
@@ -163,7 +172,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void goUp() {
-    System.out.println("ELEVATOR UP!!!!!!!!!");
     elevatorBaseMotorOne.set(motorSpeed);
   }
 
@@ -171,16 +179,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorBaseMotorOne.set(-motorSpeed);
   }
 
-  public void doNothing() {}
-
   public void off() {
-    System.out.println("ELEVATOR OFF!!!!!!!!!");
-    elevatorBaseMotorOne.set(0);
+    elevatorBaseMotorOne.stopMotor();
+    ;
   }
 
   public void setToMidCone() {
     pidController.setReference(
         Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+  }
+
+  public void setToNeutralPosition() {
+    pidController.setReference(
+        Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
   }
 
   public void setToHighCone() {
@@ -233,10 +244,9 @@ public class ElevatorSubsystem extends SubsystemBase {
           tab.add("Max Accell", Constants.ELEVATOR_MAX_ACCELERATION_RPM2)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
-              kMaxAccel =
-      motorSpeedEntry = tab.add("Motor Speed", .4)
-              .withWidget(BuiltInWidgets.kTextView)
-              .getEntry();
+      kMaxAccel =
+          motorSpeedEntry =
+              tab.add("Motor Speed", .4).withWidget(BuiltInWidgets.kTextView).getEntry();
       positionSet =
           tab.add("Set Position", 0)
               .withWidget(BuiltInWidgets.kTextView)

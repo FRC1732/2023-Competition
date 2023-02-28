@@ -1,16 +1,10 @@
 package frc.robot.state_machine;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
-import frc.robot.commands.IndexerCommands.IndexerCarryLowCommand;
-import frc.robot.commands.IndexerCommands.IndexerCarryMidHighCommand;
-import frc.robot.commands.IndexerCommands.IndexerPlaceCommand;
-import frc.robot.commands.IndexerCommands.IndexerSwitchToLowCommand;
-import frc.robot.commands.IndexerCommands.IndexerSwitchToMidHighCommand;
-import frc.robot.commands.ScoreCommand;
-import frc.robot.commands.SmartIntakeCommand;
-import frc.robot.commands.StageCommand;
-import frc.robot.commands.StagedToLowCommand;
+import frc.robot.commands.TransitionCommands.*;
 import frc.robot.state_machine.events.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,26 +20,29 @@ public class RobotStateMachine {
 
   private FiniteStateMachine stateMachine;
   private SmartIntakeCommand smartIntakeCommand;
-  private IndexerCarryMidHighCommand indexerCarryMidHighCommand;
-  private StageCommand stageCommand;
-  private ScoreCommand scoreCommand;
-  private IndexerCarryLowCommand indexerCarryLowCommand;
-  private IndexerPlaceCommand indexerPlaceCommand;
-  private IndexerSwitchToMidHighCommand indexerSwitchToMidHighCommand;
-  private IndexerSwitchToLowCommand indexerSwitchToLowCommand;
-  private StagedToLowCommand stagedToLowCommand;
+  private ResetToReadyCommand resetToReadyCommand;
+  private CarryGamePieceCommand carryGamePieceCommand;
+  private StageGamePieceCommand stageGamePieceCommand;
+  private ScoreWithHolderCommand scoreWithHolderCommand;
+  private HoldGamePieceLowCommand holdGamePieceLowCommand;
+  private ScoreLowCommand scoreLowCommand;
+  private Command switchFromCarryingToHoldingLowCommand;
+  private Command unstageGamePieceCommand;
 
   public RobotStateMachine(RobotContainer container) {
     robotContainer = container;
     smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
-    indexerCarryMidHighCommand = new IndexerCarryMidHighCommand(robotContainer, this);
-    stageCommand = new StageCommand(robotContainer, this);
-    scoreCommand = new ScoreCommand(robotContainer, this);
-    indexerCarryLowCommand = new IndexerCarryLowCommand(robotContainer, this);
-    indexerPlaceCommand = new IndexerPlaceCommand(robotContainer, this);
-    indexerSwitchToMidHighCommand = new IndexerSwitchToMidHighCommand(robotContainer, this);
-    indexerSwitchToLowCommand = new IndexerSwitchToLowCommand(robotContainer, this);
-    stagedToLowCommand = new StagedToLowCommand(robotContainer, this);
+    carryGamePieceCommand = new CarryGamePieceCommand(robotContainer, this);
+    stageGamePieceCommand = new StageGamePieceCommand(robotContainer, this);
+    scoreWithHolderCommand = new ScoreWithHolderCommand(robotContainer, this);
+    holdGamePieceLowCommand = new HoldGamePieceLowCommand(robotContainer);
+    scoreLowCommand = new ScoreLowCommand(robotContainer);
+    resetToReadyCommand = new ResetToReadyCommand(robotContainer);
+    switchFromCarryingToHoldingLowCommand =
+        Commands.sequence(
+            new ReleasePieceFromCarryingCommand(robotContainer), holdGamePieceLowCommand);
+    unstageGamePieceCommand =
+        Commands.sequence(new UnstageGamePieceCommand(robotContainer), resetToReadyCommand);
 
     State readyToIntake = new State("readyToIntake");
     State intaking = new State("intaking");
@@ -79,7 +76,7 @@ public class RobotStateMachine {
             .eventType(PieceDetectedMidHigh.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(indexerCarryMidHighCommand);
+                  CommandScheduler.getInstance().schedule(carryGamePieceCommand);
                 })
             .targetState(carrying)
             .build();
@@ -91,7 +88,7 @@ public class RobotStateMachine {
             .eventType(ScorePressed.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(stageCommand);
+                  CommandScheduler.getInstance().schedule(stageGamePieceCommand);
                 })
             .targetState(staged)
             .build();
@@ -103,7 +100,7 @@ public class RobotStateMachine {
             .eventType(FinishScorePressed.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(scoreCommand);
+                  CommandScheduler.getInstance().schedule(scoreWithHolderCommand);
                 })
             .targetState(readyToIntake)
             .build();
@@ -115,7 +112,7 @@ public class RobotStateMachine {
             .eventType(PieceDetectedLow.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(indexerCarryLowCommand);
+                  CommandScheduler.getInstance().schedule(holdGamePieceLowCommand);
                 })
             .targetState(holdingLow)
             .build();
@@ -127,7 +124,7 @@ public class RobotStateMachine {
             .eventType(PlaceButtonPressed.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(indexerPlaceCommand);
+                  CommandScheduler.getInstance().schedule(scoreLowCommand);
                 })
             .targetState(readyToIntake)
             .build();
@@ -139,53 +136,56 @@ public class RobotStateMachine {
             .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(indexerSwitchToMidHighCommand);
+                  CommandScheduler.getInstance().schedule(carryGamePieceCommand);
                 })
             .targetState(carrying)
             .build();
 
-    Transition transitionI =
+    Transition transitionH2 =
         new TransitionBuilder()
-            .name("transitionI")
+            .name("transitionH2")
             .sourceState(carrying)
             .eventType(SwitchToMidHigh.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(indexerSwitchToLowCommand);
+                  CommandScheduler.getInstance().schedule(switchFromCarryingToHoldingLowCommand);
                 })
             .targetState(holdingLow)
             .build();
+
+    // Transition transitionI =
+    //     new TransitionBuilder()
+    //         .name("transitionI")
+    //         .sourceState(staged)
+    //         .eventType(IntakePressed.class)
+    //         .eventHandler(
+    //             (event) -> {
+    //               CommandScheduler.getInstance().schedule(smartIntakeCommand);
+    //             })
+    //         .targetState(intaking)
+    //         .build();
 
     Transition transitionJ =
         new TransitionBuilder()
             .name("transitionJ")
             .sourceState(staged)
-            .eventType(IntakePressed.class)
+            .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(smartIntakeCommand);
+                  CommandScheduler.getInstance().schedule(unstageGamePieceCommand);
                 })
-            .targetState(intaking)
+            .targetState(readyToIntake)
             .build();
 
     Transition transitionK =
         new TransitionBuilder()
             .name("transitionK")
-            .sourceState(staged)
+            .sourceState(intaking)
             .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
-                  CommandScheduler.getInstance().schedule(stagedToLowCommand);
+                  CommandScheduler.getInstance().schedule(resetToReadyCommand);
                 })
-            .targetState(readyToIntake)
-            .build();
-
-    Transition transitionL =
-        new TransitionBuilder()
-            .name("transitionL")
-            .sourceState(intaking)
-            .eventType(IntakeReleased.class)
-            .eventHandler((event) -> {})
             .targetState(readyToIntake)
             .build();
 
@@ -198,10 +198,10 @@ public class RobotStateMachine {
             .registerTransition(transitionF)
             .registerTransition(transitionG)
             .registerTransition(transitionH)
-            .registerTransition(transitionI)
+            .registerTransition(transitionH2)
+            // .registerTransition(transitionI)
             .registerTransition(transitionJ)
             .registerTransition(transitionK)
-            .registerTransition(transitionL)
             .build();
   }
 

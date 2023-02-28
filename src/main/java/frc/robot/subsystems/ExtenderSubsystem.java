@@ -51,7 +51,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-     setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -163,17 +163,14 @@ public class ExtenderSubsystem extends SubsystemBase {
   }
 
   public void goToMiddleScoringPosition() {
-    System.out.println("EXTENDER MID!!!!!!!!!");
     setPoint = Constants.EXTENDER_MID_CONE_POSITION_INCHES;
   }
 
   public void goToHighScoringPosition() {
-    System.out.println("EXTENDER HIGH!!!!!!!!!");
     setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES;
   }
 
-  public void goToStartingScoringPosition() {
-    System.out.println("EXTENDER STARTING POSITION!!!!!!!!!");
+  public void goToStartingPosition() {
     setPoint = Constants.EXTENDER_STARTING_POSITION_INCHES;
   }
 

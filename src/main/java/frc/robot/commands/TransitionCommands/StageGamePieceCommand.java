@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.TransitionCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -6,11 +6,11 @@ import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.ScorePressed;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class StageCommand extends CommandBase {
+public class StageGamePieceCommand extends CommandBase {
   private RobotStateMachine robotStateMachine;
   private ElevatorSubsystem elevatorSubsystem;
 
-  public StageCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+  public StageGamePieceCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
     this.elevatorSubsystem = robotContainer.elevatorSubsystem;
     this.robotStateMachine = robotStateMachine;
     addRequirements(elevatorSubsystem);

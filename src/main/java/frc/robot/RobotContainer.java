@@ -53,6 +53,20 @@ public class RobotContainer {
   public SwerveModule brModule;
   public GyroIO gyro;
 
+  public enum PieceMode {
+    CONE,
+    CUBE
+  }
+
+  public enum ScoringHeight {
+    LOW,
+    MEDIUM,
+    HIGH
+  }
+
+  public PieceMode pieceMode;
+  public ScoringHeight scoringHeight;
+
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -81,7 +95,6 @@ public class RobotContainer {
 
     updateOI();
     configureDefaultCommands();
-    configureButtonBindings();
     configureAutoCommands();
     robotStateMachine = new RobotStateMachine(this);
     stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
@@ -165,6 +178,8 @@ public class RobotContainer {
           new TeleopSwerve(
               drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
     }
+
+    configureButtonBindings();
   }
 
   private void configureDefaultCommands() {
@@ -291,14 +306,12 @@ public class RobotContainer {
     oi.getMiddleGoalButton()
         .onTrue(Commands.runOnce(extenderSubsystem::goToMiddleScoringPosition, extenderSubsystem));
     oi.getMiddleGoalButton()
-        .onFalse(
-            Commands.runOnce(extenderSubsystem::goToStartingScoringPosition, extenderSubsystem));
+        .onFalse(Commands.runOnce(extenderSubsystem::goToStartingPosition, extenderSubsystem));
 
     oi.getHighGoalButton()
         .onTrue(Commands.runOnce(extenderSubsystem::goToHighScoringPosition, extenderSubsystem));
     oi.getHighGoalButton()
-        .onFalse(
-            Commands.runOnce(extenderSubsystem::goToStartingScoringPosition, extenderSubsystem));
+        .onFalse(Commands.runOnce(extenderSubsystem::goToStartingPosition, extenderSubsystem));
   }
 
   /** Use this method to define your commands for autonomous mode. */
