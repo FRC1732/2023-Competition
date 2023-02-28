@@ -34,6 +34,7 @@ public class ExtenderSubsystem extends SubsystemBase {
       preMinOutput,
       preMaxVelocity,
       preMaxAccel;
+  private double setPoint = 0;
   // private SuppliedValueWidget updatePID;
   private boolean brakeMode;
   private double prevSetpoint;
@@ -155,6 +156,25 @@ public class ExtenderSubsystem extends SubsystemBase {
         prevSetpoint = setpoint;
       }
     }*/
+    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+      pidController.setReference(setPoint, ControlType.kSmartMotion);
+      prevSetpoint = setPoint;
+    }
+  }
+
+  public void goToMiddleScoringPosition() {
+    System.out.println("EXTENDER MID!!!!!!!!!");
+    setPoint = Constants.EXTENDER_MID_CONE_POSITION_INCHES;
+  }
+
+  public void goToHighScoringPosition() {
+    System.out.println("EXTENDER HIGH!!!!!!!!!");
+    setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES;
+  }
+
+  public void goToStartingScoringPosition() {
+    System.out.println("EXTENDER STARTING POSITION!!!!!!!!!");
+    setPoint = Constants.EXTENDER_STARTING_POSITION_INCHES;
   }
 
   private void setupShuffleboard() {
