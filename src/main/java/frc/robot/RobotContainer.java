@@ -242,6 +242,9 @@ public class RobotContainer {
     oi.getAdjustElevatorDownButton()
         .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
 
+    oi.getIntakeButton().onTrue(Commands.runOnce(indexerSubsystem::setDown, indexerSubsystem));
+    oi.getIntakeButton().onFalse(Commands.runOnce(indexerSubsystem::setUp, indexerSubsystem));
+
     // Intake buttons
     // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on, intakeSubsystem));
     // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off, intakeSubsystem));

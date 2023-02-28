@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private DigitalInput magLimitSwitch;
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
-  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel;
+  private GenericEntry kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxVelocity, kMaxAccel, motorSpeedEntry;
   private double preP,
       preI,
       preD,
@@ -37,6 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       preMaxAccel;
   private boolean brakeMode;
   private double prevSetpoint;
+  private double motorSpeed;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -59,7 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setupShuffleboard();
-
+    motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
     pidController.setI(Constants.ELEVATOR_I_VALUE);
@@ -84,6 +85,10 @@ public class ElevatorSubsystem extends SubsystemBase {
        brakeMode = false;
        setCoastMode();
      }
+     double motorSpeedEntryDouble = motorSpeedEntry.getDouble(.2);
+     if (motorSpeed != motorSpeedEntryDouble) {
+      motorSpeed = motorSpeedEntryDouble;
+    }
     /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
@@ -159,11 +164,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void goUp() {
     System.out.println("ELEVATOR UP!!!!!!!!!");
-    elevatorBaseMotorOne.set(.2);
+    elevatorBaseMotorOne.set(motorSpeed);
   }
 
   public void goDown() {
-    elevatorBaseMotorOne.set(-.2);
+    elevatorBaseMotorOne.set(-motorSpeed);
   }
 
   public void doNothing() {}
@@ -226,6 +231,10 @@ public class ElevatorSubsystem extends SubsystemBase {
               .getEntry();
       kMaxAccel =
           tab.add("Max Accell", Constants.ELEVATOR_MAX_ACCELERATION_RPM2)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+              kMaxAccel =
+      motorSpeedEntry = tab.add("Motor Speed", .4)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
       positionSet =

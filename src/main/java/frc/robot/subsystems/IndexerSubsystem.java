@@ -40,6 +40,7 @@ public class IndexerSubsystem extends SubsystemBase {
       preMaxVelocity,
       preMaxAccel;
   private double motorSpeed;
+  private double setpoint;
   private GenericEntry motorSpeedEntry;
   private boolean brakeMode;
   private double prevSetpoint = 0;
@@ -61,6 +62,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setReference(
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
+    indexerRotationMotor.getEncoder().setPosition(0);
     setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
@@ -72,8 +74,8 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setOutputRange(
         Constants.INDEXER_ARM_PID_MIN_OUTPUT, Constants.INDEXER_ARM_PID_MAX_OUTPUT);
     // pidController.setSmartMotionAllowedClosedLoopError(5.0, 0);
-
-    // motorSpeed = 0;
+    setpoint = 0;
+     motorSpeed = .015;
     // indexerRotationMotor.burnFlash();
     // indexerGrabbingMotor.burnFlash();
     io =
@@ -123,8 +125,8 @@ public class IndexerSubsystem extends SubsystemBase {
     // io.updateInputs(inputs);
     // Logger.getInstance().processInputs("Indexer", inputs);
     if (true) {
-      double setpoint = positionSet.getDouble(0);
-      // double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
+      //double setpoint = positionSet.getDouble(0);
+      double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
       double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
       double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
       double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
@@ -186,9 +188,9 @@ public class IndexerSubsystem extends SubsystemBase {
       //             * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
       //   }
       // }
-      // if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
-      //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
-      // }
+      if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
+        motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
+       }
       if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
         pidController.setReference(setpoint, ControlType.kPosition);
         prevSetpoint = setpoint;
@@ -217,15 +219,30 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void rotateUp() {
-    indexerRotationMotor.set(0.1);
+    indexerRotationMotor.set(motorSpeed);
   }
 
   public void rotateDown() {
-    indexerRotationMotor.set(-0.1);
+    indexerRotationMotor.set(-motorSpeed);
   }
 
   public void rotateOff() {
     indexerRotationMotor.stopMotor();
+  }
+
+  public void setDown(){
+    if (isOpen) {
+    setpoint = Constants.INDEXER_CUBE_POSITION;
+    }else{
+      setpoint = Constants.INDEXER_CONE_POSITION;
+    }
+    grabberIntake();
+
+  }
+
+  public void setUp(){
+    setpoint = 0;
+    grabberOff();
   }
 
   public void open() {
@@ -298,7 +315,7 @@ public class IndexerSubsystem extends SubsystemBase {
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
 
-      motorSpeedEntry = tab.add("Motor Speed", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      motorSpeedEntry = tab.add("Motor Speed", .015).withWidget(BuiltInWidgets.kTextView).getEntry();
 
       positionSet =
           tab.add("Set Position", 0)
