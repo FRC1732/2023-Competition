@@ -283,6 +283,19 @@ public class RobotContainer {
 
     // oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close,
     // indexerSubsystem));
+
+    // Extender buttons
+    oi.getMiddleGoalButton()
+        .onTrue(Commands.runOnce(extenderSubsystem::goToMiddleScoringPosition, extenderSubsystem));
+    oi.getMiddleGoalButton()
+        .onFalse(
+            Commands.runOnce(extenderSubsystem::goToStartingScoringPosition, extenderSubsystem));
+
+    oi.getHighGoalButton()
+        .onTrue(Commands.runOnce(extenderSubsystem::goToHighScoringPosition, extenderSubsystem));
+    oi.getHighGoalButton()
+        .onFalse(
+            Commands.runOnce(extenderSubsystem::goToStartingScoringPosition, extenderSubsystem));
   }
 
   /** Use this method to define your commands for autonomous mode. */
