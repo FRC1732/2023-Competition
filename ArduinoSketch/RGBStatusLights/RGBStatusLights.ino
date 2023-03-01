@@ -164,15 +164,15 @@ void blinkColor(bool red, bool green, bool blue) {
 }
 
 void flashFast(bool red, bool green, bool blue) {
-  if (timer < 60) {
+  if (timer < 15) {
     setColor(red, green, blue);
   }
 
-  if (timer < 120 && timer > 60) {
+  if (timer < 30 && timer > 15) {
     setColor(false, false, false);
   }
 
-  if (timer > 121) {
+  if (timer > 31) {
     timer = 0;
   }
 }
@@ -190,7 +190,8 @@ void setColorLow(bool red, bool green, bool blue) {
 void setColorMid(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    if (i < 46 && i > 22) {
+    //if (i < 46 && i > 22) {
+    if (i < 46 ) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
     }
   }
@@ -200,9 +201,9 @@ void setColorMid(bool red, bool green, bool blue) {
 void setColorHigh(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    if (i < NUMPIXELS && i > 45) {
+    //if (i < NUMPIXELS && i > 45) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
-    }
+    //}
   }
   pixels.show();
 }
