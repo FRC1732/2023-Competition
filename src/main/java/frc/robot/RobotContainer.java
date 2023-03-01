@@ -22,6 +22,11 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
+import frc.robot.state_machine.events.IntakePressed;
+import frc.robot.state_machine.events.IntakeReleased;
+import frc.robot.state_machine.events.ScorePressed;
+import frc.robot.state_machine.events.SwitchToLow;
+import frc.robot.state_machine.events.SwitchToMidHigh;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
@@ -257,8 +262,14 @@ public class RobotContainer {
     oi.getAdjustElevatorDownButton()
         .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
 
-    oi.getIntakeButton().onTrue(Commands.runOnce(indexerSubsystem::setDown, indexerSubsystem));
-    oi.getIntakeButton().onFalse(Commands.runOnce(indexerSubsystem::setUp, indexerSubsystem));
+    // Intake
+    oi.getIntakeButton()
+        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
+    oi.getIntakeButton()
+        .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
+
+    oi.getScoreButton()
+        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
     // Intake buttons
     // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on, intakeSubsystem));
@@ -303,15 +314,25 @@ public class RobotContainer {
     // indexerSubsystem));
 
     // Extender buttons
-    oi.getMiddleGoalButton()
-        .onTrue(Commands.runOnce(extenderSubsystem::goToMiddleScoringPosition, extenderSubsystem));
-    oi.getMiddleGoalButton()
-        .onFalse(Commands.runOnce(extenderSubsystem::goToStartingPosition, extenderSubsystem));
+    oi.getLowGoalButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  scoringHeight = ScoringHeight.LOW;
+                  robotStateMachine.fireEvent(new SwitchToLow());
+                }));
 
     oi.getHighGoalButton()
-        .onTrue(Commands.runOnce(extenderSubsystem::goToHighScoringPosition, extenderSubsystem));
-    oi.getHighGoalButton()
-        .onFalse(Commands.runOnce(extenderSubsystem::goToStartingPosition, extenderSubsystem));
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  scoringHeight = ScoringHeight.HIGH;
+                  robotStateMachine.fireEvent(new SwitchToMidHigh());
+                }));
+
+    oi.getConeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CONE));
+
+    oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
   }
 
   /** Use this method to define your commands for autonomous mode. */
