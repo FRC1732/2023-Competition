@@ -58,13 +58,13 @@ public class IndexerSubsystem extends SubsystemBase {
         .getEncoder()
         .setPositionConversionFactor(Constants.INDEXER_POSITION_CONVERSION_FACTOR);
     indexerGrabbingMotor.restoreFactoryDefaults();
-    indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.CTREPCM, 0);
+    indexerSolenoid = new Solenoid(Constants.CAN_PNEUMATIC_ID, PneumaticsModuleType.REVPH, 0);
     pidController = indexerRotationMotor.getPIDController();
     pidController.setReference(
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     indexerRotationMotor.getEncoder().setPosition(Constants.INDEXER_STARTING_POSITION);
-    setupShuffleboard();
+    //setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
@@ -134,7 +134,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
     // io.updateInputs(inputs);
     // Logger.getInstance().processInputs("Indexer", inputs);
-    if (true) {
+    /*if (true) {
       // double setpoint = positionSet.getDouble(0);
       double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
       double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
@@ -186,7 +186,7 @@ public class IndexerSubsystem extends SubsystemBase {
       if (preMaxAccel != maxAccel) {
         pidController.setSmartMotionMaxAccel(maxAccel, 0);
         preMaxAccel = maxAccel;
-      }
+      }*/
 
       // if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
       //   if (motorSpeed < 10e-4) {
@@ -198,13 +198,12 @@ public class IndexerSubsystem extends SubsystemBase {
       //             * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
       //   }
       // }
-      if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
-        motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
-      }
+      //if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
+      //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
+      //}
       if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
         pidController.setReference(setpoint, ControlType.kPosition);
         prevSetpoint = setpoint;
-      }
     }
   }
 
@@ -335,8 +334,9 @@ public class IndexerSubsystem extends SubsystemBase {
         "PosFactor", () -> indexerRotationMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble(
         "VelFactor", () -> indexerRotationMotor.getEncoder().getVelocityConversionFactor());
-    tab.addDouble("Current (amps)", () -> indexerRotationMotor.getOutputCurrent());
-    if (true) {
+    tab.addDouble("Current Rotation (amps)", () -> indexerRotationMotor.getOutputCurrent());
+    tab.addDouble("Current Intake (amps)", () -> indexerGrabbingMotor.getOutputCurrent());
+    if (false) {
       kP =
           tab.add("P", Constants.INDEXER_ARM_P_VALUE)
               .withWidget(BuiltInWidgets.kTextView)
