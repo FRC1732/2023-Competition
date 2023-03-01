@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 
-public class ResetToReadyCommand extends CommandBase {
+public class MoveElevatorToNeutralCommand extends CommandBase {
   private RobotContainer robotContainer;
   private PieceMode prevPieceMode;
 
-  public ResetToReadyCommand(RobotContainer robotContainer) {
+  public MoveElevatorToNeutralCommand(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.indexerSubsystem);
     addRequirements(robotContainer.elevatorSubsystem);
@@ -19,26 +19,17 @@ public class ResetToReadyCommand extends CommandBase {
   @Override
   public void initialize() {
     prevPieceMode = robotContainer.pieceMode;
-    robotContainer.elevatorSubsystem.setToNeutralPosition();
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
-    robotContainer.indexerSubsystem.setReady();
-    if (prevPieceMode == PieceMode.CONE) {
-      robotContainer.indexerSubsystem.close();
-    } else {
-      robotContainer.indexerSubsystem.open();
-    }
+    robotContainer.elevatorSubsystem.setToNeutralPosition();
+    robotContainer.indexerSubsystem.setCarrying();
   }
 
   @Override
   public void execute() {
+    // prevent changing piece mode
     if (prevPieceMode != robotContainer.pieceMode) {
-      prevPieceMode = robotContainer.pieceMode;
-      if (prevPieceMode == PieceMode.CONE) {
-        robotContainer.indexerSubsystem.close();
-      } else {
-        robotContainer.indexerSubsystem.open();
-      }
+      robotContainer.pieceMode = prevPieceMode;
     }
   }
 
@@ -47,6 +38,6 @@ public class ResetToReadyCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return robotContainer.elevatorSubsystem.isAtSetpoint();
   }
 }

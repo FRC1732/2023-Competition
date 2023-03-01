@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 
-public class ResetToReadyCommand extends CommandBase {
+public class LowerElevatorToTransferCommand extends CommandBase {
   private RobotContainer robotContainer;
   private PieceMode prevPieceMode;
 
-  public ResetToReadyCommand(RobotContainer robotContainer) {
+  public LowerElevatorToTransferCommand(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.indexerSubsystem);
     addRequirements(robotContainer.elevatorSubsystem);
@@ -19,15 +19,10 @@ public class ResetToReadyCommand extends CommandBase {
   @Override
   public void initialize() {
     prevPieceMode = robotContainer.pieceMode;
-    robotContainer.elevatorSubsystem.setToNeutralPosition();
+    robotContainer.elevatorSubsystem.goToTransferPosition(prevPieceMode);
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
-    robotContainer.indexerSubsystem.setReady();
-    if (prevPieceMode == PieceMode.CONE) {
-      robotContainer.indexerSubsystem.close();
-    } else {
-      robotContainer.indexerSubsystem.open();
-    }
+    robotContainer.indexerSubsystem.pushAgainstHardstop();
   }
 
   @Override
@@ -43,10 +38,14 @@ public class ResetToReadyCommand extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    robotContainer.indexerSubsystem.grabberOff();
+    robotContainer.indexerSubsystem.rotateOff();
+    robotContainer.holderSubsystem.close();
+  }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return robotContainer.elevatorSubsystem.isAtSetpoint();
   }
 }

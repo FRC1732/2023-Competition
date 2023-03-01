@@ -21,26 +21,36 @@ public class RobotStateMachine {
   private FiniteStateMachine stateMachine;
   private SmartIntakeCommand smartIntakeCommand;
   private ResetToReadyCommand resetToReadyCommand;
-  private CarryGamePieceCommand carryGamePieceCommand;
+  private Command carryGamePieceCommand;
+  private LowerElevatorToTransferCommand lowerElevatorToTransferCommand;
   private StageGamePieceCommand stageGamePieceCommand;
   private ScoreWithHolderCommand scoreWithHolderCommand;
   private HoldGamePieceLowCommand holdGamePieceLowCommand;
   private ScoreLowCommand scoreLowCommand;
   private Command switchFromCarryingToHoldingLowCommand;
   private Command unstageGamePieceCommand;
+  private OpenHolderCommand openHolderCommand;
+  private MoveElevatorToNeutralCommand moveElevatorToNeutral;
+  private MoveIndexerToScoringCommand moveIndexerToScoringCommand;
 
   public RobotStateMachine(RobotContainer container) {
     robotContainer = container;
+    moveElevatorToNeutral = new MoveElevatorToNeutralCommand(robotContainer);
+    openHolderCommand = new OpenHolderCommand(robotContainer);
+    moveIndexerToScoringCommand = new MoveIndexerToScoringCommand(robotContainer);
+    lowerElevatorToTransferCommand = new LowerElevatorToTransferCommand(robotContainer);
+
     smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
-    carryGamePieceCommand = new CarryGamePieceCommand(robotContainer, this);
+
     stageGamePieceCommand = new StageGamePieceCommand(robotContainer, this);
     scoreWithHolderCommand = new ScoreWithHolderCommand(robotContainer, this);
     holdGamePieceLowCommand = new HoldGamePieceLowCommand(robotContainer);
     scoreLowCommand = new ScoreLowCommand(robotContainer);
     resetToReadyCommand = new ResetToReadyCommand(robotContainer);
+    carryGamePieceCommand =
+        Commands.sequence(moveIndexerToScoringCommand, lowerElevatorToTransferCommand);
     switchFromCarryingToHoldingLowCommand =
-        Commands.sequence(
-            new ReleasePieceFromCarryingCommand(robotContainer), holdGamePieceLowCommand);
+        Commands.sequence(openHolderCommand, moveElevatorToNeutral, holdGamePieceLowCommand);
     unstageGamePieceCommand =
         Commands.sequence(new UnstageGamePieceCommand(robotContainer), resetToReadyCommand);
 

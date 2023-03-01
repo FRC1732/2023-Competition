@@ -1,16 +1,14 @@
 package frc.robot.commands.TransitionCommands;
 
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 
-public class ReleasePieceFromCarryingCommand extends WaitCommand {
+public class MoveIndexerToScoringCommand extends CommandBase {
   private RobotContainer robotContainer;
   private PieceMode prevPieceMode;
-  private boolean elevatorSetFlag = false;
 
-  public ReleasePieceFromCarryingCommand(RobotContainer robotContainer) {
-    super(1.5); // run for 1.5 seconds
+  public MoveIndexerToScoringCommand(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.indexerSubsystem);
     addRequirements(robotContainer.elevatorSubsystem);
@@ -20,22 +18,31 @@ public class ReleasePieceFromCarryingCommand extends WaitCommand {
 
   @Override
   public void initialize() {
-    super.initialize();
     prevPieceMode = robotContainer.pieceMode;
+    robotContainer.elevatorSubsystem.setToNeutralPosition();
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
+    robotContainer.indexerSubsystem.setCarrying();
+    if (prevPieceMode == PieceMode.CONE) {
+      robotContainer.indexerSubsystem.close();
+    } else {
+      robotContainer.indexerSubsystem.open();
+    }
   }
 
   @Override
   public void execute() {
-    // let the holder open before moving
-    if (!elevatorSetFlag && m_timer.get() > 0.5) {
-      robotContainer.elevatorSubsystem.setToNeutralPosition();
-    }
-
     // prevent changing piece mode
     if (prevPieceMode != robotContainer.pieceMode) {
       robotContainer.pieceMode = prevPieceMode;
     }
+  }
+
+  @Override
+  public void end(boolean interrupted) {}
+
+  @Override
+  public boolean isFinished() {
+    return robotContainer.indexerSubsystem.isAtSetpoint();
   }
 }

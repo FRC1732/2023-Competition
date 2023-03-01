@@ -83,7 +83,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setFF(0);
     pidController.setSmartMotionMaxVelocity(Constants.ELEVATOR_MAX_SPEED_RPM, 0);
     pidController.setSmartMotionMaxAccel(Constants.ELEVATOR_MAX_ACCELERATION_RPM2, 0);
-    pidController.setSmartMotionAllowedClosedLoopError(0.1, 0);
+    pidController.setSmartMotionAllowedClosedLoopError(0.05, 0);
     elevatorBaseMotorOne.burnFlash();
     elevatorBaseMotorTwo.burnFlash();
   }
@@ -153,7 +153,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }
 
-     
+
     }*/
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
@@ -161,7 +161,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void goToTransferPosition(PieceMode pieceMode){
+  public void goToTransferPosition(PieceMode pieceMode) {
     if (pieceMode == PieceMode.CONE) {
       setPoint = Constants.ELEVATOR_CONE_TRANSFER_POSITION_INCHES;
     } else {
@@ -205,7 +205,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void off() {
     elevatorBaseMotorOne.stopMotor();
-    ;
+  }
+
+  public boolean isAtSetpoint() {
+    return Math.abs(elevatorBaseMotorOne.getEncoder().getPosition() - setPoint)
+        < Constants.ELEVATOR_DEADBAND;
   }
 
   public void setToMidCone() {

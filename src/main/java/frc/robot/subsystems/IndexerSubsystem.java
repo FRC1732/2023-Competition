@@ -111,7 +111,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
-    return indexerRotationMotor.getEncoder().getPosition() - setpoint
+    return Math.abs(indexerRotationMotor.getEncoder().getPosition() - setpoint)
         < Constants.INDEXER_ARM_DEADBAND;
   }
 
@@ -255,6 +255,11 @@ public class IndexerSubsystem extends SubsystemBase {
     setUp();
   }
 
+  public void setReady() {
+    grabberOff();
+    setUp();
+  }
+
   public void setHoldingLow() {
     grabberHoldPiece();
     setScoringPosition();
@@ -314,6 +319,11 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public double getArmRotation() {
     return indexerRotationMotor.getEncoder().getPosition();
+  }
+
+  public void pushAgainstHardstop() {
+    indexerRotationMotor.set(Constants.INDEXER_ARM_ROTATE_STALL_SPEED);
+    grabberHoldPiece();
   }
 
   private void setupShuffleboard() {
