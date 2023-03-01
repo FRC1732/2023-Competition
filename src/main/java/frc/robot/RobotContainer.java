@@ -26,6 +26,8 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LimelightObjectDetection;
+import frc.robot.subsystems.LimelightScoring;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -46,6 +48,8 @@ public class RobotContainer {
   public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
   public StateMachineSubsystem stateMachineSubsystem;
   public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public LimelightObjectDetection limelightObjectDetection = new LimelightObjectDetection();
+  public LimelightScoring limelightScoring = new LimelightScoring();
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging

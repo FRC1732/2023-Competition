@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -21,11 +19,12 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-@SuppressWarnings("unused")
-public class Limelight extends SubsystemBase {
+public class LimelightScoring extends SubsystemBase {
+  // limelight hostname: http://limelight-scoring.local:5801
   private NetworkTable table;
   private NetworkTableEntry llData_camerastream;
   private NetworkTableEntry tv;
@@ -55,7 +54,7 @@ public class Limelight extends SubsystemBase {
   private Pose2d position = EMPTY_POSE2D;
 
   /** Creates a new Limelight. */
-  public Limelight() {
+  public LimelightScoring() {
     configureNetworkTableEntries();
     configureShuffleBoard();
   }
@@ -151,8 +150,8 @@ public class Limelight extends SubsystemBase {
           if (_thetaController == null) {
             var profileConstraints =
                 new TrapezoidProfile.Constraints(
-                    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-                    MAX_ANGULAR_ACCELERATION * Math.PI / 180 * 5);
+                    Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                    Constants.MAX_ANGULAR_ACCELERATION * Math.PI / 180 * 5);
             _thetaController = new ProfiledPIDController(13, 0, 1, profileConstraints);
             _thetaController.enableContinuousInput(Math.PI * -1, Math.PI);
             _thetaController.reset(targetRad);
