@@ -9,6 +9,7 @@ import static frc.robot.Constants.*;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -68,7 +69,19 @@ public class LimelightObjectDetection extends SubsystemBase {
     }
   }
 
-  public boolean hasTarget() {
-    return r_tv > 0;
+  public boolean hasCubeTarget() {
+    return false;
+  }
+
+  public Pose2d getClosestCubeTarget() {
+    return null;
+  }
+
+  public boolean hasConeTarget() {
+    return false;
+  }
+
+  public Pose2d getClosestConeTarget() {
+    return null;
   }
 }
