@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer.PieceMode;
 
 public class ElevatorSubsystem extends SubsystemBase {
   private CANSparkMax elevatorBaseMotorOne, elevatorBaseMotorTwo;
@@ -46,6 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       preMaxAccel;
   private boolean brakeMode;
   private double prevSetpoint;
+  private double setPoint;
   private double motorSpeed;
 
   /** Creates a new ElevatorSubsystem. */
@@ -68,6 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setReference(
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
+    setPoint = prevSetpoint;
     setupShuffleboard();
     motorSpeed = .4;
     // set PID coefficients
@@ -150,11 +153,32 @@ public class ElevatorSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }
 
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        pidController.setReference(setpoint, ControlType.kSmartMotion);
-        prevSetpoint = setpoint;
-      }
+     
     }*/
+    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+      pidController.setReference(setPoint, ControlType.kSmartMotion);
+      prevSetpoint = setPoint;
+    }
+  }
+
+  public void goToTransferPosition(PieceMode pieceMode){
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.ELEVATOR_CONE_TRANSFER_POSITION_INCHES;
+    } else {
+      setPoint = Constants.ELEVATOR_CUBE_TRANSFER_POSITION_INCHES;
+    }
+  }
+
+  public void goToMiddleScoringPosition() {
+    setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
+  }
+
+  public void goToHighScoringPosition() {
+    setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
+  }
+
+  public void goToStartingPosition() {
+    setPoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
   }
 
   public double limit(double value) {
