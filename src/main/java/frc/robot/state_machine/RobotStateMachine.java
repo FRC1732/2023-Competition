@@ -50,9 +50,11 @@ public class RobotStateMachine {
     carryGamePieceCommand =
         Commands.sequence(moveIndexerToScoringCommand, lowerElevatorToTransferCommand);
     switchFromCarryingToHoldingLowCommand =
-        Commands.sequence(openHolderCommand, moveElevatorToNeutral, holdGamePieceLowCommand);
+        Commands.sequence(
+            openHolderCommand, moveElevatorToNeutral, new HoldGamePieceLowCommand(robotContainer));
     unstageGamePieceCommand =
-        Commands.sequence(new UnstageGamePieceCommand(robotContainer), resetToReadyCommand);
+        Commands.sequence(
+            new UnstageGamePieceCommand(robotContainer), new ResetToReadyCommand(robotContainer));
 
     State readyToIntake = new State("readyToIntake");
     State intaking = new State("intaking");
@@ -143,7 +145,7 @@ public class RobotStateMachine {
         new TransitionBuilder()
             .name("transitionH")
             .sourceState(holdingLow)
-            .eventType(SwitchToLow.class)
+            .eventType(SwitchToMidHigh.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(carryGamePieceCommand);
@@ -155,7 +157,7 @@ public class RobotStateMachine {
         new TransitionBuilder()
             .name("transitionH2")
             .sourceState(carrying)
-            .eventType(SwitchToMidHigh.class)
+            .eventType(SwitchToLow.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(switchFromCarryingToHoldingLowCommand);
@@ -191,9 +193,10 @@ public class RobotStateMachine {
         new TransitionBuilder()
             .name("transitionK")
             .sourceState(intaking)
-            .eventType(SwitchToLow.class)
+            .eventType(IntakeReleased.class)
             .eventHandler(
                 (event) -> {
+                  System.out.println("RELEASE!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                   CommandScheduler.getInstance().schedule(resetToReadyCommand);
                 })
             .targetState(readyToIntake)

@@ -64,7 +64,7 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     indexerRotationMotor.getEncoder().setPosition(Constants.INDEXER_STARTING_POSITION);
-    //setupShuffleboard();
+    // setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
@@ -120,6 +120,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
+    System.out.println("Current: " + indexerGrabbingMotor.getOutputCurrent());
     return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
   }
 
@@ -135,75 +136,75 @@ public class IndexerSubsystem extends SubsystemBase {
     // io.updateInputs(inputs);
     // Logger.getInstance().processInputs("Indexer", inputs);
     /*if (true) {
-      // double setpoint = positionSet.getDouble(0);
-      double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
-      double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
-      double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
-      double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
-      double iz = kIz.getDouble(0);
-      double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(Constants.INDEXER_ARM_PID_MIN_OUTPUT);
-      double maxOut = kMaxOutput.getDouble(Constants.INDEXER_ARM_PID_MAX_OUTPUT);
-      double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
-      double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
+    // double setpoint = positionSet.getDouble(0);
+    double motorSpeedEntryDouble = motorSpeedEntry.getDouble(0);
+    double p = kP.getDouble(Constants.INDEXER_ARM_P_VALUE);
+    double i = kI.getDouble(Constants.INDEXER_ARM_I_VALUE);
+    double d = kD.getDouble(Constants.INDEXER_ARM_D_VALUE);
+    double iz = kIz.getDouble(0);
+    double ff = kFF.getDouble(0);
+    double minOut = kMinOutput.getDouble(Constants.INDEXER_ARM_PID_MIN_OUTPUT);
+    double maxOut = kMaxOutput.getDouble(Constants.INDEXER_ARM_PID_MAX_OUTPUT);
+    double maxVelocity = kMaxVelocity.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_SPEED);
+    double maxAccel = kMaxAccel.getDouble(Constants.INDEXER_ARM_ROTATE_MAX_ACCELERATION);
 
-      if (preP != p) {
-        pidController.setP(p);
-        preP = p;
-      }
+    if (preP != p) {
+      pidController.setP(p);
+      preP = p;
+    }
 
-      if (preI != i) {
-        pidController.setI(i);
-        preI = i;
-      }
+    if (preI != i) {
+      pidController.setI(i);
+      preI = i;
+    }
 
-      if (preD != d) {
-        pidController.setD(d);
-        preD = d;
-      }
+    if (preD != d) {
+      pidController.setD(d);
+      preD = d;
+    }
 
-      if (preIz != iz) {
-        // pidController.setIZone(iz);
-        preIz = iz;
-      }
+    if (preIz != iz) {
+      // pidController.setIZone(iz);
+      preIz = iz;
+    }
 
-      if (preFF != ff) {
-        // pidController.setFF(ff);
-        preFF = ff;
-      }
+    if (preFF != ff) {
+      // pidController.setFF(ff);
+      preFF = ff;
+    }
 
-      if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        pidController.setOutputRange(minOut, maxOut);
-        preMinOutput = minOut;
-        preMaxOutput = maxOut;
-      }
+    if (preMinOutput != minOut || preMaxOutput != maxOut) {
+      pidController.setOutputRange(minOut, maxOut);
+      preMinOutput = minOut;
+      preMaxOutput = maxOut;
+    }
 
-      if (preMaxVelocity != maxVelocity) {
-        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
-        preMaxVelocity = maxVelocity;
-      }
+    if (preMaxVelocity != maxVelocity) {
+      pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+      preMaxVelocity = maxVelocity;
+    }
 
-      if (preMaxAccel != maxAccel) {
-        pidController.setSmartMotionMaxAccel(maxAccel, 0);
-        preMaxAccel = maxAccel;
-      }*/
+    if (preMaxAccel != maxAccel) {
+      pidController.setSmartMotionMaxAccel(maxAccel, 0);
+      preMaxAccel = maxAccel;
+    }*/
 
-      // if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
-      //   if (motorSpeed < 10e-4) {
-      //     indexerRotationMotor.setVoltage(0);
+    // if (Math.abs(indexerRotationMotor.getEncoder().getPosition() - prevSetpoint) >= 2) {
+    //   if (motorSpeed < 10e-4) {
+    //     indexerRotationMotor.setVoltage(0);
 
-      //   } else {
-      //     indexerRotationMotor.setVoltage(
-      //         motorSpeed
-      //             * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
-      //   }
-      // }
-      //if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
-      //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
-      //}
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        pidController.setReference(setpoint, ControlType.kPosition);
-        prevSetpoint = setpoint;
+    //   } else {
+    //     indexerRotationMotor.setVoltage(
+    //         motorSpeed
+    //             * (indexerRotationMotor.getEncoder().getPosition() > prevSetpoint ? -1 : 1));
+    //   }
+    // }
+    // if (Math.abs(motorSpeedEntryDouble - motorSpeed) >= 10e-7) {
+    //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
+    // }
+    if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+      pidController.setReference(setpoint, ControlType.kPosition);
+      prevSetpoint = setpoint;
     }
   }
 

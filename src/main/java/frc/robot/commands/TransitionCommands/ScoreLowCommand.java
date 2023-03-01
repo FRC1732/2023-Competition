@@ -19,7 +19,8 @@ public class ScoreLowCommand extends WaitCommand {
 
   @Override
   public void initialize() {
-    super.initialize();
+    m_timer.reset();
+    m_timer.start();
     prevPieceMode = robotContainer.pieceMode;
     robotContainer.elevatorSubsystem.setToNeutralPosition();
     robotContainer.extenderSubsystem.goToStartingPosition();
