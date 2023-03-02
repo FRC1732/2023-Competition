@@ -41,10 +41,12 @@ public final class Constants {
   public static final boolean HARDWARE_CONFIG_HAS_INDEXER = true;
   public static final boolean HARDWARE_CONFIG_HAS_STATEMACHINE = true;
   public static final boolean HARDWARE_CONFIG_HAS_RGB = true;
+  public static final boolean HARDWARE_CONFIG_HAS_BOTH_LIMELIGHTS = true;
 
   // #endregion Subsystem Config
 
   // #region CAN IDs
+
   public static final int CAN_PNEUMATIC_ID = 60;
   public static final int INDEXER_SOLENOID_ID = 0;
   public static final int HOLDER_SOLENOID_ID = 1;
@@ -57,6 +59,7 @@ public final class Constants {
   public static final int EXTENDER_MOTOR_CAN_ID = 54;
   public static final int INDEXER_ROTATION_CAN_ID = 53;
   public static final int INDEXER_GRABBER_CAN_ID = 56;
+
   // #endregion CAN IDs
 
   public static final double MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
@@ -130,6 +133,18 @@ public final class Constants {
   public static final double EXTENDER_D_VALUE = 0;
   public static final double EXTENDER_PID_MAX_OUTPUT = 1;
   public static final double EXTENDER_PID_MIN_OUTPUT = -1;
+
+  // #endregion
+
+  // #region Limelight Constants
+
+  public static final double LIMELIGHT_HEIGHT = 2.229;
+  public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.96824;
+  public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5207;
+  public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5207;
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+      MAX_VELOCITY_METERS_PER_SECOND
+          / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
   // #endregion
 }
