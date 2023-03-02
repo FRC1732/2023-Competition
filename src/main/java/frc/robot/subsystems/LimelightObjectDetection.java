@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class LimelightObjectDetection extends SubsystemBase {
   // limelight hostname: http://limelight-objectd.local:5801
-  private final String LIMELIGHTNAME = "imelight-objectd";
+  private final String LIMELIGHTNAME = "limelight-objectd";
   private final String CONE_LABEL = "cone";
   private final String CUBE_LABEL = "cube";
 

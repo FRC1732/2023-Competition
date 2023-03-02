@@ -25,6 +25,7 @@ import java.util.function.DoubleSupplier;
 
 public class LimelightScoring extends SubsystemBase {
   // limelight hostname: http://limelight-scoring.local:5801
+  private final String LIMELIGHTNAME = "limelight-scoring";
   private NetworkTable table;
   private NetworkTableEntry llData_camerastream;
   private NetworkTableEntry tv;
@@ -52,6 +53,8 @@ public class LimelightScoring extends SubsystemBase {
   private LimelightHelpers.LimelightResults llresults;
   private boolean havePosition = false;
   private Pose2d position = EMPTY_POSE2D;
+
+  private ScoringMode currentScoringMode = ScoringMode.Undefined;
 
   /** Creates a new Limelight. */
   public LimelightScoring() {
@@ -225,5 +228,11 @@ public class LimelightScoring extends SubsystemBase {
 
   public Pose2d getPose2d() {
     return position;
+  }
+
+  public enum ScoringMode {
+    AprilTag,
+    ReflectiveTape,
+    Undefined;
   }
 }
