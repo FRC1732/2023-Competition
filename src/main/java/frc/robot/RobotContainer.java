@@ -16,6 +16,7 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.DefaultCommands.DefaultRgbStatusCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.RGBStatusSubsytem;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -51,6 +53,7 @@ public class RobotContainer {
   public ExtenderSubsystem extenderSubsystem;
   public StateMachineSubsystem stateMachineSubsystem;
   public ElevatorSubsystem elevatorSubsystem;
+  public RGBStatusSubsytem rgbStatusSubsytem;
 
   public SwerveModule flModule;
   public SwerveModule frModule;
@@ -202,6 +205,10 @@ public class RobotContainer {
 
     if (stateMachineSubsystem != null) {
       // stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+    }
+
+    if (rgbStatusSubsytem != null) {
+      rgbStatusSubsytem.setDefaultCommand(new DefaultRgbStatusCommand());
     }
   }
 
@@ -391,6 +398,10 @@ public class RobotContainer {
 
     if (Constants.HARDWARE_CONFIG_HAS_INDEXER) {
       indexerSubsystem = new IndexerSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_RGB) {
+      rgbStatusSubsytem = new RGBStatusSubsytem();
     }
   }
 

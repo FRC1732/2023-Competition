@@ -40,6 +40,7 @@ public final class Constants {
   public static final boolean HARDWARE_CONFIG_HAS_HOLDER = true;
   public static final boolean HARDWARE_CONFIG_HAS_INDEXER = true;
   public static final boolean HARDWARE_CONFIG_HAS_STATEMACHINE = true;
+  public static final boolean HARDWARE_CONFIG_HAS_RGB = true;
 
   // #endregion Subsystem Config
 
