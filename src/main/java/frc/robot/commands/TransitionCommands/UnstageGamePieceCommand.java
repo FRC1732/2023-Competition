@@ -1,34 +1,31 @@
 package frc.robot.commands.TransitionCommands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
-import frc.robot.state_machine.RobotStateMachine;
 
-public class UnstageGamePieceCommand extends CommandBase {
+public class UnstageGamePieceCommand extends WaitCommand {
   private RobotContainer robotContainer;
-  private RobotStateMachine robotStateMachine;
-  private int intakeCount = 0;
   private PieceMode prevPieceMode;
 
   public UnstageGamePieceCommand(RobotContainer robotContainer) {
+    super(.1); // run for .5 seconds
     this.robotContainer = robotContainer;
-    addRequirements(robotContainer.elevatorSubsystem);
-    addRequirements(robotContainer.extenderSubsystem);
     addRequirements(robotContainer.holderSubsystem);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_timer.reset();
+    m_timer.start();
+    robotContainer.holderSubsystem.open();
+  }
 
   @Override
-  public void execute() {}
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
-  public boolean isFinished() {
-    return true;
+  public void execute() {
+    // prevent changing piece mode
+    if (prevPieceMode != robotContainer.pieceMode) {
+      robotContainer.pieceMode = prevPieceMode;
+    }
   }
 }

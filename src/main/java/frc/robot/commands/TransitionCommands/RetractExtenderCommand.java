@@ -5,14 +5,13 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 import frc.robot.RobotContainer.ScoringHeight;
 
-public class StageGamePieceCommand extends CommandBase {
+public class RetractExtenderCommand extends CommandBase {
   private RobotContainer robotContainer;
   private PieceMode prevPieceMode;
   private ScoringHeight prevScoringHeight;
 
-  public StageGamePieceCommand(RobotContainer robotContainer) {
+  public RetractExtenderCommand(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
-    addRequirements(robotContainer.indexerSubsystem);
     addRequirements(robotContainer.elevatorSubsystem);
     addRequirements(robotContainer.extenderSubsystem);
     addRequirements(robotContainer.holderSubsystem);
@@ -22,14 +21,13 @@ public class StageGamePieceCommand extends CommandBase {
   public void initialize() {
     prevPieceMode = robotContainer.pieceMode;
     prevScoringHeight = robotContainer.scoringHeight;
+    robotContainer.holderSubsystem.open();
     if (prevScoringHeight == ScoringHeight.MEDIUM) {
       robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
     } else {
       robotContainer.elevatorSubsystem.goToHighScoringPosition();
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
-    robotContainer.holderSubsystem.close();
-    robotContainer.indexerSubsystem.rotateOff();
   }
 
   @Override
@@ -38,15 +36,9 @@ public class StageGamePieceCommand extends CommandBase {
     if (prevPieceMode != robotContainer.pieceMode) {
       robotContainer.pieceMode = prevPieceMode;
     }
-
-    // adjust to changing height
+    // prevent changing scoring height
     if (prevScoringHeight != robotContainer.scoringHeight) {
-      prevScoringHeight = robotContainer.scoringHeight;
-      if (prevScoringHeight == ScoringHeight.MEDIUM) {
-        robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
-      } else {
-        robotContainer.elevatorSubsystem.goToHighScoringPosition();
-      }
+      robotContainer.scoringHeight = prevScoringHeight;
     }
   }
 
@@ -55,6 +47,6 @@ public class StageGamePieceCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return robotContainer.extenderSubsystem.isAtSetpoint();
   }
 }

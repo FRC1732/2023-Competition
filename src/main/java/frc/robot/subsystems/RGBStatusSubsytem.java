@@ -7,8 +7,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.PieceMode;
+import frc.robot.RobotContainer.ScoringHeight;
 
 public class RGBStatusSubsytem extends SubsystemBase {
+  private PieceMode prevPieceMode;
+  private ScoringHeight prevScoringHeight;
   /*-
    * Outputs 0 and 1 set the scoring height.
    *   Low Score - Bit 0
@@ -37,8 +42,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
   private SpecialMode specialMode;
   private double targetElapsedTimeSeconds;
 
+  private RobotContainer robotContainer;
+
   /** Creates a new RGBStatus. */
-  public RGBStatusSubsytem() {
+  public RGBStatusSubsytem(RobotContainer robotContainer) {
+    this.robotContainer = robotContainer;
+    prevPieceMode = robotContainer.pieceMode;
+    prevScoringHeight = robotContainer.scoringHeight;
     scoreColors = ScoreColors.NONE;
     gamePiece = GamePiece.NONE;
     specialMode = SpecialMode.NONE;
@@ -66,6 +76,20 @@ public class RGBStatusSubsytem extends SubsystemBase {
             break;
         }
       }
+    }
+
+    if (robotContainer.pieceMode == PieceMode.CUBE) {
+      gamePiece = GamePiece.CUBE;
+    } else {
+      gamePiece = GamePiece.CONE;
+    }
+
+    if (robotContainer.scoringHeight == ScoringHeight.HIGH) {
+      scoreColors = ScoreColors.HIGH;
+    } else if (robotContainer.scoringHeight == ScoringHeight.MEDIUM) {
+      scoreColors = ScoreColors.MEDIUM;
+    } else {
+      scoreColors = ScoreColors.LOW;
     }
 
     if (specialMode == SpecialMode.NONE) {
@@ -117,7 +141,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
   public void capturedGamePiece() {
     timer.reset();
     timer.start();
-    targetElapsedTimeSeconds = 2.0;
+    targetElapsedTimeSeconds = 1.5;
     specialMode = SpecialMode.GAME_PIECE_CAPTURED;
   }
 

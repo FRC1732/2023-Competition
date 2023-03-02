@@ -25,6 +25,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
+import frc.robot.state_machine.events.FinishScorePressed;
 import frc.robot.state_machine.events.IntakePressed;
 import frc.robot.state_machine.events.IntakeReleased;
 import frc.robot.state_machine.events.ScorePressed;
@@ -294,72 +295,48 @@ public class RobotContainer {
     oi.getIntakeButton()
         .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
 
+    // Scoring
     oi.getScoreButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
-    // Intake buttons
-    // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on,
-    // intakeSubsystem));
-    // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off,
-    // intakeSubsystem));
+    oi.getDeployHolderButton()
+        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
 
-    // Indexer buttons
-    // oi.getGrabberConeButton()
-    // .onTrue(
-    // Commands.runOnce(indexerSubsystem::open, indexerSubsystem)
-    // .andThen(Commands.runOnce(indexerSubsystem::grabberEject,
-    // indexerSubsystem)));
-    // oi.getGrabberConeButton()
-    // .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-
-    // oi.getGrabberCubeButton()
-    // .onTrue(
-    // Commands.runOnce(indexerSubsystem::close, indexerSubsystem)
-    // .andThen(Commands.runOnce(indexerSubsystem::grabberOn, indexerSubsystem))
-    // .andThen(Commands.runOnce(intakeSubsystem::on, intakeSubsystem)));
-    // oi.getGrabberCubeButton()
-    // .onFalse(
-    // Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem)
-    // .andThen(Commands.runOnce(intakeSubsystem::off, intakeSubsystem)));
-
-    // oi.getGrabberEjectButton().onTrue(Commands.runOnce(indexerSubsystem::eject,
-    // indexerSubsystem));
-    // oi.getGrabberEjectButton()
-    // .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-
-    // oi.getIndexerRotateUpButton()
-    // .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
-    // oi.getIndexerRotateUpButton()
-    // .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
-
-    // oi.getIndexerRotateDownButton()
-    // .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
-    // oi.getIndexerRotateDownButton()
-    // .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
-
-    // oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open,
-    // indexerSubsystem));
-
-    // oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close,
-    // indexerSubsystem));
-
-    // Extender buttons
+    // Scoring Height buttons
     oi.getLowGoalButton()
         .onTrue(
             Commands.runOnce(
                 () -> {
+                  ScoringHeight prev = scoringHeight;
                   scoringHeight = ScoringHeight.LOW;
-                  robotStateMachine.fireEvent(new SwitchToLow());
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToLow());
+                  }
+                }));
+
+    oi.getMiddleGoalButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ScoringHeight prev = scoringHeight;
+                  scoringHeight = ScoringHeight.MEDIUM;
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToMidHigh());
+                  }
                 }));
 
     oi.getHighGoalButton()
         .onTrue(
             Commands.runOnce(
                 () -> {
+                  ScoringHeight prev = scoringHeight;
                   scoringHeight = ScoringHeight.HIGH;
-                  robotStateMachine.fireEvent(new SwitchToMidHigh());
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToMidHigh());
+                  }
                 }));
 
+    // Game Piece Mode Buttons
     oi.getConeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CONE));
 
     oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
@@ -424,7 +401,7 @@ public class RobotContainer {
     }
 
     if (Constants.HARDWARE_CONFIG_HAS_RGB) {
-      rgbStatusSubsytem = new RGBStatusSubsytem();
+      rgbStatusSubsytem = new RGBStatusSubsytem(this);
     }
 
     if (Constants.HARDWARE_CONFIG_HAS_BOTH_LIMELIGHTS) {

@@ -22,36 +22,38 @@ public class RobotStateMachine {
   private SmartIntakeCommand smartIntakeCommand;
   private ResetToReadyCommand resetToReadyCommand;
   private Command carryGamePieceCommand;
-  private LowerElevatorToTransferCommand lowerElevatorToTransferCommand;
   private StageGamePieceCommand stageGamePieceCommand;
-  private ScoreWithHolderCommand scoreWithHolderCommand;
+  private Command scoreWithHolderCommand;
   private HoldGamePieceLowCommand holdGamePieceLowCommand;
   private ScoreLowCommand scoreLowCommand;
   private Command switchFromCarryingToHoldingLowCommand;
   private Command unstageGamePieceCommand;
-  private OpenHolderCommand openHolderCommand;
-  private MoveElevatorToNeutralCommand moveElevatorToNeutral;
-  private MoveIndexerToScoringCommand moveIndexerToScoringCommand;
 
   public RobotStateMachine(RobotContainer container) {
     robotContainer = container;
-    moveElevatorToNeutral = new MoveElevatorToNeutralCommand(robotContainer);
-    openHolderCommand = new OpenHolderCommand(robotContainer);
-    moveIndexerToScoringCommand = new MoveIndexerToScoringCommand(robotContainer);
-    lowerElevatorToTransferCommand = new LowerElevatorToTransferCommand(robotContainer);
 
     smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
 
-    stageGamePieceCommand = new StageGamePieceCommand(robotContainer, this);
-    scoreWithHolderCommand = new ScoreWithHolderCommand(robotContainer, this);
+    stageGamePieceCommand = new StageGamePieceCommand(robotContainer);
+
     holdGamePieceLowCommand = new HoldGamePieceLowCommand(robotContainer);
     scoreLowCommand = new ScoreLowCommand(robotContainer);
     resetToReadyCommand = new ResetToReadyCommand(robotContainer);
+    scoreWithHolderCommand =
+        Commands.sequence(
+            new DeployExtenderCommand(robotContainer),
+            new OpenHolderCommand(robotContainer),
+            new RetractExtenderCommand(robotContainer),
+            new ResetToReadyCommand(robotContainer));
     carryGamePieceCommand =
-        Commands.sequence(moveIndexerToScoringCommand, lowerElevatorToTransferCommand);
+        Commands.sequence(
+            new MoveIndexerToScoringCommand(robotContainer),
+            new LowerElevatorToTransferCommand(robotContainer));
     switchFromCarryingToHoldingLowCommand =
         Commands.sequence(
-            openHolderCommand, moveElevatorToNeutral, new HoldGamePieceLowCommand(robotContainer));
+            new OpenHolderCommand(robotContainer),
+            new MoveElevatorToNeutralCommand(robotContainer),
+            new HoldGamePieceLowCommand(robotContainer));
     unstageGamePieceCommand =
         Commands.sequence(
             new UnstageGamePieceCommand(robotContainer), new ResetToReadyCommand(robotContainer));
@@ -133,7 +135,7 @@ public class RobotStateMachine {
         new TransitionBuilder()
             .name("transitionG")
             .sourceState(holdingLow)
-            .eventType(PlaceButtonPressed.class)
+            .eventType(ScorePressed.class)
             .eventHandler(
                 (event) -> {
                   CommandScheduler.getInstance().schedule(scoreLowCommand);
@@ -196,7 +198,6 @@ public class RobotStateMachine {
             .eventType(IntakeReleased.class)
             .eventHandler(
                 (event) -> {
-                  System.out.println("RELEASE!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                   CommandScheduler.getInstance().schedule(resetToReadyCommand);
                 })
             .targetState(readyToIntake)
@@ -219,12 +220,17 @@ public class RobotStateMachine {
   }
 
   public String fireEvent(org.jeasy.states.api.Event event) {
+    String startingState = getCurrentState();
     String eventName;
     try {
       eventName = stateMachine.fire(event).getName();
     } catch (FiniteStateMachineException e) {
-      eventName = stateMachine.getCurrentState().getName();
+      System.out.println("State Machine Exception!!!!!!!!!!");
+      e.printStackTrace();
+      eventName = getCurrentState();
     }
+    System.out.println(
+        "Start: " + startingState + "Event: " + event.getName() + "End: " + getCurrentState());
     return eventName;
   }
 

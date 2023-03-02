@@ -90,6 +90,11 @@ public class ExtenderSubsystem extends SubsystemBase {
     return extenderMagneticLimitSwitch.get();
   }
 
+  public boolean isAtSetpoint() {
+    return Math.abs(extenderMotor.getEncoder().getPosition() - setPoint)
+        < Constants.EXTENDER_DEADBAND;
+  }
+
   @Override
   public void periodic() {
     // if (DriverStation.isEnabled() && !brakeMode) {

@@ -127,6 +127,7 @@ public final class Constants {
   public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 48.25;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 34.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 50000;
+  public static final double EXTENDER_DEADBAND = 0.5;
   public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 70000;
   public static final double EXTENDER_P_VALUE = 0.000075;
   public static final double EXTENDER_I_VALUE = 0;
