@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import java.util.Map;
 
 public class LimelightScoring extends SubsystemBase {
@@ -59,33 +58,28 @@ public class LimelightScoring extends SubsystemBase {
   }
 
   private void configureShuffleBoard() {
-    if (Constants.DEBUGGING) {
-      ShuffleboardTab tab;
-      tab = Shuffleboard.getTab(LIMELIGHTNAME);
+    ShuffleboardTab tab;
+    tab = Shuffleboard.getTab(LIMELIGHTNAME);
 
-      LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.11:5800/stream.mjpg");
-      server = CameraServer.addSwitchedCamera("Object Camera");
-      server.setSource(LLFeed);
-      LLFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-      tab.add(server.getSource())
-          .withWidget(BuiltInWidgets.kCameraStream)
-          .withPosition(5, 0)
-          .withSize(5, 5)
-          .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
+    LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.11:5800/stream.mjpg");
+    server = CameraServer.addSwitchedCamera("Object Camera");
+    server.setSource(LLFeed);
+    LLFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    tab.add(server.getSource())
+        .withWidget(BuiltInWidgets.kCameraStream)
+        .withPosition(5, 0)
+        .withSize(5, 5)
+        .withProperties(Map.of("Show Crosshair", true, "Show Controls", false));
 
-      tab.addNumber("tv - Valid Targets", () -> reflectiveTv);
-      tab.addNumber("tx - Horiz Offset", () -> reflectiveTx);
-      tab.addNumber("ty - Vert Offset", () -> reflectiveTy);
-      tab.addBoolean("Target Acquired", () -> reflectiveTv > 0);
+    tab.addNumber("tv - Valid Targets", () -> reflectiveTv);
+    tab.addNumber("tx - Horiz Offset", () -> reflectiveTx);
+    tab.addNumber("ty - Vert Offset", () -> reflectiveTy);
+    tab.addBoolean("Target Acquired", () -> reflectiveTv > 0);
 
-      tab.addNumber("Tag Sighted", () -> getPriorityTag());
-      tab.addString("Robot Pose", () -> getPose2d().toString());
+    tab.addNumber("Tag Sighted", () -> getPriorityTag());
+    tab.addString("Robot Pose", () -> getPose2d().toString());
 
-      tab.addNumber("Selected Pipeline", () -> pipelineVal);
-    } else {
-      // competition shuffleboard
-      // what do we want here?
-    }
+    tab.addNumber("Selected Pipeline", () -> pipelineVal);
   }
 
   @Override

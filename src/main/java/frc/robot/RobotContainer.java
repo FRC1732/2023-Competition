@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,8 +18,10 @@ import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
+import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
@@ -373,7 +376,18 @@ public class RobotContainer {
             drivetrainSubsystem::runCharacterizationVolts,
             drivetrainSubsystem::getCharacterizationVelocity));
 
-    autoChooser.addOption("Place Cone", CommandFactory.getScoreWithHolderCommand(this));
+    autoChooser.addOption(
+        "Place High Cone",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this)));
+
+    autoChooser.addOption(
+        "Place High Cone and Drive Back",
+        // Commands.sequence(
+        //     new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+        //     CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6)),
+        new DriveDistance(drivetrainSubsystem, 3)); // ));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
