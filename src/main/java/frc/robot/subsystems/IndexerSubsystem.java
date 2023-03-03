@@ -111,8 +111,13 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
-    return Math.abs(indexerRotationMotor.getEncoder().getPosition() - setpoint)
-        < Constants.INDEXER_ARM_DEADBAND;
+    boolean temp =
+        Math.abs(indexerRotationMotor.getEncoder().getPosition() - setpoint)
+            < Constants.INDEXER_ARM_DEADBAND;
+    if (temp) {
+      System.out.println("Indexer at setpoint");
+    }
+    return temp;
   }
 
   public boolean isOpen() {
@@ -120,7 +125,6 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
-    System.out.println("Current: " + indexerGrabbingMotor.getOutputCurrent());
     return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
   }
 

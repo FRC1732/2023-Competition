@@ -16,6 +16,7 @@ public class OpenHolderCommand extends WaitCommand {
 
   @Override
   public void initialize() {
+    prevPieceMode = robotContainer.pieceMode;
     m_timer.reset();
     m_timer.start();
     robotContainer.holderSubsystem.open();

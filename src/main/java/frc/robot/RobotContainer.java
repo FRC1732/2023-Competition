@@ -16,16 +16,13 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
-import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
-import frc.robot.commands.DefaultCommands.DefaultRgbStatusCommand;
+import frc.robot.commands.CommandFactory;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
-import frc.robot.state_machine.events.FinishScorePressed;
 import frc.robot.state_machine.events.IntakePressed;
 import frc.robot.state_machine.events.IntakeReleased;
 import frc.robot.state_machine.events.ScorePressed;
@@ -219,16 +216,16 @@ public class RobotContainer {
     }
 
     if (rgbStatusSubsytem != null) {
-      rgbStatusSubsytem.setDefaultCommand(new DefaultRgbStatusCommand());
+      // rgbStatusSubsytem.setDefaultCommand(new DefaultRgbStatusCommand());
     }
 
     if (limelightObjectDetectionSubsystem != null) {
-      limelightObjectDetectionSubsystem.setDefaultCommand(
-          new DefaultLimelightObjectDectionCommand());
+      // limelightObjectDetectionSubsystem.setDefaultCommand(
+      //     new DefaultLimelightObjectDectionCommand());
     }
 
     if (limelightScoringSubSystem != null) {
-      limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
+      // limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
     }
   }
 
@@ -299,8 +296,8 @@ public class RobotContainer {
     oi.getScoreButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
-    oi.getDeployHolderButton()
-        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
+    // oi.getDeployHolderButton()
+    //     .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
 
     // Scoring Height buttons
     oi.getLowGoalButton()
@@ -375,6 +372,8 @@ public class RobotContainer {
             new FeedForwardCharacterizationData("drive"),
             drivetrainSubsystem::runCharacterizationVolts,
             drivetrainSubsystem::getCharacterizationVelocity));
+
+    autoChooser.addOption("Place Cone", CommandFactory.getScoreWithHolderCommand(this));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

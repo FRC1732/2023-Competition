@@ -26,6 +26,7 @@ public class ResetToReadyCommand extends CommandBase {
     if (prevPieceMode == PieceMode.CONE) {
       robotContainer.indexerSubsystem.close();
     } else {
+      System.out.println("First one was called!!!!!!!!!!!!");
       robotContainer.indexerSubsystem.open();
     }
   }
@@ -37,6 +38,7 @@ public class ResetToReadyCommand extends CommandBase {
       if (prevPieceMode == PieceMode.CONE) {
         robotContainer.indexerSubsystem.close();
       } else {
+        System.out.println("Second one was called!!!!!!!!!!!!");
         robotContainer.indexerSubsystem.open();
       }
     }

@@ -208,8 +208,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
-    return Math.abs(elevatorBaseMotorOne.getEncoder().getPosition() - setPoint)
-        < Constants.ELEVATOR_DEADBAND;
+    boolean temp =
+        Math.abs(elevatorBaseMotorOne.getEncoder().getPosition() - setPoint)
+            < Constants.ELEVATOR_DEADBAND;
+    if (temp) {
+      System.out.println("Elevator at setpoint");
+    }
+    return temp;
   }
 
   public void setToMidCone() {

@@ -91,8 +91,12 @@ public class ExtenderSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSetpoint() {
-    return Math.abs(extenderMotor.getEncoder().getPosition() - setPoint)
-        < Constants.EXTENDER_DEADBAND;
+    boolean temp =
+        Math.abs(extenderMotor.getEncoder().getPosition() - setPoint) < Constants.EXTENDER_DEADBAND;
+    if (temp) {
+      System.out.println("Extender at setpoint");
+    }
+    return temp;
   }
 
   @Override

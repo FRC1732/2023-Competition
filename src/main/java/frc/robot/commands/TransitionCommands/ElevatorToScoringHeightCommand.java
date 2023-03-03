@@ -4,18 +4,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 import frc.robot.RobotContainer.ScoringHeight;
-import frc.robot.state_machine.RobotStateMachine;
-import frc.robot.state_machine.events.FinishScorePressed;
 
-public class StageGamePieceCommand extends CommandBase {
+public class ElevatorToScoringHeightCommand extends CommandBase {
   private RobotContainer robotContainer;
-  private RobotStateMachine robotStateMachine;
   private PieceMode prevPieceMode;
   private ScoringHeight prevScoringHeight;
 
-  public StageGamePieceCommand(RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+  public ElevatorToScoringHeightCommand(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
-    this.robotStateMachine = robotStateMachine;
     addRequirements(robotContainer.indexerSubsystem);
     addRequirements(robotContainer.elevatorSubsystem);
     addRequirements(robotContainer.extenderSubsystem);
@@ -33,7 +29,7 @@ public class StageGamePieceCommand extends CommandBase {
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.close();
-    robotContainer.indexerSubsystem.transferPiece();
+    robotContainer.indexerSubsystem.rotateOff();
   }
 
   @Override
@@ -55,9 +51,7 @@ public class StageGamePieceCommand extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    robotStateMachine.fireEvent(new FinishScorePressed());
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

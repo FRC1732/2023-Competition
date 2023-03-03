@@ -3,7 +3,6 @@ package frc.robot.commands.TransitionCommands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.state_machine.RobotStateMachine;
-import frc.robot.state_machine.events.FinishScorePressed;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
@@ -31,7 +30,7 @@ public class ScoreWithHolderCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    robotStateMachine.fireEvent(new FinishScorePressed()); // TODO: make piece detected
+    // robotStateMachine.fireEvent(new FinishScorePressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

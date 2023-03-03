@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.PieceMode;
 import frc.robot.commands.TransitionCommands.*;
 import frc.robot.state_machine.events.*;
 import java.util.HashSet;
@@ -25,7 +26,7 @@ public class RobotStateMachine {
   private StageGamePieceCommand stageGamePieceCommand;
   private Command scoreWithHolderCommand;
   private HoldGamePieceLowCommand holdGamePieceLowCommand;
-  private ScoreLowCommand scoreLowCommand;
+  private Command scoreLowCommand;
   private Command switchFromCarryingToHoldingLowCommand;
   private Command unstageGamePieceCommand;
 
@@ -34,11 +35,14 @@ public class RobotStateMachine {
 
     smartIntakeCommand = new SmartIntakeCommand(robotContainer, this);
 
-    stageGamePieceCommand = new StageGamePieceCommand(robotContainer);
+    stageGamePieceCommand = new StageGamePieceCommand(robotContainer, this);
 
     holdGamePieceLowCommand = new HoldGamePieceLowCommand(robotContainer);
-    scoreLowCommand = new ScoreLowCommand(robotContainer);
+
     resetToReadyCommand = new ResetToReadyCommand(robotContainer);
+    scoreLowCommand =
+        Commands.sequence(
+            new ScoreLowCommand(robotContainer), new ResetToReadyCommand(robotContainer));
     scoreWithHolderCommand =
         Commands.sequence(
             new DeployExtenderCommand(robotContainer),
@@ -229,8 +233,16 @@ public class RobotStateMachine {
       e.printStackTrace();
       eventName = getCurrentState();
     }
+    String curMode = (robotContainer.pieceMode == PieceMode.CONE) ? "cone" : "cube";
     System.out.println(
-        "Start: " + startingState + "Event: " + event.getName() + "End: " + getCurrentState());
+        "Start: "
+            + startingState
+            + " Event: "
+            + event.getName()
+            + " End: "
+            + getCurrentState()
+            + " PieceMode: "
+            + curMode);
     return eventName;
   }
 
