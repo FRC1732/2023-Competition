@@ -4,21 +4,21 @@
 
 #define NUMPIXELS 69  // number of neopixels in strip
 #define DELAY_TIME 200
-#define INTENSITY 150
+#define INTENSITY 75
 
 Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
-#define DIGITAL_D0 8
-#define DIGITAL_D1 9
-#define DIGITAL_D2 10
-#define DIGITAL_D3 11
-#define DIGITAL_D4 12
+#define DIGITAL_D0 3
+#define DIGITAL_D1 4
+#define DIGITAL_D2 5
+#define DIGITAL_D3 6
+#define DIGITAL_D4 7
 
-#define OUTPUT_D0 3
-#define OUTPUT_D1 4
-#define OUTPUT_D2 5
-#define OUTPUT_D3 6
-#define OUTPUT_D4 7
+#define OUTPUT_D0 8
+#define OUTPUT_D1 9
+#define OUTPUT_D2 10
+#define OUTPUT_D3 11
+#define OUTPUT_D4 12
 
 int mode = 0;
 int timer = 0;
