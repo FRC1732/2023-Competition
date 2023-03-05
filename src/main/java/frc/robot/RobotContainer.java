@@ -18,6 +18,7 @@ import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.CustomWaitCommand;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -384,10 +385,10 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "Place High Cone and Drive Back",
-        // Commands.sequence(
-        //     new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-        //     CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6)),
-        new DriveDistance(drivetrainSubsystem, 3)); // ));
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            new DriveDistance(drivetrainSubsystem, 3)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

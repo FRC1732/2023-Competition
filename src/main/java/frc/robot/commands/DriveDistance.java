@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
@@ -17,7 +18,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class DriveDistance extends CommandBase {
 
   private final Drivetrain drivetrain;
-  private double startingDistance;
+  private Translation2d startingPose;
+  private double targetDistance;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -26,21 +28,19 @@ public class DriveDistance extends CommandBase {
    */
   public DriveDistance(Drivetrain drivetrain, double distanceMeters) {
     this.drivetrain = drivetrain;
-
+    targetDistance = distanceMeters;
     addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
     drivetrain.enableFieldRelative();
-    double tempx = drivetrain.getPose().getX();
-    System.out.println("Starting X coord: " + tempx);
-    startingDistance = tempx;
+    startingPose = drivetrain.getPose().getTranslation();
   }
 
   @Override
   public void execute() {
-    drivetrain.drivePercentage(0.25, 0, 0);
+    drivetrain.drivePercentage(0.20, 0, 0);
   }
 
   @Override
@@ -50,8 +50,7 @@ public class DriveDistance extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    double tempx = drivetrain.getPose().getX();
-    System.out.println("Current X coord: " + tempx);
-    return tempx > startingDistance;
+    double curDistance = startingPose.getDistance(drivetrain.getPose().getTranslation());
+    return curDistance >= targetDistance;
   }
 }

@@ -52,7 +52,8 @@ public class RobotStateMachine {
     carryGamePieceCommand =
         Commands.sequence(
             new MoveIndexerToScoringCommand(robotContainer),
-            new LowerElevatorToTransferCommand(robotContainer));
+            new LowerElevatorToTransferCommand(robotContainer),
+            new DelayCloseHolderCommand(robotContainer));
     switchFromCarryingToHoldingLowCommand =
         Commands.sequence(
             new OpenHolderCommand(robotContainer),
