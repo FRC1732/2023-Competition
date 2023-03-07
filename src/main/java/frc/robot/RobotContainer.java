@@ -187,8 +187,8 @@ public class RobotContainer {
      * Field-centric: origin is down-right, 0deg is up, +x is forward, +y is left,
      * +theta is CCW
      * direction.
-     * ___________
-     * | | | ^
+     * .....___________
+     * .....|....|....| ^
      * (0,0).____|____| y, x-> 0->
      */
     if (drivetrainSubsystem != null) {

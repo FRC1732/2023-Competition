@@ -6,7 +6,6 @@ package frc.robot.subsystems.drivetrain;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -89,7 +88,6 @@ public class Drivetrain extends SubsystemBase {
   private static final boolean TESTING = true;
 
   private final SwerveDrivePoseEstimator poseEstimator;
-  private Timer timer;
   private boolean brakeMode;
 
   private DriveMode driveMode = DriveMode.NORMAL;
@@ -119,9 +117,6 @@ public class Drivetrain extends SubsystemBase {
     this.gyroOffset = 0;
 
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
-    this.timer = new Timer();
-    this.startTimer();
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
@@ -219,19 +214,15 @@ public class Drivetrain extends SubsystemBase {
    *
    * @param state the specified PathPlanner state to which is set the odometry
    */
-  public void resetOdometry(PathPlannerState state) {
-    setGyroOffset(state.holonomicRotation.getDegrees());
+  public void resetOdometry(Pose2d startingPose) {
+    setGyroOffset(startingPose.getRotation().getDegrees());
 
     for (int i = 0; i < 4; i++) {
       swerveModulePositions[i] = swerveModules[i].getPosition();
     }
 
-    estimatedPoseWithoutGyro =
-        new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation);
-    poseEstimator.resetPosition(
-        this.getRotation(),
-        swerveModulePositions,
-        new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation));
+    estimatedPoseWithoutGyro = startingPose;
+    poseEstimator.resetPosition(this.getRotation(), swerveModulePositions, startingPose);
   }
 
   /**
@@ -366,7 +357,8 @@ public class Drivetrain extends SubsystemBase {
       estimatedPoseWithoutGyro = estimatedPoseWithoutGyro.exp(twist);
     }
 
-    poseEstimator.updateWithTime(this.timer.get(), this.getRotation(), swerveModulePositions);
+    poseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(), this.getRotation(), swerveModulePositions);
 
     // update the brake mode based on the robot's velocity and state (enabled/disabled)
     updateBrakeMode();
@@ -538,11 +530,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public boolean isXstance() {
     return this.driveMode == DriveMode.X;
-  }
-
-  private void startTimer() {
-    this.timer.reset();
-    this.timer.start();
   }
 
   /**

@@ -4,6 +4,7 @@ import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.Logger;
 
@@ -64,7 +65,10 @@ public class FollowPath extends PPSwerveControllerCommand {
 
     if (initialPath) {
       // reset odometry to the starting pose of the trajectory
-      this.drivetrain.resetOdometry(this.trajectory.getInitialState());
+      this.drivetrain.resetOdometry(
+          new Pose2d(
+              trajectory.getInitialState().poseMeters.getTranslation(),
+              trajectory.getInitialState().holonomicRotation));
     }
 
     // reset the theta controller such that old accumulated ID values aren't used with the new path

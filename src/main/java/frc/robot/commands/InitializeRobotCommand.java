@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -26,7 +27,7 @@ public class InitializeRobotCommand extends CommandBase {
   public void initialize() {
     robotContainer.pieceMode = pieceMode;
     robotContainer.scoringHeight = scoringHeight;
-    robotContainer.drivetrainSubsystem.setGyroOffset(startingAngle.getDegrees());
+    robotContainer.drivetrainSubsystem.resetOdometry(new Pose2d(0, 0, startingAngle));
   }
 
   public void execute() {}
