@@ -12,7 +12,7 @@ public class GyroIoADIS16470 implements GyroIO {
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = imu.isConnected();
-    inputs.positionDeg = imu.getAngle(); // degrees
-    inputs.velocityDegPerSec = imu.getRate(); // degrees per second
+    inputs.positionDeg = -1 * imu.getAngle(); // degrees
+    inputs.velocityDegPerSec = -1 * imu.getRate(); // degrees per second
   }
 }

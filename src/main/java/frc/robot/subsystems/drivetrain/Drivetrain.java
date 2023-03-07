@@ -20,16 +20,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
-import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -129,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
+    /*ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
     tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
     tabMain.addBoolean("X-Stance On?", this::isXstance);
     tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
@@ -151,7 +147,7 @@ public class Drivetrain extends SubsystemBase {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
       tab.add("Enable XStance", new InstantCommand(this::enableXstance));
       tab.add("Disable XStance", new InstantCommand(this::disableXstance));
-    }
+    }*/
   }
 
   /**

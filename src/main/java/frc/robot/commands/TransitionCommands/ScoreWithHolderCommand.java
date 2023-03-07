@@ -1,22 +1,24 @@
-package frc.robot.commands;
+package frc.robot.commands.TransitionCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.state_machine.RobotStateMachine;
-import frc.robot.state_machine.events.FinishScorePressed;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 
-public class ScoreCommand extends CommandBase {
+public class ScoreWithHolderCommand extends CommandBase {
+  private RobotStateMachine robotStateMachine;
   private ElevatorSubsystem elevatorSubsystem;
   private ExtenderSubsystem extenderSubsystem;
   private HolderSubsystem holderSubsystem;
 
-  public ScoreCommand() {
-    this.holderSubsystem = RobotContainer.getInstance().holderSubsystem;
-    this.elevatorSubsystem = RobotContainer.getInstance().elevatorSubsystem;
-    this.extenderSubsystem = RobotContainer.getInstance().extenderSubsystem;
+  public ScoreWithHolderCommand(
+      RobotContainer robotContainer, RobotStateMachine robotStateMachine) {
+    this.holderSubsystem = robotContainer.holderSubsystem;
+    this.elevatorSubsystem = robotContainer.elevatorSubsystem;
+    this.extenderSubsystem = robotContainer.extenderSubsystem;
+    this.robotStateMachine = robotStateMachine;
     addRequirements(elevatorSubsystem);
     addRequirements(extenderSubsystem);
     addRequirements(holderSubsystem);
@@ -28,8 +30,7 @@ public class ScoreCommand extends CommandBase {
   public void execute() {}
 
   public void end(boolean interrupted) {
-    RobotStateMachine.getInstance()
-        .fireEvent(new FinishScorePressed()); // TODO: make piece detected
+    // robotStateMachine.fireEvent(new FinishScorePressed()); // TODO: make piece detected
   }
 
   public boolean isFinished() {

@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,19 +17,28 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
-import frc.robot.commands.DefaultCommands.DefaultHolderCommand;
-import frc.robot.commands.DefaultCommands.DefaultIndexerCommand;
-import frc.robot.commands.DefaultCommands.DefaultStateMachineCommand;
+import frc.robot.commands.CommandFactory;
+import frc.robot.commands.CustomWaitCommand;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
+import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.state_machine.RobotStateMachine;
+import frc.robot.state_machine.events.IntakePressed;
+import frc.robot.state_machine.events.IntakeReleased;
+import frc.robot.state_machine.events.ScorePressed;
+import frc.robot.state_machine.events.SwitchToLow;
+import frc.robot.state_machine.events.SwitchToMidHigh;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LimelightObjectDetection;
+import frc.robot.subsystems.LimelightScoring;
+import frc.robot.subsystems.RGBStatusSubsytem;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -41,13 +51,37 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   private OperatorInterface oi = new OperatorInterface() {};
+  private RobotStateMachine robotStateMachine;
 
-  public Drivetrain drivetrain;
-  public IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
-  public HolderSubsystem holderSubsystem = new HolderSubsystem();
-  public ExtenderSubsystem extenderSubsystem = new ExtenderSubsystem();
-  public StateMachineSubsystem stateMachineSubsystem = new StateMachineSubsystem();
-  public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public Drivetrain drivetrainSubsystem;
+  public IndexerSubsystem indexerSubsystem;
+  public HolderSubsystem holderSubsystem;
+  public ExtenderSubsystem extenderSubsystem;
+  public StateMachineSubsystem stateMachineSubsystem;
+  public ElevatorSubsystem elevatorSubsystem;
+  public RGBStatusSubsytem rgbStatusSubsytem;
+  public LimelightObjectDetection limelightObjectDetectionSubsystem;
+  public LimelightScoring limelightScoringSubSystem;
+
+  public SwerveModule flModule;
+  public SwerveModule frModule;
+  public SwerveModule blModule;
+  public SwerveModule brModule;
+  public GyroIO gyro;
+
+  public enum PieceMode {
+    CONE,
+    CUBE
+  }
+
+  public enum ScoringHeight {
+    LOW,
+    MEDIUM,
+    HIGH
+  }
+
+  public PieceMode pieceMode;
+  public ScoringHeight scoringHeight;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -67,9 +101,9 @@ public class RobotContainer {
   }
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
-  private RobotContainer() {
-
+  public RobotContainer() {
     configureDriveTrain();
+    defineSubsystems();
 
     // disable all telemetry in the LiveWindow to reduce the processing during each
     // iteration
@@ -77,14 +111,15 @@ public class RobotContainer {
 
     updateOI();
     configureDefaultCommands();
-    configureButtonBindings();
     configureAutoCommands();
+    robotStateMachine = new RobotStateMachine(this);
+    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   }
 
   private void configureDriveTrain() {
-    GyroIO gyro = new GyroIoADIS16470();
+    gyro = new GyroIoADIS16470();
 
-    SwerveModule flModule =
+    flModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 0,
@@ -95,7 +130,7 @@ public class RobotContainer {
             0,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule frModule =
+    frModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 1,
@@ -106,7 +141,7 @@ public class RobotContainer {
             1,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule blModule =
+    blModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 2,
@@ -117,7 +152,7 @@ public class RobotContainer {
             2,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule brModule =
+    brModule =
         new SwerveModule(
             new SwerveModuleIOTalonFX(
                 3,
@@ -128,7 +163,7 @@ public class RobotContainer {
             3,
             MAX_VELOCITY_METERS_PER_SECOND);
 
-    drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+    drivetrainSubsystem = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
   }
 
   /**
@@ -146,35 +181,55 @@ public class RobotContainer {
     /*
      * Set up the default command for the drivetrain.
      * The joysticks' values map to percentage of the maximum velocities.
-     * The velocities may be specified from either the robot's or field's frame of reference.
+     * The velocities may be specified from either the robot's or field's frame of
+     * reference.
      * Robot-centric: +x is forward, +y is left, +theta is CCW
-     * Field-centric: origin is down-right, 0deg is up, +x is forward, +y is left, +theta is CCW
+     * Field-centric: origin is down-right, 0deg is up, +x is forward, +y is left,
+     * +theta is CCW
      * direction.
-     *      ___________
-     *      |    |    | ^
+     * ___________
+     * | | | ^
      * (0,0).____|____| y, x-> 0->
      */
-    if (drivetrain != null) {
-      drivetrain.setDefaultCommand(
-          new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+    if (drivetrainSubsystem != null) {
+      drivetrainSubsystem.setDefaultCommand(
+          new TeleopSwerve(
+              drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
     }
+
+    configureButtonBindings();
   }
 
   private void configureDefaultCommands() {
     if (holderSubsystem != null) {
-      holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
+      // holderSubsystem.setDefaultCommand(new DefaultHolderCommand(holderSubsystem));
     }
 
     if (indexerSubsystem != null) {
-      indexerSubsystem.setDefaultCommand(new DefaultIndexerCommand(indexerSubsystem));
+      // indexerSubsystem.setDefaultCommand(new
+      // DefaultIndexerCommand(indexerSubsystem));
     }
 
     if (extenderSubsystem != null) {
-      extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
+      // extenderSubsystem.setDefaultCommand(new
+      // DefaultExtenderCommand(extenderSubsystem));
     }
 
     if (stateMachineSubsystem != null) {
-      stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+      // stateMachineSubsystem.setDefaultCommand(new DefaultStateMachineCommand());
+    }
+
+    if (rgbStatusSubsytem != null) {
+      // rgbStatusSubsytem.setDefaultCommand(new DefaultRgbStatusCommand());
+    }
+
+    if (limelightObjectDetectionSubsystem != null) {
+      // limelightObjectDetectionSubsystem.setDefaultCommand(
+      //     new DefaultLimelightObjectDectionCommand());
+    }
+
+    if (limelightScoringSubSystem != null) {
+      // limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
     }
   }
 
@@ -182,67 +237,119 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // field-relative toggle
     oi.getFieldRelativeButton()
-        .toggleOnTrue(
+        .onTrue(
             Commands.either(
-                Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
-                Commands.runOnce(drivetrain::enableFieldRelative, drivetrain),
-                drivetrain::getFieldRelative));
+                Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
+                Commands.runOnce(drivetrainSubsystem::enableFieldRelative, drivetrainSubsystem),
+                drivetrainSubsystem::getFieldRelative));
 
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrainSubsystem::zeroGyroscope));
 
     // x-stance
-    oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
-    oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    oi.getXStanceButton()
+        .onTrue(Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem));
+    oi.getXStanceButton()
+        .onFalse(Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
-    // Intake buttons
-    // oi.getIntakeButton().onTrue(Commands.runOnce(intakeSubsystem::on, intakeSubsystem));
-    // oi.getIntakeButton().onFalse(Commands.runOnce(intakeSubsystem::off, intakeSubsystem));
-
-    // Indexer buttons
-    oi.getGrabberConeButton()
-        .onTrue(
-            Commands.runOnce(indexerSubsystem::open, indexerSubsystem)
-                .andThen(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem)));
-    oi.getGrabberConeButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-
-    // oi.getGrabberCubeButton()
-    //     .onTrue(
-    //         Commands.runOnce(indexerSubsystem::close, indexerSubsystem)
-    //             .andThen(Commands.runOnce(indexerSubsystem::grabberOn, indexerSubsystem))
-    //             .andThen(Commands.runOnce(intakeSubsystem::on, intakeSubsystem)));
-    // oi.getGrabberCubeButton()
-    //     .onFalse(
-    //         Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem)
-    //             .andThen(Commands.runOnce(intakeSubsystem::off, intakeSubsystem)));
-
-    oi.getGrabberEjectButton().onTrue(Commands.runOnce(indexerSubsystem::eject, indexerSubsystem));
-    oi.getGrabberEjectButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-
+    // Raise/Lower Indexer Arm
     oi.getIndexerRotateUpButton()
         .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
     oi.getIndexerRotateUpButton()
         .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
-
     oi.getIndexerRotateDownButton()
         .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
     oi.getIndexerRotateDownButton()
         .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
 
-    oi.getIndexerOpenButton().onTrue(Commands.runOnce(indexerSubsystem::open, indexerSubsystem));
+    // Indexer Intake/Eject
+    oi.getIndexerIntakeButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::grabberIntake, indexerSubsystem));
+    oi.getIndexerIntakeButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+    oi.getIndexerEjectButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem));
+    oi.getIndexerEjectButton()
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
-    oi.getIndexerCloseButton().onTrue(Commands.runOnce(indexerSubsystem::close, indexerSubsystem));
+    // Indexer Open/Close
+    oi.getIndexerToggleOpenButton()
+        .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
+
+    // Holder Open
+    oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
+    oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+
+    oi.getAdjustElevatorUpButton()
+        .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
+    oi.getAdjustElevatorUpButton()
+        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+
+    oi.getAdjustElevatorDownButton()
+        .onTrue(Commands.runOnce(elevatorSubsystem::goDown, elevatorSubsystem));
+    oi.getAdjustElevatorDownButton()
+        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+
+    // Intake
+    oi.getIntakeButton()
+        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
+    oi.getIntakeButton()
+        .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
+
+    // Scoring
+    oi.getScoreButton()
+        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
+
+    // oi.getDeployHolderButton()
+    //     .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
+
+    // Scoring Height buttons
+    oi.getLowGoalButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ScoringHeight prev = scoringHeight;
+                  scoringHeight = ScoringHeight.LOW;
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToLow());
+                  }
+                }));
+
+    oi.getMiddleGoalButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ScoringHeight prev = scoringHeight;
+                  scoringHeight = ScoringHeight.MEDIUM;
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToMidHigh());
+                  }
+                }));
+
+    oi.getHighGoalButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ScoringHeight prev = scoringHeight;
+                  scoringHeight = ScoringHeight.HIGH;
+                  if (scoringHeight != prev) {
+                    robotStateMachine.fireEvent(new SwitchToMidHigh());
+                  }
+                }));
+
+    // Game Piece Mode Buttons
+    oi.getConeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CONE));
+
+    oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
   }
 
   /** Use this method to define your commands for autonomous mode. */
   private void configureAutoCommands() {
     Command autoTest =
         Commands.sequence(
-            Commands.runOnce(drivetrain::enableXstance, drivetrain),
+            Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem),
             Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain));
+            Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
@@ -254,22 +361,67 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive Velocity Tuning",
         Commands.sequence(
-            Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
+            Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
             Commands.deadline(
                 Commands.waitSeconds(5.0),
-                Commands.run(() -> drivetrain.drive(1.5, 0.0, 0.0), drivetrain))));
+                Commands.run(
+                    () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
     autoChooser.addOption(
         "Drive Characterization",
         new FeedForwardCharacterization(
-            drivetrain,
+            drivetrainSubsystem,
             true,
             new FeedForwardCharacterizationData("drive"),
-            drivetrain::runCharacterizationVolts,
-            drivetrain::getCharacterizationVelocity));
+            drivetrainSubsystem::runCharacterizationVolts,
+            drivetrainSubsystem::getCharacterizationVelocity));
+
+    autoChooser.addOption(
+        "Place High Cone",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this)));
+
+    autoChooser.addOption(
+        "Place High Cone and Drive Back",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            new DriveDistance(drivetrainSubsystem, 3)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
+  }
+
+  private void defineSubsystems() {
+    if (Constants.HARDWARE_CONFIG_HAS_DRIVETRAIN) {
+      drivetrainSubsystem = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_ELEVATOR) {
+      elevatorSubsystem = new ElevatorSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_EXTENDER) {
+      extenderSubsystem = new ExtenderSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_HOLDER) {
+      holderSubsystem = new HolderSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_INDEXER) {
+      indexerSubsystem = new IndexerSubsystem();
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_RGB) {
+      rgbStatusSubsytem = new RGBStatusSubsytem(this);
+    }
+
+    if (Constants.HARDWARE_CONFIG_HAS_BOTH_LIMELIGHTS) {
+      limelightObjectDetectionSubsystem = new LimelightObjectDetection();
+      limelightScoringSubSystem = new LimelightScoring();
+    }
   }
 
   /**

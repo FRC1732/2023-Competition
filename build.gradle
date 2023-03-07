@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.2.1"
+    id "edu.wpi.first.GradleRIO" version "2023.4.2"
     id 'com.diffplug.spotless' version '6.11.0'
     id "com.peterabeles.gversion" version "1.10"
 }
@@ -110,7 +110,7 @@ spotless {
     java {
         target fileTree('.') {
             include '**/*.java'
-            exclude '**/build/**', '**/build-*/**', '**/BuildConstants.java', '**/generated-sources/**'
+            exclude '**/build/**', '**/build-*/**', '**/BuildConstants.java', '**/generated-sources/**', '**/ArduinoSketch/**'
         }
         toggleOffOn()
         googleJavaFormat()
@@ -121,7 +121,7 @@ spotless {
     groovyGradle {
         target fileTree('.') {
             include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**', '**/BuildConstants.java', '**/generated-sources/**'
+            exclude '**/build/**', '**/build-*/**', '**/BuildConstants.java', '**/generated-sources/**', '**/ArduinoSketch/**'
         }
         greclipse()
         indentWithSpaces(4)
@@ -131,7 +131,7 @@ spotless {
     format 'xml', {
         target fileTree('.') {
             include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**', '**/generated-sources/**'
+            exclude '**/build/**', '**/build-*/**', '**/generated-sources/**', '**/ArduinoSketch/**'
         }
         eclipseWtp('xml')
         trimTrailingWhitespace()
@@ -141,7 +141,7 @@ spotless {
     format 'misc', {
         target fileTree('.') {
             include '**/*.md', '**/.gitignore'
-            exclude '**/build/**', '**/build-*/**', '**/generated-sources/**'
+            exclude '**/build/**', '**/build-*/**', '**/generated-sources/**', '**/ArduinoSketch/**'
         }
         trimTrailingWhitespace()
         indentWithSpaces(2)
