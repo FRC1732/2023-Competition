@@ -64,7 +64,7 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerRotationMotor.getEncoder().getPosition(), ControlType.kPosition);
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     indexerRotationMotor.getEncoder().setPosition(Constants.INDEXER_STARTING_POSITION);
-     setupShuffleboard();
+    setupShuffleboard();
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);

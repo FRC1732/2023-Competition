@@ -96,12 +96,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     } else if (DriverStation.isDisabled() && brakeMode) {
       brakeMode = false;
       setCoastMode();
+    }    
+    if (Math.abs(prevSetpoint - setPoint) >= 10e-6) {
+      pidController.setReference(setPoint, ControlType.kSmartMotion);
+      prevSetpoint = setPoint;
     }
     // double motorSpeedEntryDouble = motorSpeedEntry.getDouble(.2);
     // if (motorSpeed != motorSpeedEntryDouble) {
     //  motorSpeed = motorSpeedEntryDouble;
     // }
-    if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
+    if (true) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
@@ -111,7 +115,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(Constants.ELEVATOR_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-      double setpoint = positionSet.getDouble(0);
+     // double setpoint = positionSet.getDouble(0);
+     
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -153,10 +158,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         preMaxAccel = maxAccel;
       }
     }
-    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
-      pidController.setReference(setPoint, ControlType.kSmartMotion);
-      prevSetpoint = setPoint;
-    }
+
   }
 
   public void goToTransferPosition(PieceMode pieceMode) {
@@ -252,6 +254,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         "PosFactor", () -> elevatorBaseMotorOne.getEncoder().getPositionConversionFactor());
     tab.addDouble(
         "VelFactor", () -> elevatorBaseMotorOne.getEncoder().getVelocityConversionFactor());
+    tab.addDouble(
+            "SetPoint Out", () -> setPoint);
     if (true) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.ELEVATOR_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.ELEVATOR_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
