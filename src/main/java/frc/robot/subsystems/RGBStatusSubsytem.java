@@ -47,8 +47,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
-    prevPieceMode = robotContainer.pieceMode;
-    prevScoringHeight = robotContainer.scoringHeight;
+    //prevPieceMode = robotContainer.pieceMode;
+    //prevScoringHeight = robotContainer.scoringHeight;
     scoreColors = ScoreColors.NONE;
     gamePiece = GamePiece.NONE;
     specialMode = SpecialMode.NONE;
@@ -63,6 +63,14 @@ public class RGBStatusSubsytem extends SubsystemBase {
       if (timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
         timer.stop();
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
       } else {
         switch (specialMode) {
           case GAME_PIECE_CAPTURED:
@@ -142,6 +150,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
     timer.reset();
     timer.start();
     targetElapsedTimeSeconds = 1.5;
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
     specialMode = SpecialMode.GAME_PIECE_CAPTURED;
   }
 
