@@ -71,7 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
-    // setupShuffleboard();
+    setupShuffleboard();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
@@ -101,7 +101,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // if (motorSpeed != motorSpeedEntryDouble) {
     //  motorSpeed = motorSpeedEntryDouble;
     // }
-    /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
+    if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
@@ -152,9 +152,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController.setSmartMotionMaxAccel(maxAccel, 0);
         preMaxAccel = maxAccel;
       }
-
-
-    }*/
+    }
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
