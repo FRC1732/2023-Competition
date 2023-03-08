@@ -51,7 +51,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    // setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -191,7 +191,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    if (true) { // Constants.TUNING_MODE) {
+    if (false) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
