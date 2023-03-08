@@ -63,6 +63,14 @@ public class RGBStatusSubsytem extends SubsystemBase {
       if (timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
         timer.stop();
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
+        System.out.println("Timer has stopped");
       } else {
         switch (specialMode) {
           case GAME_PIECE_CAPTURED:
@@ -143,6 +151,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
     timer.start();
     targetElapsedTimeSeconds = 1.5;
     specialMode = SpecialMode.GAME_PIECE_CAPTURED;
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
+    System.out.println("Timer Started");
   }
 
   public void off() {
