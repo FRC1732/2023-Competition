@@ -3,22 +3,23 @@
 #define LED_DATA 2
 
 #define NUMPIXELS 69  // number of neopixels in strip
+#define NUM_SEG 23    // number of neopixels in a segment
 #define DELAY_TIME 200
-#define INTENSITY 150
+#define INTENSITY 255
 
 Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
-#define DIGITAL_D0 8
-#define DIGITAL_D1 9
-#define DIGITAL_D2 10
-#define DIGITAL_D3 11
-#define DIGITAL_D4 12
+#define DIGITAL_D0 3
+#define DIGITAL_D1 4
+#define DIGITAL_D2 5
+#define DIGITAL_D3 6
+#define DIGITAL_D4 7
 
-#define OUTPUT_D0 3
-#define OUTPUT_D1 4
-#define OUTPUT_D2 5
-#define OUTPUT_D3 6
-#define OUTPUT_D4 7
+#define OUTPUT_D0 8
+#define OUTPUT_D1 9
+#define OUTPUT_D2 10
+#define OUTPUT_D3 11
+#define OUTPUT_D4 12
 
 int mode = 0;
 int timer = 0;
@@ -144,7 +145,7 @@ void loop() {
 void setColor(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
+    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
   }
   pixels.show();
 }
@@ -158,7 +159,7 @@ void blinkColor(bool red, bool green, bool blue) {
     setColor(false, false, false);
   }
 
-  if (timer > 301) {
+  if (timer > 301 || timer < 0) {
     timer = 0;
   }
 }
@@ -172,7 +173,7 @@ void flashFast(bool red, bool green, bool blue) {
     setColor(false, false, false);
   }
 
-  if (timer > 31) {
+  if (timer > 31 || timer < 0) {
     timer = 0;
   }
 }
@@ -180,8 +181,8 @@ void flashFast(bool red, bool green, bool blue) {
 void setColorLow(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    if (i < 23) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
+    if (i < NUM_SEG) {
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
     }
   }
   pixels.show();
@@ -191,8 +192,8 @@ void setColorMid(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     //if (i < 46 && i > 22) {
-    if (i < 46 ) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
+    if (i < NUM_SEG * 2) {
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
     }
   }
   pixels.show();
@@ -202,7 +203,7 @@ void setColorHigh(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     //if (i < NUMPIXELS && i > 45) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
+    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
     //}
   }
   pixels.show();
@@ -216,9 +217,9 @@ void setColorBY(bool red, bool green, bool blue) {
 
   for (int i = 0; i < NUMPIXELS; i++) {
     if ((i / 4) % 2 == 0) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green, INTENSITY * (int)blue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
     } else {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen, INTENSITY * (int)invBlue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen * .45, INTENSITY * (int)invBlue));
     }
   }
   pixels.show();
