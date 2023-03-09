@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.state_machine.RobotStateMachine;
+import org.littletonrobotics.junction.Logger;
 
 public class StateMachineSubsystem extends SubsystemBase {
   private RobotStateMachine robotStateMachine;
@@ -24,12 +25,11 @@ public class StateMachineSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /*Logger.getInstance()
+    Logger.getInstance()
         .recordOutput("StateMachine/currentState", robotStateMachine.getCurrentState());
     Logger.getInstance().recordOutput("StateMachine/lastEvent", robotStateMachine.getLastEvent());
     Logger.getInstance()
         .recordOutput("StateMachine/lastTransition", robotStateMachine.getLastTransition());
-    */
   }
 
   private void setupShuffleboard() {

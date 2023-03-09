@@ -140,12 +140,6 @@ public final class Constants {
   // #region Limelight Constants
 
   public static final double LIMELIGHT_HEIGHT = 2.229;
-  public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.96824;
-  public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5207;
-  public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5207;
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-      MAX_VELOCITY_METERS_PER_SECOND
-          / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
   // #endregion
 }

@@ -69,6 +69,10 @@ public class RGBStatusSubsytem extends SubsystemBase {
             // bits 4 and 0 -- 17
             out4.set(!true);
             out0.set(!true);
+
+            out1.set(!false);
+            out2.set(!false);
+            out3.set(!false);
             break;
 
           case NONE:
@@ -143,6 +147,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     timer.start();
     targetElapsedTimeSeconds = 1.5;
     specialMode = SpecialMode.GAME_PIECE_CAPTURED;
+    System.out.println("RGB - Capture Game Piece");
   }
 
   public void off() {
