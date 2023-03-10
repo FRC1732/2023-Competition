@@ -66,7 +66,7 @@ public final class Constants {
   public static final double MAX_ANGULAR_ACCELERATION = 0;
 
   public static final double DEADBAND = 0.05;
-  public static final double TRAINING_WHEELS = 1.00;
+  public static final double TRAINING_WHEELS = 0.25;
 
   // #region Indexer Constants
 
