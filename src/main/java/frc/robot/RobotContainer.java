@@ -22,7 +22,7 @@ import frc.robot.commands.DriveDistance;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.InitializeRobotCommand;
-import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.TeleopSwervePlus;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
@@ -177,7 +177,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
     oi = OISelector.findOperatorInterface();
 
-    /*
+    /*-
      * Set up the default command for the drivetrain.
      * The joysticks' values map to percentage of the maximum velocities.
      * The velocities may be specified from either the robot's or field's frame of
@@ -186,14 +186,16 @@ public class RobotContainer {
      * Field-centric: origin is down-right, 0deg is up, +x is forward, +y is left,
      * +theta is CCW
      * direction.
-     * .....___________
-     * .....|....|....| ^
+     *      ___________
+     *      |    |    | ^
      * (0,0).____|____| y, x-> 0->
      */
     if (drivetrainSubsystem != null) {
-      drivetrainSubsystem.setDefaultCommand(
-          new TeleopSwerve(
-              drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+      // drivetrainSubsystem.setDefaultCommand(
+      // new TeleopSwerve(
+      // drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+
+      drivetrainSubsystem.setDefaultCommand(new TeleopSwervePlus(this, robotStateMachine, oi));
     }
 
     configureButtonBindings();
@@ -224,11 +226,12 @@ public class RobotContainer {
 
     if (limelightObjectDetectionSubsystem != null) {
       // limelightObjectDetectionSubsystem.setDefaultCommand(
-      //     new DefaultLimelightObjectDectionCommand());
+      // new DefaultLimelightObjectDectionCommand());
     }
 
     if (limelightScoringSubSystem != null) {
-      // limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
+      // limelightScoringSubSystem.setDefaultCommand(new
+      // DefaultLimelightScoringDectionCommand());
     }
   }
 
@@ -300,7 +303,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
     // oi.getDeployHolderButton()
-    //     .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
+    // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
+    // FinishScorePressed())));
 
     // Scoring Height buttons
     oi.getLowGoalButton()
