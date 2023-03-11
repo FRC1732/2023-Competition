@@ -6,14 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.RobotRototionMode;
+import frc.robot.RobotContainer.RobotTranslationMode;
 import frc.robot.operator_interface.OperatorInterface;
-import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.littletonrobotics.junction.Logger;
 
 public class TeleopSwervePlus extends CommandBase {
   private final RobotContainer robotContainer;
-  private final RobotStateMachine robotStateMachine;
   private final OperatorInterface oi;
 
   private Drivetrain drivetrainSubsystem;
@@ -25,10 +25,8 @@ public class TeleopSwervePlus extends CommandBase {
    * @param robotStateMachine
    * @param robotContainer
    */
-  public TeleopSwervePlus(
-      RobotContainer robotContainer, RobotStateMachine robotStateMachine, OperatorInterface oi) {
+  public TeleopSwervePlus(RobotContainer robotContainer, OperatorInterface oi) {
     this.robotContainer = robotContainer;
-    this.robotStateMachine = robotStateMachine;
     this.oi = oi;
 
     drivetrainSubsystem = robotContainer.drivetrainSubsystem;
@@ -41,7 +39,46 @@ public class TeleopSwervePlus extends CommandBase {
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
 
+    if (oi.getVisionAssistButton().getAsBoolean()) {
+      // make stuff happen here
+
+      if (robotContainer.robotRototionMode != RobotRototionMode.DRIVER) {
+        switch (robotContainer.robotRototionMode) {
+          case PIECE_TRACKING:
+            rotationPercentage = doPieceTrackingRotation();
+            break;
+          case LOCK_TO_ZERO:
+            rotationPercentage = doLockToZeroRotation();
+            break;
+          default:
+            break;
+        }
+      }
+
+      if (robotContainer.robotTranslationMode != RobotTranslationMode.DRIVER) {
+        switch (robotContainer.robotTranslationMode) {
+          case SCORE_PIECE:
+            yPercentage = doScorePieceTranslation();
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
     drivetrainSubsystem.drivePercentage(xPercentage, yPercentage, rotationPercentage);
+  }
+
+  private double doPieceTrackingRotation() {
+    return 0;
+  }
+
+  private double doLockToZeroRotation() {
+    return 0;
+  }
+
+  private double doScorePieceTranslation() {
+    return 0;
   }
 
   @Override
