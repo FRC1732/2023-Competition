@@ -145,7 +145,7 @@ void loop() {
 void setColor(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
+    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
   }
   pixels.show();
 }
@@ -182,7 +182,7 @@ void setColorLow(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     if (i < NUM_SEG) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
     }
   }
   pixels.show();
@@ -193,7 +193,7 @@ void setColorMid(bool red, bool green, bool blue) {
   for (int i = 0; i < NUMPIXELS; i++) {
     //if (i < 46 && i > 22) {
     if (i < NUM_SEG * 2) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
     }
   }
   pixels.show();
@@ -203,7 +203,7 @@ void setColorHigh(bool red, bool green, bool blue) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     //if (i < NUMPIXELS && i > 45) {
-    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
+    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
     //}
   }
   pixels.show();
@@ -217,9 +217,9 @@ void setColorBY(bool red, bool green, bool blue) {
 
   for (int i = 0; i < NUMPIXELS; i++) {
     if ((i / 4) % 2 == 0) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .45, INTENSITY * (int)blue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
     } else {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen * .45, INTENSITY * (int)invBlue));
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen * .50, INTENSITY * (int)invBlue));
     }
   }
   pixels.show();
