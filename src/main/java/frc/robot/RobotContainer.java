@@ -79,8 +79,21 @@ public class RobotContainer {
     HIGH
   }
 
+  public enum RobotTranslationMode {
+    DRIVER,
+    SCORE_PIECE
+  }
+
+  public enum RobotRototionMode {
+    DRIVER,
+    PIECE_TRACKING,
+    LOCK_TO_ZERO
+  }
+
   public PieceMode pieceMode;
   public ScoringHeight scoringHeight;
+  public RobotTranslationMode robotTranslationMode;
+  public RobotRototionMode robotRototionMode;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -195,7 +208,7 @@ public class RobotContainer {
       // new TeleopSwerve(
       // drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
 
-      drivetrainSubsystem.setDefaultCommand(new TeleopSwervePlus(this, robotStateMachine, oi));
+      drivetrainSubsystem.setDefaultCommand(new TeleopSwervePlus(this, oi));
     }
 
     configureButtonBindings();
