@@ -156,6 +156,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }*/
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+      System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setPoint);
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
     }
@@ -218,18 +219,21 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setToMidCone() {
-    pidController.setReference(
-        Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
   }
 
   public void setToNeutralPosition() {
-    pidController.setReference(
-        Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_NEUTRAL_POSITION_INCHES;
   }
 
   public void setToHighCone() {
-    pidController.setReference(
-        Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
   }
 
   public void reset() {

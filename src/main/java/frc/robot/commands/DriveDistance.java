@@ -40,7 +40,7 @@ public class DriveDistance extends CommandBase {
 
   @Override
   public void execute() {
-    drivetrain.drivePercentage(0.20, 0, 0);
+    drivetrain.drivePercentage(-0.20, 0, 0);
   }
 
   @Override

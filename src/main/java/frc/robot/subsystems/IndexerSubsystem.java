@@ -207,6 +207,7 @@ public class IndexerSubsystem extends SubsystemBase {
     //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
     // }
     if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+      System.out.println("Indexer CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setpoint);
       pidController.setReference(setpoint, ControlType.kPosition);
       prevSetpoint = setpoint;
     }
