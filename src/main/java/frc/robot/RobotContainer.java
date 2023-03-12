@@ -18,6 +18,8 @@ import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
+import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -242,13 +244,12 @@ public class RobotContainer {
     }
 
     if (limelightObjectDetectionSubsystem != null) {
-      // limelightObjectDetectionSubsystem.setDefaultCommand(
-      // new DefaultLimelightObjectDectionCommand());
+      limelightObjectDetectionSubsystem.setDefaultCommand(
+          new DefaultLimelightObjectDectionCommand());
     }
 
     if (limelightScoringSubSystem != null) {
-      // limelightScoringSubSystem.setDefaultCommand(new
-      // DefaultLimelightScoringDectionCommand());
+      limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
     }
   }
 

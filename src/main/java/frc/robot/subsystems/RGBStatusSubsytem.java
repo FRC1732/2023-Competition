@@ -61,8 +61,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
   public void periodic() {
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
         && robotContainer.limelightScoringSubSystem.isAligned()) {
-      out0.set(!false);
-      out1.set(!false);
+      out0.set(!true);
+      out1.set(!true);
       out2.set(!false);
       out3.set(!false);
       out4.set(!false);

@@ -26,8 +26,7 @@ public class TeleopSwervePlus extends CommandBase {
   private Drivetrain drivetrainSubsystem;
 
   // FIXME: drive train has several PID Controllers already created for use with
-  // Autos. Should we
-  // just reuse them here?
+  // Autos. Should we just reuse them here?
   private PIDController rotationPidController = null;
   private PIDController translationPidController = null;
 
