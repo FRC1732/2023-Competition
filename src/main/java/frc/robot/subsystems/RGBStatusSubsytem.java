@@ -59,17 +59,52 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (robotContainer.pieceMode == PieceMode.CUBE) {
+      gamePiece = GamePiece.CUBE;
+    } else {
+      gamePiece = GamePiece.CONE;
+    }
+
+    if (robotContainer.scoringHeight == ScoringHeight.HIGH) {
+      scoreColors = ScoreColors.HIGH;
+    } else if (robotContainer.scoringHeight == ScoringHeight.MEDIUM) {
+      scoreColors = ScoreColors.MEDIUM;
+    } else {
+      scoreColors = ScoreColors.LOW;
+    }
+
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
         && robotContainer.limelightScoringSubSystem.isAligned()) {
-      out0.set(!true);
-      out1.set(!true);
+      switch (scoreColors) {
+        case HIGH: // 3
+          out0.set(!true);
+          out1.set(!true);
+          break;
+
+        case LOW: // 1
+          out0.set(!true);
+          out1.set(!false);
+          break;
+
+        case MEDIUM: // 2
+          out0.set(!false);
+          out1.set(!true);
+          break;
+
+        case NONE:
+        default:
+          out0.set(!false);
+          out1.set(!false);
+          break;
+      }
+
       out2.set(!false);
       out3.set(!false);
       out4.set(!false);
       return;
     }
 
-    // Invert the digital sigs;  HIGH is 0, LOW is 1
+    // Invert the digital sigs; HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
       if (timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
@@ -91,20 +126,6 @@ public class RGBStatusSubsytem extends SubsystemBase {
             break;
         }
       }
-    }
-
-    if (robotContainer.pieceMode == PieceMode.CUBE) {
-      gamePiece = GamePiece.CUBE;
-    } else {
-      gamePiece = GamePiece.CONE;
-    }
-
-    if (robotContainer.scoringHeight == ScoringHeight.HIGH) {
-      scoreColors = ScoreColors.HIGH;
-    } else if (robotContainer.scoringHeight == ScoringHeight.MEDIUM) {
-      scoreColors = ScoreColors.MEDIUM;
-    } else {
-      scoreColors = ScoreColors.LOW;
     }
 
     if (specialMode == SpecialMode.NONE) {

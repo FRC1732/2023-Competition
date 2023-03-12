@@ -39,6 +39,7 @@ public class LimelightObjectDetection extends SubsystemBase {
   /** Creates a new Limelight. */
   public LimelightObjectDetection() {
     configureShuffleBoard();
+    LimelightHelpers.getLatestResults(LIMELIGHTNAME);
   }
 
   private void configureShuffleBoard() {
@@ -81,7 +82,7 @@ public class LimelightObjectDetection extends SubsystemBase {
       processLlResults(llresults);
 
       if (llresults != null) {
-        System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));
+        // System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));
       }
     } else {
       coneTarget = false;
@@ -135,9 +136,9 @@ public class LimelightObjectDetection extends SubsystemBase {
     coneTarget = cubeTarget = false;
 
     if (detections != null) {
-      System.out.println("Targets detected - " + detections.length);
+      // System.out.println("Targets detected - " + detections.length);
       for (LimelightTarget_Detector detection : detections) {
-        System.out.println("   Target - " + detection.className + " Area: " + detection.ta);
+        // System.out.println("   Target - " + detection.className + " Area: " + detection.ta);
         if (CONE_LABEL.equals(detection.className)) {
           if (detection.ta > areaCone) {
             conePose2d = new Translation2d(detection.tx, detection.ty);
