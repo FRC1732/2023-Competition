@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Detector;
 import java.util.Map;
@@ -43,34 +42,34 @@ public class LimelightObjectDetection extends SubsystemBase {
   }
 
   private void configureShuffleBoard() {
-    if (Constants.DEBUGGING) {
-      ShuffleboardTab tab;
-      tab = Shuffleboard.getTab(LIMELIGHTNAME);
+    // if (Constants.DEBUGGING) {
+    ShuffleboardTab tab;
+    tab = Shuffleboard.getTab(LIMELIGHTNAME);
 
-      LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.12:5800/stream.mjpg");
-      server = CameraServer.addSwitchedCamera("Object Camera");
-      server.setSource(LLFeed);
-      LLFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-      tab.add(server.getSource())
-          .withWidget(BuiltInWidgets.kCameraStream)
-          .withPosition(5, 0)
-          .withSize(5, 5)
-          .withProperties(Map.of("Show Crosshair", false, "Show Controls", false));
+    LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.12:5800/stream.mjpg");
+    server = CameraServer.addSwitchedCamera("Object Camera");
+    server.setSource(LLFeed);
+    LLFeed.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    tab.add(server.getSource())
+        .withWidget(BuiltInWidgets.kCameraStream)
+        .withPosition(5, 0)
+        .withSize(5, 5)
+        .withProperties(Map.of("Show Crosshair", false, "Show Controls", false));
 
-      tab.addBoolean("Cube Detected", () -> cubeTarget);
-      tab.addBoolean("Cone Detected", () -> coneTarget);
+    tab.addBoolean("Cube Detected", () -> cubeTarget);
+    tab.addBoolean("Cone Detected", () -> coneTarget);
 
-      tab.addDouble("Cone X", () -> conePose2d != null ? conePose2d.getX() : 0);
-      tab.addDouble("Cone Y", () -> conePose2d != null ? conePose2d.getY() : 0);
-      tab.addDouble("Cube X", () -> cubePose2d != null ? cubePose2d.getX() : 0);
-      tab.addDouble("Cube Y", () -> cubePose2d != null ? cubePose2d.getY() : 0);
+    tab.addDouble("Cone X", () -> conePose2d != null ? conePose2d.getX() : 0);
+    tab.addDouble("Cone Y", () -> conePose2d != null ? conePose2d.getY() : 0);
+    tab.addDouble("Cube X", () -> cubePose2d != null ? cubePose2d.getX() : 0);
+    tab.addDouble("Cube Y", () -> cubePose2d != null ? cubePose2d.getY() : 0);
 
-      tab.addDouble("Cone Confidence", () -> coneConfidence);
-      tab.addDouble("Cube Confidence", () -> cubeConfidence);
-    } else {
-      // competition shuffleboard
-      // what do we want here?
-    }
+    tab.addDouble("Cone Confidence", () -> coneConfidence);
+    tab.addDouble("Cube Confidence", () -> cubeConfidence);
+    // } else {
+    // competition shuffleboard
+    // what do we want here?
+    // }
   }
 
   @Override
@@ -82,7 +81,7 @@ public class LimelightObjectDetection extends SubsystemBase {
       processLlResults(llresults);
 
       if (llresults != null) {
-        // System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));
+        System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));
       }
     } else {
       coneTarget = false;
@@ -133,19 +132,25 @@ public class LimelightObjectDetection extends SubsystemBase {
     double areaCube = 0;
     double areaCone = 0;
 
+    coneTarget = cubeTarget = false;
+
     if (detections != null) {
+      System.out.println("Targets detected - " + detections.length);
       for (LimelightTarget_Detector detection : detections) {
+        System.out.println("   Target - " + detection.className + " Area: " + detection.ta);
         if (CONE_LABEL.equals(detection.className)) {
           if (detection.ta > areaCone) {
             conePose2d = new Translation2d(detection.tx, detection.ty);
             areaCone = detection.ta;
             coneConfidence = detection.confidence;
+            coneTarget = true;
           }
         } else if (CUBE_LABEL.equals(detection.className)) {
           if (detection.ta > areaCube) {
             cubePose2d = new Translation2d(detection.tx, detection.ty);
             areaCube = detection.ta;
             cubeConfidence = detection.confidence;
+            cubeTarget = true;
           }
         }
       }

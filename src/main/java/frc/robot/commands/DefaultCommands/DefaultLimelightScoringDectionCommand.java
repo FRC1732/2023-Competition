@@ -5,10 +5,11 @@
 package frc.robot.commands.DefaultCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LimelightScoring;
 
 public class DefaultLimelightScoringDectionCommand extends CommandBase {
   /** Creates a new DefaultLimelightScoringDectionCommand. */
-  public DefaultLimelightScoringDectionCommand() {
-    // So much empty
+  public DefaultLimelightScoringDectionCommand(LimelightScoring limelightScoringSubSystem) {
+    addRequirements(limelightScoringSubSystem);
   }
 }

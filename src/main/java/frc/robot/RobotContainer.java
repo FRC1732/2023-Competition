@@ -96,10 +96,10 @@ public class RobotContainer {
 
   // public boolean visionEnabled = true;
 
-  public PieceMode pieceMode;
-  public ScoringHeight scoringHeight;
-  public RobotTranslationMode robotTranslationMode;
-  public RobotRotationMode robotRotationMode;
+  public PieceMode pieceMode = PieceMode.CONE;
+  public ScoringHeight scoringHeight = ScoringHeight.HIGH;
+  public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
+  public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -245,11 +245,12 @@ public class RobotContainer {
 
     if (limelightObjectDetectionSubsystem != null) {
       limelightObjectDetectionSubsystem.setDefaultCommand(
-          new DefaultLimelightObjectDectionCommand());
+          new DefaultLimelightObjectDectionCommand(limelightObjectDetectionSubsystem));
     }
 
     if (limelightScoringSubSystem != null) {
-      limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
+      limelightScoringSubSystem.setDefaultCommand(
+          new DefaultLimelightScoringDectionCommand(limelightScoringSubSystem));
     }
   }
 
@@ -363,8 +364,10 @@ public class RobotContainer {
 
     oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
 
-    // oi.getVisionAssistButton().onTrue(Commands.runOnce(() -> visionEnabled = true));
-    // oi.getVisionAssistButton().onFalse(Commands.runOnce(() -> visionEnabled = false));
+    // oi.getVisionAssistButton().onTrue(Commands.runOnce(() -> visionEnabled =
+    // true));
+    // oi.getVisionAssistButton().onFalse(Commands.runOnce(() -> visionEnabled =
+    // false));
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -410,8 +413,10 @@ public class RobotContainer {
     autoChooser.addOption(
         "Place High Cone and Drive Back",
         Commands.sequence(
-            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
+            // Rotation2d(Math.PI)),
+            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
+            // CustomWaitCommand(6.5)),
             new DriveDistance(drivetrainSubsystem, 1)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
