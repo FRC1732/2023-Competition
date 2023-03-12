@@ -105,14 +105,14 @@ public final class Constants {
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 9;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
-  public static final double ELEVATOR_MAX_SPEED_RPM = 50000;
-  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 60000;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 150000;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 160000;
   public static final double ELEVATOR_DEADBAND = 0.5;
   public static final double ELEVATOR_P_VALUE = 0.00025;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
-  public static final double ELEVATOR_PID_MAX_OUTPUT = 0.85;
-  public static final double ELEVATOR_PID_MIN_OUTPUT = -0.85;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
 
   // #endregion
 
@@ -124,7 +124,7 @@ public final class Constants {
   public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
-  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
+  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 53;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 34.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 50000;
   public static final double EXTENDER_DEADBAND = 0.5;

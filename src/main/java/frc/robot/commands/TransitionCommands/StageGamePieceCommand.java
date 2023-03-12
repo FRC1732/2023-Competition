@@ -61,6 +61,6 @@ public class StageGamePieceCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return robotContainer.elevatorSubsystem.isAtSetpoint();
+    return robotContainer.elevatorSubsystem.isHigherThanNeutral();
   }
 }

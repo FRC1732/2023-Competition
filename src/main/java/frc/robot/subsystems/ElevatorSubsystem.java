@@ -218,6 +218,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isHigherThanNeutral() {
+    boolean temp =
+        elevatorBaseMotorOne.getEncoder().getPosition()
+            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES + 3;
+    if (temp) {
+      System.out.println("Elevator higher than neutral");
+    } else {
+      System.out.println("Elevator lower than neutral");
+    }
+    return temp;
+  }
+
   public void setToMidCone() {
     // pidController.setReference(
     //     Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
