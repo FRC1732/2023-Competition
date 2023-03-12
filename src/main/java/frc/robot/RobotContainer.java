@@ -85,7 +85,7 @@ public class RobotContainer {
     SCORE_PIECE
   }
 
-  public enum RobotRototionMode {
+  public enum RobotRotationMode {
     DRIVER,
     PIECE_TRACKING,
     LOCK_TO_ZERO
@@ -94,7 +94,7 @@ public class RobotContainer {
   public PieceMode pieceMode;
   public ScoringHeight scoringHeight;
   public RobotTranslationMode robotTranslationMode;
-  public RobotRototionMode robotRototionMode;
+  public RobotRotationMode robotRotationMode;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
