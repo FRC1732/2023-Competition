@@ -13,8 +13,6 @@ import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 
 public class RGBStatusSubsytem extends SubsystemBase {
-  private PieceMode prevPieceMode;
-  private ScoringHeight prevScoringHeight;
   /*-
    * Outputs 0 and 1 set the scoring height.
    *   Low Score - Bit 0
@@ -36,7 +34,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
   private DigitalOutput out3 = new DigitalOutput(4);
   private DigitalOutput out4 = new DigitalOutput(5);
 
-  private ScoreColors scoreColors;
+  private ScoreHeight scoreHeight;
   private GamePiece gamePiece;
 
   private Timer timer;
@@ -48,9 +46,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
-    prevPieceMode = robotContainer.pieceMode;
-    prevScoringHeight = robotContainer.scoringHeight;
-    scoreColors = ScoreColors.NONE;
+    scoreHeight = ScoreHeight.NONE;
     gamePiece = GamePiece.NONE;
     specialMode = SpecialMode.NONE;
     targetElapsedTimeSeconds = 0;
@@ -66,37 +62,16 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (robotContainer.scoringHeight == ScoringHeight.HIGH) {
-      scoreColors = ScoreColors.HIGH;
+      scoreHeight = ScoreHeight.HIGH;
     } else if (robotContainer.scoringHeight == ScoringHeight.MEDIUM) {
-      scoreColors = ScoreColors.MEDIUM;
+      scoreHeight = ScoreHeight.MEDIUM;
     } else {
-      scoreColors = ScoreColors.LOW;
+      scoreHeight = ScoreHeight.LOW;
     }
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
         && robotContainer.limelightScoringSubSystem.isAligned()) {
-      switch (scoreColors) {
-        case HIGH: // 3
-          out0.set(!true);
-          out1.set(!true);
-          break;
-
-        case LOW: // 1
-          out0.set(!true);
-          out1.set(!false);
-          break;
-
-        case MEDIUM: // 2
-          out0.set(!false);
-          out1.set(!true);
-          break;
-
-        case NONE:
-        default:
-          out0.set(!false);
-          out1.set(!false);
-          break;
-      }
+      setScoreHieghtBits();
 
       out2.set(!false);
       out3.set(!false);
@@ -131,46 +106,53 @@ public class RGBStatusSubsytem extends SubsystemBase {
     if (specialMode == SpecialMode.NONE) {
       out4.set(!false);
 
-      switch (scoreColors) {
-        case HIGH: // 3
-          out0.set(!true);
-          out1.set(!true);
-          break;
+      setScoreHieghtBits();
+      setGamePieceBits();
+    }
+  }
 
-        case LOW: // 1
-          out0.set(!true);
-          out1.set(!false);
-          break;
+  private void setGamePieceBits() {
+    switch (gamePiece) {
+      case CONE: // +8
+        out2.set(!false);
+        out3.set(!true);
+        break;
 
-        case MEDIUM: // 2
-          out0.set(!false);
-          out1.set(!true);
-          break;
+      case CUBE: // +4
+        out2.set(!true);
+        out3.set(!false);
+        break;
 
-        case NONE:
-        default:
-          out0.set(!false);
-          out1.set(!false);
-          break;
-      }
+      case NONE:
+      default:
+        out2.set(!false);
+        out3.set(!false);
+        break;
+    }
+  }
 
-      switch (gamePiece) {
-        case CONE: // +8
-          out2.set(!false);
-          out3.set(!true);
-          break;
+  private void setScoreHieghtBits() {
+    switch (scoreHeight) {
+      case HIGH: // 3
+        out0.set(!true);
+        out1.set(!true);
+        break;
 
-        case CUBE: // +4
-          out2.set(!true);
-          out3.set(!false);
-          break;
+      case LOW: // 1
+        out0.set(!true);
+        out1.set(!false);
+        break;
 
-        case NONE:
-        default:
-          out2.set(!false);
-          out3.set(!false);
-          break;
-      }
+      case MEDIUM: // 2
+        out0.set(!false);
+        out1.set(!true);
+        break;
+
+      case NONE:
+      default:
+        out0.set(!false);
+        out1.set(!false);
+        break;
     }
   }
 
@@ -183,7 +165,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
   }
 
   public void off() {
-    scoreColors = ScoreColors.NONE;
+    scoreHeight = ScoreHeight.NONE;
     gamePiece = GamePiece.NONE;
     specialMode = SpecialMode.NONE;
     timer.stop();
@@ -193,11 +175,11 @@ public class RGBStatusSubsytem extends SubsystemBase {
     this.gamePiece = gamePiece;
   }
 
-  public void scoringPosition(ScoreColors scoreColors) {
-    this.scoreColors = scoreColors;
+  public void scoringPosition(ScoreHeight scoreColors) {
+    this.scoreHeight = scoreColors;
   }
 
-  public enum ScoreColors {
+  public enum ScoreHeight {
     HIGH,
     MEDIUM,
     LOW,

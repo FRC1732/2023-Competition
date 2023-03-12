@@ -49,6 +49,8 @@ public class LimelightScoring extends SubsystemBase {
   public LimelightScoring() {
     configureNetworkTableEntries();
     configureShuffleBoard();
+
+    LimelightHelpers.getLatestResults(LIMELIGHTNAME);
   }
 
   private void configureNetworkTableEntries() {
