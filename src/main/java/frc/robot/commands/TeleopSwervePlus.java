@@ -39,6 +39,8 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KI = KOWALSKI_2022_I;
   private final double KD = KOWALSKI_2022_D;
 
+  private final double SLOW_MODE_SCALER = 0.25;
+
   /**
    * Create a new TeleopSwerve command object.
    *
@@ -85,10 +87,9 @@ public class TeleopSwervePlus extends CommandBase {
       switch (robotContainer.robotRotationMode) {
         case PIECE_TRACKING:
           rotationPercentage = doPieceTrackingRotation(rotationPercentage);
-          yPercentage = 0; // lock out side to side
           break;
-        case LOCK_TO_ZERO:
-          rotationPercentage = doLockToZeroRotation();
+        case SCORE_PIECE:
+          // rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
           rotationPidController.reset();
@@ -100,12 +101,25 @@ public class TeleopSwervePlus extends CommandBase {
       switch (robotContainer.robotTranslationMode) {
         case SCORE_PIECE:
           yPercentage = doScorePieceTranslation(yPercentage);
+          xPercentage = -1 * xPercentage;
           break;
         case DRIVER:
           translationPidController.reset();
           break;
+        case PIECE_TRACKING:
+          yPercentage = 0;
+          break;
+        case SLOW_MODE:
+          xPercentage = SLOW_MODE_SCALER * xPercentage;
+          yPercentage = SLOW_MODE_SCALER * yPercentage;
+          break;
         default:
           break;
+      }
+    } else {
+      if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE) {
+        xPercentage = SLOW_MODE_SCALER * xPercentage;
+        yPercentage = SLOW_MODE_SCALER * yPercentage;
       }
     }
 

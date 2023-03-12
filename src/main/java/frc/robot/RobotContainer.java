@@ -81,14 +81,18 @@ public class RobotContainer {
 
   public enum RobotTranslationMode {
     DRIVER,
-    SCORE_PIECE
+    SCORE_PIECE,
+    PIECE_TRACKING,
+    SLOW_MODE
   }
 
   public enum RobotRotationMode {
     DRIVER,
     PIECE_TRACKING,
-    LOCK_TO_ZERO
+    SCORE_PIECE
   }
+
+  // public boolean visionEnabled = true;
 
   public PieceMode pieceMode;
   public ScoringHeight scoringHeight;
@@ -357,6 +361,9 @@ public class RobotContainer {
     oi.getConeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CONE));
 
     oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
+
+    // oi.getVisionAssistButton().onTrue(Commands.runOnce(() -> visionEnabled = true));
+    // oi.getVisionAssistButton().onFalse(Commands.runOnce(() -> visionEnabled = false));
   }
 
   /** Use this method to define your commands for autonomous mode. */

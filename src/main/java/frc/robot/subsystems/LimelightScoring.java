@@ -34,6 +34,7 @@ public class LimelightScoring extends SubsystemBase {
   private NetworkTableEntry tv;
   private NetworkTableEntry tx;
   private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
   private NetworkTableEntry pipeline;
 
   private ScoringMode currentScoringMode = ScoringMode.Undefined;
@@ -41,6 +42,7 @@ public class LimelightScoring extends SubsystemBase {
   private double reflectiveTv;
   private double reflectiveTx;
   private double reflectiveTy;
+  private double reflectiveTa;
   private int pipelineVal;
 
   /** Creates a new Limelight. */
@@ -54,6 +56,7 @@ public class LimelightScoring extends SubsystemBase {
     tv = table.getEntry("tv");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
+    ta = table.getEntry("ta");
     pipeline = table.getEntry("pipeline");
   }
 
@@ -74,6 +77,7 @@ public class LimelightScoring extends SubsystemBase {
     tab.addNumber("tv - Valid Targets", () -> reflectiveTv);
     tab.addNumber("tx - Horiz Offset", () -> reflectiveTx);
     tab.addNumber("ty - Vert Offset", () -> reflectiveTy);
+    tab.addNumber("ta - Target Area", () -> reflectiveTa);
     tab.addBoolean("Target Acquired", () -> reflectiveTv > 0);
 
     tab.addNumber("Tag Sighted", () -> getPriorityTag());
@@ -104,6 +108,7 @@ public class LimelightScoring extends SubsystemBase {
       reflectiveTv = tv.getDouble(0);
       reflectiveTx = tx.getDouble(0);
       reflectiveTy = ty.getDouble(0);
+      reflectiveTy = ta.getDouble(0);
     }
     pipelineVal = (int) pipeline.getDouble(-1);
   }
@@ -126,7 +131,12 @@ public class LimelightScoring extends SubsystemBase {
   }
 
   public boolean isAligned() {
-    return Math.abs(getTx()) < 2.5;
+    double tx = getTx();
+    // Low goal is off by 1 degree
+    if (getTy() < 0) {
+      tx = tx - 1;
+    }
+    return hasTarget() && Math.abs(tx) < 1.75;
   }
 
   /**
@@ -147,6 +157,10 @@ public class LimelightScoring extends SubsystemBase {
    */
   public Double getTy() {
     return reflectiveTy;
+  }
+
+  public Double getTa() {
+    return reflectiveTa;
   }
 
   /**

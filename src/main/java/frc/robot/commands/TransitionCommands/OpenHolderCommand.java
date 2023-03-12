@@ -3,6 +3,7 @@ package frc.robot.commands.TransitionCommands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
+import frc.robot.RobotContainer.RobotRotationMode;
 
 public class OpenHolderCommand extends WaitCommand {
   private RobotContainer robotContainer;
@@ -16,6 +17,7 @@ public class OpenHolderCommand extends WaitCommand {
 
   @Override
   public void initialize() {
+    robotContainer.robotRotationMode = RobotRotationMode.DRIVER;
     prevPieceMode = robotContainer.pieceMode;
     m_timer.reset();
     m_timer.start();

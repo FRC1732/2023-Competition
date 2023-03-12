@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
+import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 
 public class RGBStatusSubsytem extends SubsystemBase {
@@ -58,6 +59,16 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
+        && robotContainer.limelightScoringSubSystem.isAligned()) {
+      out0.set(!false);
+      out1.set(!false);
+      out2.set(!false);
+      out3.set(!false);
+      out4.set(!false);
+      return;
+    }
+
     // Invert the digital sigs;  HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
       if (timer.hasElapsed(targetElapsedTimeSeconds)) {
