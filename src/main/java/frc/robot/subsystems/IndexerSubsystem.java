@@ -22,6 +22,7 @@ import frc.robot.RobotContainer.PieceMode;
 import frc.robot.subsystems.io.IndexerIO;
 import frc.robot.subsystems.io.IndexerIOInputsAutoLoggedv2;
 
+@SuppressWarnings("unused")
 public class IndexerSubsystem extends SubsystemBase {
   private CANSparkMax indexerRotationMotor;
   private CANSparkMax indexerGrabbingMotor;

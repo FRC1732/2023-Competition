@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+@SuppressWarnings("unused")
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private DigitalInput extenderMagneticLimitSwitch;

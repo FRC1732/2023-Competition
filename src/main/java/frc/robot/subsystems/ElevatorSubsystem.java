@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer.PieceMode;
 
+@SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
   private CANSparkMax elevatorBaseMotorOne, elevatorBaseMotorTwo;
   private RelativeEncoder relativeEncoder;
