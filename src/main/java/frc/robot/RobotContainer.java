@@ -39,6 +39,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightObjectDetection;
 import frc.robot.subsystems.LimelightScoring;
 import frc.robot.subsystems.RGBStatusSubsytem;
@@ -459,6 +460,9 @@ public class RobotContainer {
     }
 
     if (Constants.HARDWARE_CONFIG_HAS_BOTH_LIMELIGHTS) {
+      LimelightHelpers.profileJSON = true;
+      LimelightHelpers.getObjectMapper();
+
       limelightObjectDetectionSubsystem = new LimelightObjectDetection();
       limelightScoringSubSystem = new LimelightScoring();
     }

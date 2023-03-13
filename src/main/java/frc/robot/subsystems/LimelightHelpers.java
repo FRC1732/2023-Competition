@@ -361,7 +361,7 @@ public class LimelightHelpers {
   private static ObjectMapper mapper;
 
   /** Print JSON Parse time to the console in milliseconds */
-  static boolean profileJSON = false;
+  public static boolean profileJSON = false;
 
   static final String sanitizeName(String name) {
     if (name == "" || name == null) {
@@ -744,8 +744,7 @@ public class LimelightHelpers {
     long start = System.nanoTime();
     LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
     if (mapper == null) {
-      mapper =
-          new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      getObjectMapper();
     }
 
     try {
@@ -762,5 +761,21 @@ public class LimelightHelpers {
     }
 
     return results;
+  }
+
+  public static ObjectMapper getObjectMapper() {
+    if (mapper == null) {
+      long start = System.nanoTime();
+
+      mapper =
+          new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+      long end = System.nanoTime();
+      double millis = (end - start) * .000001;
+      if (profileJSON) {
+        System.out.printf("lljson (OM): %.2f\r\n", millis);
+      }
+    }
+    return mapper;
   }
 }
