@@ -17,6 +17,7 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   private Constants() {
     throw new IllegalStateException("attempted to instantiate static class");
   }
@@ -140,6 +141,21 @@ public final class Constants {
   // #region Limelight Constants
 
   public static final double LIMELIGHT_HEIGHT = 2.229;
+
+  // #endregion
+
+  // #region Auto Balance Constants
+
+  public static final double AUTOBALANCE_P_VALUE = 10.0;
+  public static final double AUTOBALANCE_I_VALUE = 0;
+  public static final double AUTOBALANCE_D_VALUE = 1.0;
+
+  public static final double AUTOBALANCE_SET_POINT_RADIANS_COMPETITION = Math.PI;
+  public static final double AUTOBALANCE_SET_POINT_RADIANS_PROTOBOT = 0;
+  public static final double AUTOBALANCE_SET_POINT_RADIANS =
+      AUTOBALANCE_SET_POINT_RADIANS_COMPETITION;
+
+  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 3.0;
 
   // #endregion
 }
