@@ -34,8 +34,8 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = KOWALSKI_2022_P;
-  private final double KI = KOWALSKI_2022_I;
+  private final double KP = 15;
+  private final double KI = 0;
   private final double KD = 0;
 
   private final double SLOW_MODE_SCALER = 0.25;
@@ -76,12 +76,12 @@ public class TeleopSwervePlus extends CommandBase {
         robotContainer.limelightObjectDetectionSubsystem.stopDetection();
       }
 
-      if (robotContainer.robotRotationMode == RobotRotationMode.DRIVER
-          && robotContainer.robotTranslationMode == RobotTranslationMode.DRIVER) {
-        drivetrainSubsystem.enableFieldRelative();
-      } else {
-        drivetrainSubsystem.disableFieldRelative();
-      }
+      // if (robotContainer.robotRotationMode == RobotRotationMode.DRIVER
+      //     && robotContainer.robotTranslationMode == RobotTranslationMode.DRIVER) {
+      //   drivetrainSubsystem.enableFieldRelative();
+      // } else {
+      //   drivetrainSubsystem.disableFieldRelative();
+      // }
 
       switch (robotContainer.robotRotationMode) {
         case PIECE_TRACKING:
@@ -135,19 +135,16 @@ public class TeleopSwervePlus extends CommandBase {
   private double doPieceTrackingRotation(double defaultResponse) {
     LimelightObjectDetection ll = robotContainer.limelightObjectDetectionSubsystem;
 
-    if (robotContainer.pieceMode == PieceMode.CONE) {
-      if (ll.hasConeTarget()) {
-        return rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
-            / Math.PI
-            * 0.2;
-      }
+    if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
+      return rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
+          / Math.PI
+          * 0.25;
     }
 
-    if (robotContainer.pieceMode == PieceMode.CUBE) {
-      if (ll.hasCubeTarget()) {
-        return rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
-            / Math.PI;
-      }
+    if (robotContainer.pieceMode == PieceMode.CUBE && ll.hasCubeTarget()) {
+      return rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
+          / Math.PI
+          * 0.25;
     }
 
     return defaultResponse;

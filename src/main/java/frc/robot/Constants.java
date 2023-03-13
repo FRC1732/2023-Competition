@@ -71,7 +71,7 @@ public final class Constants {
   // #region Indexer Constants
 
   public static final double INDEXER_INTAKE_SPEED = -0.5;
-  public static final double INDEXER_PLACEMENT_SPEED = 0.2;
+  public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.1;
@@ -79,8 +79,8 @@ public final class Constants {
   public static final double INDEXER_CUBE_POSITION = -105;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
-  public static final double INDEXER_ARM_DEADBAND = 1;
-  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.015;
+  public static final double INDEXER_ARM_DEADBAND = 3;
+  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.0175;
   public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
   public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
   public static final double INDEXER_ARM_P_VALUE = 0.01;

@@ -23,6 +23,7 @@ public class LowerElevatorToTransferCommand extends CommandBase {
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
     robotContainer.indexerSubsystem.pushAgainstHardstop();
+    robotContainer.indexerSubsystem.grabberOff();
   }
 
   @Override

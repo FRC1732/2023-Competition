@@ -222,7 +222,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean isHigherThanNeutral() {
     boolean temp =
         elevatorBaseMotorOne.getEncoder().getPosition()
-            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES + 3;
+            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES + 6;
     if (temp) {
       System.out.println("Elevator higher than neutral");
     } else {
