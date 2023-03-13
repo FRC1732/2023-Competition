@@ -17,7 +17,9 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.CustomWaitCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
@@ -69,6 +71,7 @@ public class RobotContainer {
   public SwerveModule blModule;
   public SwerveModule brModule;
   public GyroIO gyro;
+  private GyroIoADIS16470 adis16470Gyro;
 
   public enum PieceMode {
     CONE,
@@ -135,7 +138,8 @@ public class RobotContainer {
   }
 
   private void configureDriveTrain() {
-    gyro = new GyroIoADIS16470();
+    adis16470Gyro = new GyroIoADIS16470();
+    gyro = adis16470Gyro;
 
     flModule =
         new SwerveModule(
@@ -413,20 +417,18 @@ public class RobotContainer {
     autoChooser.addOption(
         "Place High Cone and Drive Back",
         Commands.sequence(
-            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
-            // Rotation2d(Math.PI)),
-            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
-            // CustomWaitCommand(6.5)),
-            new DriveDistance(drivetrainSubsystem, 1)));
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
 
     autoChooser.addOption(
         "Place High Cone and Drive Back and Auto Balance",
-          Commands.sequence(
-            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
-            // Rotation2d(Math.PI)),
-            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
-            // CustomWaitCommand(6.5)),
-            new DriveDistance(drivetrainSubsystem, 1)));
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

@@ -4,31 +4,50 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
-/**
- * This command, when executed, instructs the drivetrain subsystem to drive based on the specified
- * values from the controller(s). This command is designed to be the default command for the
- * drivetrain subsystem.
- *
- * <p>Requires: the Drivetrain subsystem
- *
- * <p>Finished When: never
- *
- * <p>At End: stops the drivetrain
- */
 public class DriveDistance extends CommandBase {
+  public enum Direction {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT;
+  }
 
   private final Drivetrain drivetrain;
   private Translation2d startingPose;
   private double targetDistance;
+  private Direction direction;
+  private double speed;
 
-  /**
-   * Create a new TeleopSwerve command object.
-   *
-   * @param drivetrain the drivetrain subsystem instructed by this command
-   */
   public DriveDistance(Drivetrain drivetrain, double distanceMeters) {
     this.drivetrain = drivetrain;
     targetDistance = distanceMeters;
+    direction = Direction.FORWARD;
+    speed = 0.2;
+    addRequirements(drivetrain);
+  }
+
+  public DriveDistance(Drivetrain drivetrain, Direction direction, double distanceMeters) {
+    this.drivetrain = drivetrain;
+    targetDistance = distanceMeters;
+    this.direction = direction;
+    speed = 0.2;
+    addRequirements(drivetrain);
+  }
+
+  public DriveDistance(Drivetrain drivetrain, double distanceMeters, double speed) {
+    this.drivetrain = drivetrain;
+    targetDistance = distanceMeters;
+    direction = Direction.FORWARD;
+    this.speed = speed;
+    addRequirements(drivetrain);
+  }
+
+  public DriveDistance(
+      Drivetrain drivetrain, Direction direction, double distanceMeters, double speed) {
+    this.drivetrain = drivetrain;
+    targetDistance = distanceMeters;
+    this.direction = direction;
+    this.speed = speed;
     addRequirements(drivetrain);
   }
 
@@ -40,7 +59,27 @@ public class DriveDistance extends CommandBase {
 
   @Override
   public void execute() {
-    drivetrain.drivePercentage(-0.20, 0, 0);
+    double x, y;
+    x = y = 0;
+
+    switch (direction) {
+      case BACKWARD:
+        x = -1.0 * speed;
+        break;
+      case FORWARD:
+        x = speed;
+        break;
+      case LEFT:
+        y = speed;
+        break;
+      case RIGHT:
+        y = -1.0 * speed;
+        break;
+      default:
+        break;
+    }
+
+    drivetrain.drivePercentage(x, y, 0);
   }
 
   @Override
