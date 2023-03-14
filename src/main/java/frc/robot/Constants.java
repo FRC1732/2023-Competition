@@ -81,7 +81,7 @@ public final class Constants {
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
   public static final double INDEXER_ARM_DEADBAND = 3;
-  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.0175;
+  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.02;
   public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
   public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
   public static final double INDEXER_ARM_P_VALUE = 0.01;

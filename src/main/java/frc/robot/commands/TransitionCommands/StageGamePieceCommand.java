@@ -3,7 +3,6 @@ package frc.robot.commands.TransitionCommands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
-import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.FinishScorePressed;
@@ -28,14 +27,13 @@ public class StageGamePieceCommand extends CommandBase {
     prevPieceMode = robotContainer.pieceMode;
     prevScoringHeight = robotContainer.scoringHeight;
     if (prevScoringHeight == ScoringHeight.MEDIUM) {
-      robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
+      robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
     } else {
-      robotContainer.elevatorSubsystem.goToHighScoringPosition();
+      robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.close();
     robotContainer.indexerSubsystem.transferPiece();
-    robotContainer.robotRotationMode = RobotRotationMode.DRIVER;
   }
 
   @Override
@@ -49,9 +47,9 @@ public class StageGamePieceCommand extends CommandBase {
     if (prevScoringHeight != robotContainer.scoringHeight) {
       prevScoringHeight = robotContainer.scoringHeight;
       if (prevScoringHeight == ScoringHeight.MEDIUM) {
-        robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
+        robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
       } else {
-        robotContainer.elevatorSubsystem.goToHighScoringPosition();
+        robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
       }
     }
   }

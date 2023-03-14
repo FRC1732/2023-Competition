@@ -34,9 +34,9 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = 15;
+  private final double KP = 7;
   private final double KI = 0;
-  private final double KD = 0;
+  private final double KD = 1;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -138,13 +138,13 @@ public class TeleopSwervePlus extends CommandBase {
     if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
       return rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
           / Math.PI
-          * 0.25;
+          * 0.4;
     }
 
     if (robotContainer.pieceMode == PieceMode.CUBE && ll.hasCubeTarget()) {
       return rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
           / Math.PI
-          * 0.25;
+          * 0.4;
     }
 
     return defaultResponse;

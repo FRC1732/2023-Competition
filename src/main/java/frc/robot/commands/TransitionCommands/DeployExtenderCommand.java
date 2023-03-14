@@ -23,11 +23,11 @@ public class DeployExtenderCommand extends CommandBase {
     prevScoringHeight = robotContainer.scoringHeight;
     robotContainer.holderSubsystem.close();
     if (prevScoringHeight == ScoringHeight.MEDIUM) {
-      robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
-      robotContainer.extenderSubsystem.goToMiddleScoringPosition();
+      robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
+      robotContainer.extenderSubsystem.goToMiddleScoringPosition(prevPieceMode);
     } else {
-      robotContainer.elevatorSubsystem.goToHighScoringPosition();
-      robotContainer.extenderSubsystem.goToHighScoringPosition();
+      robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
+      robotContainer.extenderSubsystem.goToHighScoringPosition(prevPieceMode);
     }
   }
 

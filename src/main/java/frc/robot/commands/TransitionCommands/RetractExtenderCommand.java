@@ -25,9 +25,9 @@ public class RetractExtenderCommand extends WaitCommand {
     prevScoringHeight = robotContainer.scoringHeight;
     robotContainer.holderSubsystem.open();
     if (prevScoringHeight == ScoringHeight.MEDIUM) {
-      robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
+      robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
     } else {
-      robotContainer.elevatorSubsystem.goToHighScoringPosition();
+      robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
   }

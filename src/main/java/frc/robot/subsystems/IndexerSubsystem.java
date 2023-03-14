@@ -228,9 +228,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void grabberEject() {
     if (isOpen) {
-      indexerGrabbingMotor.set(0.2);
+      indexerGrabbingMotor.set(0.175);
     } else {
-      indexerGrabbingMotor.set(-0.2);
+      indexerGrabbingMotor.set(-0.3);
     }
   }
 

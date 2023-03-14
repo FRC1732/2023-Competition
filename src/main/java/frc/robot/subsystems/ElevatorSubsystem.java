@@ -171,12 +171,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void goToMiddleScoringPosition() {
-    setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
+  public void goToMiddleScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES - 7;
+    }
   }
 
-  public void goToHighScoringPosition() {
-    setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
+  public void goToHighScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES - 7;
+    }
   }
 
   public void goToStartingPosition() {
