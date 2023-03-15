@@ -227,6 +227,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isAtStartPoint() {
+    return Math.abs(
+            elevatorBaseMotorOne.getEncoder().getPosition()
+                - Constants.ELEVATOR_STARTING_POSITION_INCHES)
+        < 10e-2;
+  }
+
   public boolean isHigherThanNeutral() {
     boolean temp =
         elevatorBaseMotorOne.getEncoder().getPosition()
