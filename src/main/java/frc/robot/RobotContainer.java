@@ -425,10 +425,10 @@ public class RobotContainer {
     autoChooser.addOption(
         "Place High Cone and Drive Back and Auto Balance",
         Commands.sequence(
-            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
+            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
+            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
             new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());

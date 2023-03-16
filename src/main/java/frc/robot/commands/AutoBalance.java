@@ -50,7 +50,7 @@ public class AutoBalance extends CommandBase {
 
   @Override
   public void execute() {
-    if (Constants.TUNING_MODE) {
+    if (true) {
       double p = kP.getDouble(Constants.AUTOBALANCE_P_VALUE);
       double i = kI.getDouble(Constants.AUTOBALANCE_I_VALUE);
       double d = kD.getDouble(Constants.AUTOBALANCE_D_VALUE);
@@ -75,20 +75,8 @@ public class AutoBalance extends CommandBase {
         pidController.calculate(
                 Math.toRadians(imu.xComplementary()), Constants.AUTOBALANCE_SET_POINT_RADIANS)
             / Math.PI
-            * 0.2;
+            * -0.1;
 
-    drivetrain.drivePercentage(x, 0, 0);
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    drivetrain.stop();
-    System.out.println("Balance Ended - Interrupted: " + interrupted);
-  }
-
-  @Override
-  public boolean isFinished() {
-    // flat is -180/180. Lets try to make this easier on ourselves
     double adjustedX = (360.0 + imu.xComplementary()) % 360.0;
     if (Math.toDegrees(Constants.AUTOBALANCE_SET_POINT_RADIANS)
                 + Constants.AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS
@@ -97,15 +85,32 @@ public class AutoBalance extends CommandBase {
             > Math.toDegrees(Constants.AUTOBALANCE_SET_POINT_RADIANS)
                 - Constants.AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS) {
       count++;
-      return count > 10;
+      if (count > 10) {
+        drivetrain.setXStance();
+      } else {
+        drivetrain.disableXstance();
+        drivetrain.stop();
+      }
+    } else {
+      count = 0;
+      drivetrain.disableXstance();
+      drivetrain.drivePercentage(x, 0, 0);
     }
+  }
 
-    count = 0;
+  @Override
+  public void end(boolean interrupted) {
+    drivetrain.disableXstance();
+    System.out.println("Balance Ended - Interrupted: " + interrupted);
+  }
+
+  @Override
+  public boolean isFinished() {
     return false;
   }
 
   private void setupShuffleboard() {
-    if (Constants.TUNING_MODE) {
+    if (true) {
       ShuffleboardTab tab;
       tab = Shuffleboard.getTab("autoBalance");
 
