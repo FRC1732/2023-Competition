@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import java.util.Map;
 
 public class LimelightScoring extends SubsystemBase {
@@ -88,9 +87,9 @@ public class LimelightScoring extends SubsystemBase {
 
     tab.addNumber("Selected Pipeline", () -> pipelineVal);
 
-    tab.addBoolean(
-        "Elevator At Starting Position",
-        () -> RobotContainer.getInstance().elevatorSubsystem.isAtStartPoint());
+    // tab.addBoolean(
+    //     "Elevator At Starting Position",
+    //     () -> RobotContainer.getInstance().elevatorSubsystem.isAtStartPoint());
   }
 
   @Override

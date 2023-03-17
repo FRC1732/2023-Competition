@@ -16,6 +16,7 @@ public final class CommandFactory {
         new DeployExtenderCommand(robotContainer),
         new OpenHolderCommand(robotContainer),
         new RetractExtenderCommand(robotContainer),
-        new ResetToReadyCommand(robotContainer));
+        new ResetToReadyCommand(robotContainer)
+            .until(() -> robotContainer.elevatorSubsystem.isAtSetpoint()));
   }
 }

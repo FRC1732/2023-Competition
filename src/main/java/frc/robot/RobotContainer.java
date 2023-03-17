@@ -19,12 +19,9 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.CommandFactory;
-import frc.robot.commands.CustomWaitCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
-import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwervePlus;
 import frc.robot.operator_interface.OISelector;
@@ -384,46 +381,60 @@ public class RobotContainer {
             Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
     // add commands to the auto chooser
-    autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.addOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
-    autoChooser.addOption("Test Path", autoTest);
+    // autoChooser.addOption("Test Path", autoTest);
 
     // "auto" command for tuning the drive velocity PID
-    autoChooser.addOption(
-        "Drive Velocity Tuning",
-        Commands.sequence(
-            Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
-            Commands.deadline(
-                Commands.waitSeconds(5.0),
-                Commands.run(
-                    () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
+    // autoChooser.addOption(
+    //     "Drive Velocity Tuning",
+    //     Commands.sequence(
+    //         Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
+    //         Commands.deadline(
+    //             Commands.waitSeconds(5.0),
+    //             Commands.run(
+    //                 () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
-    autoChooser.addOption(
-        "Drive Characterization",
-        new FeedForwardCharacterization(
-            drivetrainSubsystem,
-            true,
-            new FeedForwardCharacterizationData("drive"),
-            drivetrainSubsystem::runCharacterizationVolts,
-            drivetrainSubsystem::getCharacterizationVelocity));
+    // autoChooser.addOption(
+    //     "Drive Characterization",
+    //     new FeedForwardCharacterization(
+    //         drivetrainSubsystem,
+    //         true,
+    //         new FeedForwardCharacterizationData("drive"),
+    //         drivetrainSubsystem::runCharacterizationVolts,
+    //         drivetrainSubsystem::getCharacterizationVelocity));
 
     autoChooser.addOption(
-        "Place High Cone",
+        "Place High",
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this)));
 
-    autoChooser.addOption(
-        "Place High Cone and Drive Back",
+    autoChooser.addDefaultOption(
+        "Place High, Taxi",
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
 
     autoChooser.addOption(
-        "Place High Cone and Drive Back and Auto Balance",
+        "Place High, Balance",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
+
+    autoChooser.addOption(
+        "Place High, Taxi, Balance",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
+
+    autoChooser.addOption(
+        "Auto Balance Test",
         Commands.sequence(
             // new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             // CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),

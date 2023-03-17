@@ -34,9 +34,9 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = 7;
+  private final double KP = 8; // p8 d0 was good
   private final double KI = 0;
-  private final double KD = 1;
+  private final double KD = 0;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -67,7 +67,14 @@ public class TeleopSwervePlus extends CommandBase {
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
-
+    if (robotContainer.robotTranslationMode == RobotTranslationMode.DRIVER
+        && oi.getIndexerManualOverrideButton().getAsBoolean()) {
+      robotContainer.robotTranslationMode = RobotTranslationMode.SLOW_MODE;
+    }
+    if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE
+        && !oi.getIndexerManualOverrideButton().getAsBoolean()) {
+      robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
+    }
     if (oi.getVisionAssistButton().getAsBoolean()) {
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
@@ -138,13 +145,13 @@ public class TeleopSwervePlus extends CommandBase {
     if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
       return rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
           / Math.PI
-          * 0.4;
+          * 0.6;
     }
 
     if (robotContainer.pieceMode == PieceMode.CUBE && ll.hasCubeTarget()) {
       return rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
           / Math.PI
-          * 0.4;
+          * 0.6;
     }
 
     return defaultResponse;

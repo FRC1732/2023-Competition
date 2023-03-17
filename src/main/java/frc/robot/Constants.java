@@ -28,7 +28,7 @@ public final class Constants {
 
   public static final boolean DEBUGGING = false;
 
-  public static final String CAN_BUS_NAME = "Oogway";
+  public static final String CAN_BUS_NAME = "po";
 
   public static final double MAX_PRESSURE = 120.0;
   public static final double MIN_PRESSURE = 100.0;
@@ -148,7 +148,7 @@ public final class Constants {
 
   public static final double AUTOBALANCE_P_VALUE = 10.0;
   public static final double AUTOBALANCE_I_VALUE = 0;
-  public static final double AUTOBALANCE_D_VALUE = 1.0;
+  public static final double AUTOBALANCE_D_VALUE = 0;
 
   public static final double AUTOBALANCE_SET_POINT_RADIANS_COMPETITION = Math.PI;
   public static final double AUTOBALANCE_SET_POINT_RADIANS_PROTOBOT = 0;

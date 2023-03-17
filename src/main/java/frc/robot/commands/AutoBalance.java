@@ -50,7 +50,7 @@ public class AutoBalance extends CommandBase {
 
   @Override
   public void execute() {
-    if (true) {
+    if (false) {
       double p = kP.getDouble(Constants.AUTOBALANCE_P_VALUE);
       double i = kI.getDouble(Constants.AUTOBALANCE_I_VALUE);
       double d = kD.getDouble(Constants.AUTOBALANCE_D_VALUE);
@@ -110,7 +110,7 @@ public class AutoBalance extends CommandBase {
   }
 
   private void setupShuffleboard() {
-    if (true) {
+    if (false) {
       ShuffleboardTab tab;
       tab = Shuffleboard.getTab("autoBalance");
 

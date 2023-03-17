@@ -64,10 +64,10 @@ public class DriveDistance extends CommandBase {
 
     switch (direction) {
       case BACKWARD:
-        x = -1.0 * speed;
+        x = speed;
         break;
       case FORWARD:
-        x = speed;
+        x = -1.0 * speed;
         break;
       case LEFT:
         y = speed;
