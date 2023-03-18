@@ -763,6 +763,33 @@ public class LimelightHelpers {
     return results;
   }
 
+  public static LimelightResults getFirstParse() {
+
+    String JSONDump =
+        "{\"Results\":{\"Bardcode\":[],\"Classifier\":[],\"Detector\":[{\"class\":\"cone\",\"classID\":0,\"conf\":0.7109375,\"pts\":[],\"ta\":0.05277589336037636,\"tx\":-17.701644897460938,\"txp\":60.5,\"ty\":18.375383377075195,\"typ\":105.5}],\"Fiducial\":[],\"Retro\":[],\"botpose\":[0,0,0,0,0,0],\"botpose_wpiblue\":[0,0,0,0,0,0],\"botpose_wpired\":[0,0,0,0,0,0],\"cl\":13.945555686950684,\"pID\":1,\"t6c_rs\":[0.1777999997138977,0,0.7111999988555908,0,0,0],\"tl\":11.797555923461914,\"ts\":179926.478522,\"v\":1}}";
+
+    long start = System.nanoTime();
+    LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
+    if (mapper == null) {
+      getObjectMapper();
+    }
+
+    try {
+      results = mapper.readValue(JSONDump, LimelightResults.class);
+    } catch (JsonProcessingException e) {
+      System.err.println("first:lljson error: " + e.getMessage());
+    }
+
+    long end = System.nanoTime();
+    double millis = (end - start) * .000001;
+    results.targetingResults.latency_jsonParse = millis;
+    if (profileJSON) {
+      System.out.printf("first:lljson: %.2f\r\n", millis);
+    }
+
+    return results;
+  }
+
   public static ObjectMapper getObjectMapper() {
     if (mapper == null) {
       long start = System.nanoTime();

@@ -75,7 +75,7 @@ public class AutoBalance extends CommandBase {
         pidController.calculate(
                 Math.toRadians(imu.xComplementary()), Constants.AUTOBALANCE_SET_POINT_RADIANS)
             / Math.PI
-            * -0.1;
+            * -0.2;
 
     double adjustedX = (360.0 + imu.xComplementary()) % 360.0;
     if (Math.toDegrees(Constants.AUTOBALANCE_SET_POINT_RADIANS)

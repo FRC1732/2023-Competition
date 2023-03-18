@@ -417,14 +417,15 @@ public class RobotContainer {
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
 
     autoChooser.addOption(
         "Place High, Balance",
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3)));
+    // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     autoChooser.addOption(
         "Place High, Taxi, Balance",

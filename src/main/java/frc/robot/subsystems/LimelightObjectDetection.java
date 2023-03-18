@@ -39,7 +39,7 @@ public class LimelightObjectDetection extends SubsystemBase {
   /** Creates a new Limelight. */
   public LimelightObjectDetection() {
     configureShuffleBoard();
-    LimelightHelpers.getLatestResults(LIMELIGHTNAME);
+    LimelightHelpers.getFirstParse();
   }
 
   private void configureShuffleBoard() {

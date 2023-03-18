@@ -77,7 +77,7 @@ public final class Constants {
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.1;
   public static final double INDEXER_CONE_POSITION = -115;
-  public static final double INDEXER_CUBE_POSITION = -105;
+  public static final double INDEXER_CUBE_POSITION = -110;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
   public static final double INDEXER_ARM_DEADBAND = 3;
@@ -146,7 +146,7 @@ public final class Constants {
 
   // #region Auto Balance Constants
 
-  public static final double AUTOBALANCE_P_VALUE = 10.0;
+  public static final double AUTOBALANCE_P_VALUE = 8.5;
   public static final double AUTOBALANCE_I_VALUE = 0;
   public static final double AUTOBALANCE_D_VALUE = 0;
 
@@ -155,7 +155,7 @@ public final class Constants {
   public static final double AUTOBALANCE_SET_POINT_RADIANS =
       AUTOBALANCE_SET_POINT_RADIANS_COMPETITION;
 
-  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 3.0;
+  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 7.0;
 
   // #endregion
 }
