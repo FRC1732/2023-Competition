@@ -208,6 +208,10 @@ public class Drivetrain extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public double getModuleDistance() {
+    return swerveModulePositions[0].distanceMeters;
+  }
+
   /**
    * Sets the odometry of the robot to the specified PathPlanner state. This method should only be
    * invoked when the rotation of the robot is known (e.g., at the start of an autonomous path). The

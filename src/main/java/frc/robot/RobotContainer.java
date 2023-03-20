@@ -424,7 +424,8 @@ public class RobotContainer {
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3)));
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3),
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
     // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     autoChooser.addOption(
@@ -432,7 +433,10 @@ public class RobotContainer {
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1)));
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.2),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.35, 0.3)));
 
     autoChooser.addOption(
         "Auto Balance Test",
