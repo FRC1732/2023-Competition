@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -43,6 +44,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   private RobotContainer robotContainer;
 
+  private boolean hasBeenEnabled = false;
+
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
@@ -67,6 +70,19 @@ public class RGBStatusSubsytem extends SubsystemBase {
       scoreHeight = ScoreHeight.MEDIUM;
     } else {
       scoreHeight = ScoreHeight.LOW;
+    }
+
+    if (!hasBeenEnabled && DriverStation.isEnabled()) {
+      hasBeenEnabled = true;
+    }
+
+    if (hasBeenEnabled && DriverStation.isDisabled()) {
+      out0.set(!false);
+      out1.set(!false);
+      out2.set(!false);
+      out3.set(!false);
+      out4.set(!false);
+      return;
     }
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE

@@ -4,7 +4,6 @@
 
 #define NUMPIXELS 69  // number of neopixels in strip
 #define NUM_SEG 23    // number of neopixels in a segment
-#define DELAY_TIME 200
 #define INTENSITY 255
 
 Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
@@ -23,6 +22,13 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
 int mode = 0;
 int timer = 0;
+
+#define IDLE_CYCLE 200
+#define IDLE_BLOCK 8
+uint32_t lowBlue = pixels.Color(0, 0, INTENSITY / 2);
+uint32_t highBlue = pixels.Color(0, 0, INTENSITY);
+uint32_t lowGold = pixels.Color(INTENSITY / 2, INTENSITY / 4, 0);
+uint32_t highGold = pixels.Color(INTENSITY, INTENSITY / 2, 0);
 
 void setup() {
   Serial.begin(250000);
@@ -65,7 +71,8 @@ void loop() {
   switch (mode) {
     case 0:
       // no signal sent
-      setColor(false, false, false);
+      //setColor(false, false, false);
+      idleMode();
       break;
 
     case 1:
@@ -222,5 +229,34 @@ void setColorBY(bool red, bool green, bool blue) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen * .50, INTENSITY * (int)invBlue));
     }
   }
+  pixels.show();
+}
+
+void idleMode() {
+  pixels.clear();
+
+  if (timer > IDLE_BLOCK * IDLE_CYCLE || timer < 0) {
+    timer = 0;
+  }
+
+  int offset = timer / IDLE_CYCLE;
+
+  for (int i = 0; i < NUMPIXELS; i++) {
+    uint32_t color;
+    int pos = (offset + i) % IDLE_BLOCK;
+    if (pos == 0 || pos == 3) {
+      color = lowBlue;
+    } else if (pos == 1 || pos == 2) {
+      color = highBlue;
+    } else if (pos == 4 || pos == 7) {
+      color = lowGold;
+    } else if (pos == 5 || pos == 6) {
+      color = highGold;
+    } else {
+      color = pixels.Color(0, 0, 0);
+    }
+    pixels.setPixelColor(i, color);
+  }
+
   pixels.show();
 }
