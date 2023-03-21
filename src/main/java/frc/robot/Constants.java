@@ -17,6 +17,7 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   private Constants() {
     throw new IllegalStateException("attempted to instantiate static class");
   }
@@ -27,7 +28,7 @@ public final class Constants {
 
   public static final boolean DEBUGGING = false;
 
-  public static final String CAN_BUS_NAME = "Oogway";
+  public static final String CAN_BUS_NAME = "po";
 
   public static final double MAX_PRESSURE = 120.0;
   public static final double MIN_PRESSURE = 100.0;
@@ -71,16 +72,16 @@ public final class Constants {
   // #region Indexer Constants
 
   public static final double INDEXER_INTAKE_SPEED = -0.5;
-  public static final double INDEXER_PLACEMENT_SPEED = 0.2;
+  public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.1;
   public static final double INDEXER_CONE_POSITION = -115;
-  public static final double INDEXER_CUBE_POSITION = -105;
+  public static final double INDEXER_CUBE_POSITION = -110;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
-  public static final double INDEXER_ARM_DEADBAND = 1;
-  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.015;
+  public static final double INDEXER_ARM_DEADBAND = 3;
+  public static final double INDEXER_ARM_ROTATE_STALL_SPEED = 0.02;
   public static final double INDEXER_ARM_ROTATE_MAX_SPEED = 1000;
   public static final double INDEXER_ARM_ROTATE_MAX_ACCELERATION = 1800;
   public static final double INDEXER_ARM_P_VALUE = 0.01;
@@ -105,14 +106,14 @@ public final class Constants {
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 9;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
-  public static final double ELEVATOR_MAX_SPEED_RPM = 50000;
-  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 60000;
+  public static final double ELEVATOR_MAX_SPEED_RPM = 150000;
+  public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 160000;
   public static final double ELEVATOR_DEADBAND = 0.5;
   public static final double ELEVATOR_P_VALUE = 0.00025;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
-  public static final double ELEVATOR_PID_MAX_OUTPUT = 0.85;
-  public static final double ELEVATOR_PID_MIN_OUTPUT = -0.85;
+  public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
+  public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
 
   // #endregion
 
@@ -124,7 +125,7 @@ public final class Constants {
   public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
-  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
+  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 53;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 34.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 50000;
   public static final double EXTENDER_DEADBAND = 0.5;
@@ -140,12 +141,21 @@ public final class Constants {
   // #region Limelight Constants
 
   public static final double LIMELIGHT_HEIGHT = 2.229;
-  public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.96824;
-  public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5207;
-  public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5207;
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-      MAX_VELOCITY_METERS_PER_SECOND
-          / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
+  // #endregion
+
+  // #region Auto Balance Constants
+
+  public static final double AUTOBALANCE_P_VALUE = 8.5;
+  public static final double AUTOBALANCE_I_VALUE = 0;
+  public static final double AUTOBALANCE_D_VALUE = 0;
+
+  public static final double AUTOBALANCE_SET_POINT_RADIANS_COMPETITION = Math.PI;
+  public static final double AUTOBALANCE_SET_POINT_RADIANS_PROTOBOT = 0;
+  public static final double AUTOBALANCE_SET_POINT_RADIANS =
+      AUTOBALANCE_SET_POINT_RADIANS_COMPETITION;
+
+  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 7.0;
 
   // #endregion
 }

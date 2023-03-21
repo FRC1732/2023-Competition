@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer.PieceMode;
 
+@SuppressWarnings("unused")
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private DigitalInput extenderMagneticLimitSwitch;
@@ -171,12 +173,20 @@ public class ExtenderSubsystem extends SubsystemBase {
     }
   }
 
-  public void goToMiddleScoringPosition() {
-    setPoint = Constants.EXTENDER_MID_CONE_POSITION_INCHES;
+  public void goToMiddleScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.EXTENDER_MID_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.EXTENDER_MID_CONE_POSITION_INCHES - 3;
+    }
   }
 
-  public void goToHighScoringPosition() {
-    setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES;
+  public void goToHighScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES - 3;
+    }
   }
 
   public void goToStartingPosition() {

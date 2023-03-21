@@ -23,9 +23,9 @@ public class ElevatorToScoringHeightCommand extends CommandBase {
     prevPieceMode = robotContainer.pieceMode;
     prevScoringHeight = robotContainer.scoringHeight;
     if (prevScoringHeight == ScoringHeight.MEDIUM) {
-      robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
+      robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
     } else {
-      robotContainer.elevatorSubsystem.goToHighScoringPosition();
+      robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.close();
@@ -43,9 +43,9 @@ public class ElevatorToScoringHeightCommand extends CommandBase {
     if (prevScoringHeight != robotContainer.scoringHeight) {
       prevScoringHeight = robotContainer.scoringHeight;
       if (prevScoringHeight == ScoringHeight.MEDIUM) {
-        robotContainer.elevatorSubsystem.goToMiddleScoringPosition();
+        robotContainer.elevatorSubsystem.goToMiddleScoringPosition(prevPieceMode);
       } else {
-        robotContainer.elevatorSubsystem.goToHighScoringPosition();
+        robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
       }
     }
   }
@@ -55,6 +55,6 @@ public class ElevatorToScoringHeightCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return robotContainer.elevatorSubsystem.isAtSetpoint();
+    return robotContainer.elevatorSubsystem.isHigherThanNeutral();
   }
 }

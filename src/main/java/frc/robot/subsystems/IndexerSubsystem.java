@@ -22,6 +22,7 @@ import frc.robot.RobotContainer.PieceMode;
 import frc.robot.subsystems.io.IndexerIO;
 import frc.robot.subsystems.io.IndexerIOInputsAutoLoggedv2;
 
+@SuppressWarnings("unused")
 public class IndexerSubsystem extends SubsystemBase {
   private CANSparkMax indexerRotationMotor;
   private CANSparkMax indexerGrabbingMotor;
@@ -207,6 +208,7 @@ public class IndexerSubsystem extends SubsystemBase {
     //  motorSpeed = motorSpeedEntryDouble; // motorSpeedEntry.getDouble(0);
     // }
     if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+      System.out.println("Indexer CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setpoint);
       pidController.setReference(setpoint, ControlType.kPosition);
       prevSetpoint = setpoint;
     }
@@ -226,9 +228,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void grabberEject() {
     if (isOpen) {
-      indexerGrabbingMotor.set(0.25);
+      indexerGrabbingMotor.set(0.175);
     } else {
-      indexerGrabbingMotor.set(-0.25);
+      indexerGrabbingMotor.set(-0.3);
     }
   }
 
@@ -276,7 +278,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void grabberHoldPiece() {
     if (isOpen) {
-      indexerGrabbingMotor.set(-1 * Constants.INDEXER_HOLD_SPEED);
+      indexerGrabbingMotor.set(-1 * 0.1);
     } else {
       indexerGrabbingMotor.set(Constants.INDEXER_HOLD_SPEED);
     }

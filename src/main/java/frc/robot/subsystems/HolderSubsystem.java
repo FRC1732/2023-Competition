@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+@SuppressWarnings("unused")
 public class HolderSubsystem extends SubsystemBase {
   /** Creates a new Holder. */
   private Solenoid holderSolenoid;

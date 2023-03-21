@@ -17,13 +17,13 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.CommandFactory;
-import frc.robot.commands.CustomWaitCommand;
+import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
+import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
-import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.InitializeRobotCommand;
-import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.TeleopSwervePlus;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
@@ -36,6 +36,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExtenderSubsystem;
 import frc.robot.subsystems.HolderSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightObjectDetection;
 import frc.robot.subsystems.LimelightScoring;
 import frc.robot.subsystems.RGBStatusSubsytem;
@@ -68,6 +69,7 @@ public class RobotContainer {
   public SwerveModule blModule;
   public SwerveModule brModule;
   public GyroIO gyro;
+  private GyroIoADIS16470 adis16470Gyro;
 
   public enum PieceMode {
     CONE,
@@ -80,8 +82,25 @@ public class RobotContainer {
     HIGH
   }
 
-  public PieceMode pieceMode;
-  public ScoringHeight scoringHeight;
+  public enum RobotTranslationMode {
+    DRIVER,
+    SCORE_PIECE,
+    PIECE_TRACKING,
+    SLOW_MODE
+  }
+
+  public enum RobotRotationMode {
+    DRIVER,
+    PIECE_TRACKING,
+    SCORE_PIECE
+  }
+
+  // public boolean visionEnabled = true;
+
+  public PieceMode pieceMode = PieceMode.CONE;
+  public ScoringHeight scoringHeight = ScoringHeight.HIGH;
+  public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
+  public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -117,7 +136,8 @@ public class RobotContainer {
   }
 
   private void configureDriveTrain() {
-    gyro = new GyroIoADIS16470();
+    adis16470Gyro = new GyroIoADIS16470();
+    gyro = adis16470Gyro;
 
     flModule =
         new SwerveModule(
@@ -178,7 +198,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
     oi = OISelector.findOperatorInterface();
 
-    /*
+    /*-
      * Set up the default command for the drivetrain.
      * The joysticks' values map to percentage of the maximum velocities.
      * The velocities may be specified from either the robot's or field's frame of
@@ -187,14 +207,16 @@ public class RobotContainer {
      * Field-centric: origin is down-right, 0deg is up, +x is forward, +y is left,
      * +theta is CCW
      * direction.
-     * ___________
-     * | | | ^
+     *      ___________
+     *      |    |    | ^
      * (0,0).____|____| y, x-> 0->
      */
     if (drivetrainSubsystem != null) {
-      drivetrainSubsystem.setDefaultCommand(
-          new TeleopSwerve(
-              drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+      // drivetrainSubsystem.setDefaultCommand(
+      // new TeleopSwerve(
+      // drivetrainSubsystem, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+
+      drivetrainSubsystem.setDefaultCommand(new TeleopSwervePlus(this, oi));
     }
 
     configureButtonBindings();
@@ -224,12 +246,13 @@ public class RobotContainer {
     }
 
     if (limelightObjectDetectionSubsystem != null) {
-      // limelightObjectDetectionSubsystem.setDefaultCommand(
-      //     new DefaultLimelightObjectDectionCommand());
+      limelightObjectDetectionSubsystem.setDefaultCommand(
+          new DefaultLimelightObjectDectionCommand(limelightObjectDetectionSubsystem));
     }
 
     if (limelightScoringSubSystem != null) {
-      // limelightScoringSubSystem.setDefaultCommand(new DefaultLimelightScoringDectionCommand());
+      limelightScoringSubSystem.setDefaultCommand(
+          new DefaultLimelightScoringDectionCommand(limelightScoringSubSystem));
     }
   }
 
@@ -301,7 +324,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
     // oi.getDeployHolderButton()
-    //     .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new FinishScorePressed())));
+    // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
+    // FinishScorePressed())));
 
     // Scoring Height buttons
     oi.getLowGoalButton()
@@ -341,6 +365,11 @@ public class RobotContainer {
     oi.getConeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CONE));
 
     oi.getCubeModeButton().onTrue(Commands.runOnce(() -> pieceMode = PieceMode.CUBE));
+
+    // oi.getVisionAssistButton().onTrue(Commands.runOnce(() -> visionEnabled =
+    // true));
+    // oi.getVisionAssistButton().onFalse(Commands.runOnce(() -> visionEnabled =
+    // false));
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -352,43 +381,71 @@ public class RobotContainer {
             Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
 
     // add commands to the auto chooser
-    autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.addOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
-    autoChooser.addOption("Test Path", autoTest);
+    // autoChooser.addOption("Test Path", autoTest);
 
     // "auto" command for tuning the drive velocity PID
-    autoChooser.addOption(
-        "Drive Velocity Tuning",
-        Commands.sequence(
-            Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
-            Commands.deadline(
-                Commands.waitSeconds(5.0),
-                Commands.run(
-                    () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
+    // autoChooser.addOption(
+    //     "Drive Velocity Tuning",
+    //     Commands.sequence(
+    //         Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
+    //         Commands.deadline(
+    //             Commands.waitSeconds(5.0),
+    //             Commands.run(
+    //                 () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
-    autoChooser.addOption(
-        "Drive Characterization",
-        new FeedForwardCharacterization(
-            drivetrainSubsystem,
-            true,
-            new FeedForwardCharacterizationData("drive"),
-            drivetrainSubsystem::runCharacterizationVolts,
-            drivetrainSubsystem::getCharacterizationVelocity));
+    // autoChooser.addOption(
+    //     "Drive Characterization",
+    //     new FeedForwardCharacterization(
+    //         drivetrainSubsystem,
+    //         true,
+    //         new FeedForwardCharacterizationData("drive"),
+    //         drivetrainSubsystem::runCharacterizationVolts,
+    //         drivetrainSubsystem::getCharacterizationVelocity));
 
     autoChooser.addOption(
-        "Place High Cone",
+        "Place High",
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
             CommandFactory.getScoreWithHolderCommand(this)));
 
-    autoChooser.addOption(
-        "Place High Cone and Drive Back",
+    autoChooser.addDefaultOption(
+        "Place High, Taxi",
         Commands.sequence(
             new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-            CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
-            new DriveDistance(drivetrainSubsystem, 3)));
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
+
+    autoChooser.addOption(
+        "Place High, Balance",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3),
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
+    // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+
+    autoChooser.addOption(
+        "Place High, Taxi, Balance",
+        Commands.sequence(
+            new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.2),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.35, 0.3)));
+
+    autoChooser.addOption(
+        "Auto Balance Test",
+        Commands.sequence(
+            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
+            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
+            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
+            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
@@ -419,6 +476,9 @@ public class RobotContainer {
     }
 
     if (Constants.HARDWARE_CONFIG_HAS_BOTH_LIMELIGHTS) {
+      LimelightHelpers.profileJSON = true;
+      LimelightHelpers.getObjectMapper();
+
       limelightObjectDetectionSubsystem = new LimelightObjectDetection();
       limelightScoringSubSystem = new LimelightScoring();
     }

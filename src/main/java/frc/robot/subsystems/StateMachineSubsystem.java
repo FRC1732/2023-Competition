@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.state_machine.RobotStateMachine;
 
+@SuppressWarnings("unused")
 public class StateMachineSubsystem extends SubsystemBase {
   private RobotStateMachine robotStateMachine;
 

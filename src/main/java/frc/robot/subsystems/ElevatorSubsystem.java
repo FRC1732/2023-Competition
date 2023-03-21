@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer.PieceMode;
 
+@SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
   private CANSparkMax elevatorBaseMotorOne, elevatorBaseMotorTwo;
   private RelativeEncoder relativeEncoder;
@@ -156,6 +157,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }*/
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+      System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setPoint);
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
     }
@@ -169,12 +171,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void goToMiddleScoringPosition() {
-    setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
+  public void goToMiddleScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES - 7;
+    }
   }
 
-  public void goToHighScoringPosition() {
-    setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
+  public void goToHighScoringPosition(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
+    } else {
+      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES - 7;
+    }
   }
 
   public void goToStartingPosition() {
@@ -217,19 +227,41 @@ public class ElevatorSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isAtStartPoint() {
+    return Math.abs(
+            elevatorBaseMotorOne.getEncoder().getPosition()
+                - Constants.ELEVATOR_STARTING_POSITION_INCHES)
+        < 10e-2;
+  }
+
+  public boolean isHigherThanNeutral() {
+    boolean temp =
+        elevatorBaseMotorOne.getEncoder().getPosition()
+            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES + 6;
+    if (temp) {
+      System.out.println("Elevator higher than neutral");
+    } else {
+      System.out.println("Elevator lower than neutral");
+    }
+    return temp;
+  }
+
   public void setToMidCone() {
-    pidController.setReference(
-        Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_MID_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
   }
 
   public void setToNeutralPosition() {
-    pidController.setReference(
-        Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_NEUTRAL_POSITION_INCHES;
   }
 
   public void setToHighCone() {
-    pidController.setReference(
-        Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    // pidController.setReference(
+    //     Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
+    setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
   }
 
   public void reset() {

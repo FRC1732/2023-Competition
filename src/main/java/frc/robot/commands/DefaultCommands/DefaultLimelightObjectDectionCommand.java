@@ -5,10 +5,12 @@
 package frc.robot.commands.DefaultCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LimelightObjectDetection;
 
 public class DefaultLimelightObjectDectionCommand extends CommandBase {
   /** Creates a new DefaultLimelightObjectDectionCommand. */
-  public DefaultLimelightObjectDectionCommand() {
-    // nothing to see here
+  public DefaultLimelightObjectDectionCommand(
+      LimelightObjectDetection limelightObjectDetectionSubsystem) {
+    addRequirements(limelightObjectDetectionSubsystem);
   }
 }
