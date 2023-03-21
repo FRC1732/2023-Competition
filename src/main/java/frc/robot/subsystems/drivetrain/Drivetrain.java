@@ -19,12 +19,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.commands.AutoDriving.AutoSwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -32,7 +32,7 @@ import org.littletonrobotics.junction.Logger;
  * each with two motors and an encoder. It also consists of a Pigeon which is used to measure the
  * robot's rotation.
  */
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends AutoSwerveDriveSubsystem {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
 
   private boolean isFieldRelative;
 
-  private double gyroOffset;
+  private final double gyroOffset = 180;
 
   private ChassisSpeeds chassisSpeeds;
 
@@ -114,7 +114,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.isFieldRelative = true; // TODO: toggle as nescessary
 
-    this.gyroOffset = 0;
+    // this.gyroOffset = 0;
 
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -186,9 +186,9 @@ public class Drivetrain extends SubsystemBase {
     //      taking effect. As a result, it is recommended to never set the yaw and
     //      adjust the local offset instead.
     if (gyroInputs.connected) {
-      this.gyroOffset = expectedYaw - gyroInputs.positionDeg;
+      // this.gyroOffset = expectedYaw - gyroInputs.positionDeg;
     } else {
-      this.gyroOffset = 0;
+      // this.gyroOffset = 0;
       this.estimatedPoseWithoutGyro =
           new Pose2d(
               estimatedPoseWithoutGyro.getX(),
@@ -435,6 +435,10 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    setSwerveModuleStates(desiredStates);
+  }
+
   /**
    * Returns true if field relative mode is enabled
    *
@@ -581,6 +585,10 @@ public class Drivetrain extends SubsystemBase {
       driveVelocityAverage += swerveModule.getState().speedMetersPerSecond;
     }
     return driveVelocityAverage / 4.0;
+  }
+
+  public SwerveDriveKinematics getKinematics() {
+    return KINEMATICS;
   }
 
   private enum DriveMode {
