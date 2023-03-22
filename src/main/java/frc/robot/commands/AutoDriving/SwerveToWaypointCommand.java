@@ -48,8 +48,8 @@ public class SwerveToWaypointCommand extends HilltopSwerveControllerCommand {
         drivetrain::getPose, // Functional interface to feed supplier
         drivetrain.getKinematics(),
         // Position controllers
-        new PIDController(1, 0, 0),
-        new PIDController(1, 0, 0),
+        new PIDController(1.5, 0, 0),
+        new PIDController(1.5, 0, 0),
         getThetaController(
             DrivetrainConstants.AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
             DrivetrainConstants.AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED),

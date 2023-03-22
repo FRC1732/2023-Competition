@@ -84,7 +84,7 @@ public final class DrivetrainConstants {
   public static final int TIMEOUT_MS = 30;
 
   public static final double AUTO_MAX_SPEED_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / 3;
-  public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1.0;
+  public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
   public static final double AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND =
       MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
   public static final double AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 5.5;

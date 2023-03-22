@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
@@ -64,6 +65,7 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
+    System.out.println("WE SHOULD BE executing DRIVING " + robotContainer.robotTranslationMode);
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
@@ -75,7 +77,8 @@ public class TeleopSwervePlus extends CommandBase {
         && !oi.getIndexerManualOverrideButton().getAsBoolean()) {
       robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
     }
-    if (oi.getVisionAssistButton().getAsBoolean()) {
+    if (oi.getVisionAssistButton().getAsBoolean() || DriverStation.isAutonomousEnabled()) {
+      System.out.println("TSTR1");
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
         robotContainer.limelightObjectDetectionSubsystem.doDetection();
@@ -110,6 +113,7 @@ public class TeleopSwervePlus extends CommandBase {
           xPercentage = -1 * xPercentage;
           break;
         case DRIVER:
+          robotContainer.drivetrainSubsystem.enableFieldRelative();
           translationPidController.reset();
           break;
         case PIECE_TRACKING:
@@ -119,15 +123,23 @@ public class TeleopSwervePlus extends CommandBase {
           xPercentage = SLOW_MODE_SCALER * xPercentage;
           yPercentage = SLOW_MODE_SCALER * yPercentage;
           break;
+        case AUTO_PIECE_TRACKING:
+          xPercentage = 0.15;
+          yPercentage = 0;
+          robotContainer.drivetrainSubsystem.disableFieldRelative();
+          System.out.println("WE SHOULD BE DRIVING FORWARD");
+          break;
         default:
           break;
       }
     } else {
+      System.out.println("TSTR2");
       if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE) {
         xPercentage = SLOW_MODE_SCALER * xPercentage;
         yPercentage = SLOW_MODE_SCALER * yPercentage;
       }
     }
+    System.out.println("TSTR3");
 
     drivetrainSubsystem.drivePercentage(xPercentage, yPercentage, rotationPercentage);
   }

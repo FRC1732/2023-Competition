@@ -88,7 +88,8 @@ public class RobotContainer {
     DRIVER,
     SCORE_PIECE,
     PIECE_TRACKING,
-    SLOW_MODE
+    SLOW_MODE,
+    AUTO_PIECE_TRACKING
   }
 
   public enum RobotRotationMode {
@@ -457,13 +458,20 @@ public class RobotContainer {
         "Two Piece, Taxi",
         Commands.sequence(
             new InitializeRobotCommand(this, Constants.CONE_NODE_1),
-            CommandFactory.getScoreWithHolderCommand(this),
+            new InstantCommand(
+                () ->
+                    CommandScheduler.getInstance()
+                        .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+            new WaitCommand(3),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FLAT_LANE_NEAR, false),
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, true),
             new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
-            new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.PIECE_TRACKING),
-            new WaitUntilCommand(() -> robotStateMachine.getCurrentState() == "carrying"),
+            new InstantCommand(
+                () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+            new WaitUntilCommand(() -> "carrying".equals(robotStateMachine.getCurrentState()))
+                .withTimeout(4),
+            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
             new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER),
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FLAT_LANE_NEAR, false),
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CUBE_NODE_1, true),
