@@ -130,8 +130,8 @@ public class LimelightObjectDetection extends SubsystemBase {
 
   private void processLlResults(LimelightResults llresults2) {
     LimelightTarget_Detector[] detections = fetchTargetDetector();
-    double areaCube = 0;
-    double areaCone = 0;
+    double cubeHeight = 1000;
+    double coneHeight = 1000;
 
     coneTarget = cubeTarget = false;
 
@@ -140,16 +140,16 @@ public class LimelightObjectDetection extends SubsystemBase {
       for (LimelightTarget_Detector detection : detections) {
         // System.out.println("   Target - " + detection.className + " Area: " + detection.ta);
         if (CONE_LABEL.equals(detection.className)) {
-          if (detection.ta > areaCone) {
+          if (detection.ty < coneHeight) {
             conePose2d = new Translation2d(detection.tx, detection.ty);
-            areaCone = detection.ta;
+            coneHeight = detection.ty;
             coneConfidence = detection.confidence;
             coneTarget = true;
           }
         } else if (CUBE_LABEL.equals(detection.className)) {
-          if (detection.ta > areaCube) {
+          if (detection.ty < cubeHeight) {
             cubePose2d = new Translation2d(detection.tx, detection.ty);
-            areaCube = detection.ta;
+            cubeHeight = detection.ty;
             cubeConfidence = detection.confidence;
             cubeTarget = true;
           }

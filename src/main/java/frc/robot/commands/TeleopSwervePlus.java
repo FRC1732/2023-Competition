@@ -65,7 +65,6 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
-    System.out.println("WE SHOULD BE executing DRIVING " + robotContainer.robotTranslationMode);
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();

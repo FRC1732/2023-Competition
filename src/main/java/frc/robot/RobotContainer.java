@@ -462,28 +462,44 @@ public class RobotContainer {
                 () ->
                     CommandScheduler.getInstance()
                         .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-            new WaitCommand(3),
+            new WaitCommand(2.15),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, Constants.FLAT_LANE_OUT_WAYPOINTS),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FLAT_LANE_NEAR, false),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, true),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
-            new InstantCommand(
-                () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
-            new WaitUntilCommand(() -> "carrying".equals(robotStateMachine.getCurrentState()))
-                .withTimeout(4),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
-            new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FLAT_LANE_NEAR, false),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CUBE_NODE_1, true),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
-            new WaitCommand(2.5),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FLAT_LANE_NEAR, false),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, true)));
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+                    new WaitUntilCommand(
+                            () -> "carrying".equals(robotStateMachine.getCurrentState()))
+                        .withTimeout(4),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+                    new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER))),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.FLAT_LANE_IN_WAYPOINTS),
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
+                    new WaitCommand(2.5))),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem,
+                Constants.NEUTRAL_PIECE_1,
+                Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
     autoChooser.addOption(
         "Bump-side Two Piece, Taxi",
         Commands.sequence(
-            new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
+            new InitializeRobotCommand(this, Constants.CONE_NODE_1),
+            new InstantCommand(
+                () ->
+                    CommandScheduler.getInstance()
+                        .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+            new WaitCommand(3),
+            new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_NODE_1plus)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

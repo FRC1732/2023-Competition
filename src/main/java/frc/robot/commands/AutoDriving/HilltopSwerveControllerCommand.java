@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.CommandFactory;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -46,12 +47,14 @@ public class HilltopSwerveControllerCommand extends CommandBase {
   private final SwerveDriveKinematics m_kinematics;
   private final HolonomicDriveController m_controller;
   private final Consumer<SwerveModuleState[]> m_outputModuleStates;
+  private final List<Translation2d> m_internalWaypoints;
 
   @SuppressWarnings("ParameterName")
   public HilltopSwerveControllerCommand(
       TrajectoryConfig trajectoryConfig,
       Pose2d endPose,
       Supplier<Pose2d> pose,
+      List<Translation2d> internalWaypoints,
       SwerveDriveKinematics kinematics,
       PIDController xController,
       PIDController yController,
@@ -62,7 +65,10 @@ public class HilltopSwerveControllerCommand extends CommandBase {
     m_endPose = endPose;
     m_pose = pose;
     m_kinematics = kinematics;
-
+    if (internalWaypoints == null) {
+      internalWaypoints = new ArrayList<>();
+    }
+    m_internalWaypoints = internalWaypoints;
     m_controller = new HolonomicDriveController(xController, yController, thetaController);
 
     m_outputModuleStates = outputModuleStates;
@@ -75,7 +81,10 @@ public class HilltopSwerveControllerCommand extends CommandBase {
     m_endPose = CommandFactory.getAllianceCorrectedPose(m_endPose);
     m_trajectory =
         getTrajectory(
-            m_pose.get().getTranslation(), m_endPose.getTranslation(), m_trajectoryConfig);
+            m_pose.get().getTranslation(),
+            m_endPose.getTranslation(),
+            m_trajectoryConfig,
+            m_internalWaypoints);
     m_timer.reset();
     m_timer.start();
   }
@@ -104,12 +113,25 @@ public class HilltopSwerveControllerCommand extends CommandBase {
   }
 
   private static Trajectory getTrajectory(
-      Translation2d start, Translation2d end, TrajectoryConfig config) {
-    var angle = getTrajectoryAngle(start, end);
+      Translation2d start,
+      Translation2d end,
+      TrajectoryConfig config,
+      List<Translation2d> internalWaypoints) {
+    Rotation2d angle1;
+    Rotation2d angle2;
+
+    if (internalWaypoints == null || internalWaypoints.isEmpty()) {
+      angle1 = getTrajectoryAngle(start, end);
+      angle2 = angle1;
+    } else {
+      angle1 = getTrajectoryAngle(start, internalWaypoints.get(0));
+      angle2 = getTrajectoryAngle(internalWaypoints.get(internalWaypoints.size() - 1), end);
+    }
+
     return TrajectoryGenerator.generateTrajectory(
-        new Pose2d(start.getX(), start.getY(), angle),
-        new ArrayList<>(),
-        new Pose2d(end.getX(), end.getY(), angle),
+        new Pose2d(start.getX(), start.getY(), angle1),
+        internalWaypoints,
+        new Pose2d(end.getX(), end.getY(), angle2),
         config);
   }
 
