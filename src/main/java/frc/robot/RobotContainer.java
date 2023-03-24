@@ -426,7 +426,7 @@ public class RobotContainer {
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.425, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
     // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
@@ -437,8 +437,8 @@ public class RobotContainer {
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
             new DriveDistance(
                 drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.2),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.35, 0.3)));
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.3)));
 
     autoChooser.addOption(
         "Auto Balance Test",
@@ -462,7 +462,7 @@ public class RobotContainer {
                 () ->
                     CommandScheduler.getInstance()
                         .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-            new WaitCommand(2.15),
+            new WaitCommand(2.2),
             new SwerveToWaypointCommand(
                 drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, Constants.FLAT_LANE_OUT_WAYPOINTS),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
@@ -474,7 +474,7 @@ public class RobotContainer {
                     new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
                     new WaitUntilCommand(
                             () -> "carrying".equals(robotStateMachine.getCurrentState()))
-                        .withTimeout(4),
+                        .withTimeout(3),
                     new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
                     new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER))),
             new SwerveToWaypointCommand(
@@ -483,11 +483,11 @@ public class RobotContainer {
                 new TeleopSwervePlus(this, oi),
                 Commands.sequence(
                     new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
-                    new WaitCommand(2.5))),
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem,
-                Constants.NEUTRAL_PIECE_1,
-                Constants.FLAT_LANE_OUT_WAYPOINTS)));
+                    new WaitCommand(2.55)))));
+    // new SwerveToWaypointCommand(
+    //     drivetrainSubsystem,
+    //     Constants.NEUTRAL_PIECE_1,
+    //     Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
     autoChooser.addOption(
         "Bump-side Two Piece, Taxi",

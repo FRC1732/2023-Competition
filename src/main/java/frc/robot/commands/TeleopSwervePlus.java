@@ -35,7 +35,7 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = 8; // p8 d0 was good
+  private final double KP = 7; // p8 d0 was good
   private final double KI = 0;
   private final double KD = 0;
 
@@ -65,6 +65,7 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
+    drivetrainSubsystem.printModuleDistances();
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
@@ -77,7 +78,6 @@ public class TeleopSwervePlus extends CommandBase {
       robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
     }
     if (oi.getVisionAssistButton().getAsBoolean() || DriverStation.isAutonomousEnabled()) {
-      System.out.println("TSTR1");
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
         robotContainer.limelightObjectDetectionSubsystem.doDetection();
@@ -132,13 +132,11 @@ public class TeleopSwervePlus extends CommandBase {
           break;
       }
     } else {
-      System.out.println("TSTR2");
       if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE) {
         xPercentage = SLOW_MODE_SCALER * xPercentage;
         yPercentage = SLOW_MODE_SCALER * yPercentage;
       }
     }
-    System.out.println("TSTR3");
 
     drivetrainSubsystem.drivePercentage(xPercentage, yPercentage, rotationPercentage);
   }

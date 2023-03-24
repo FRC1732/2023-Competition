@@ -34,6 +34,7 @@ import org.littletonrobotics.junction.Logger;
  */
 public class Drivetrain extends AutoSwerveDriveSubsystem {
   private final GyroIO gyroIO;
+  private int printCount = 0;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
   private final TunableNumber autoDriveKp =
@@ -210,6 +211,16 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
 
   public double getModuleDistance() {
     return swerveModulePositions[0].distanceMeters;
+  }
+
+  public void printModuleDistances() {
+    if (printCount > 100) {
+      printCount = 0;
+      for (int i = 0; i < 4; i++) {
+        System.out.println("Module " + i + ": " + swerveModulePositions[i].distanceMeters);
+      }
+    }
+    printCount++;
   }
 
   /**
@@ -428,6 +439,9 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * @param states the specified swerve module state for each swerve module
    */
   public void setSwerveModuleStates(SwerveModuleState[] states) {
+    if (states[1] != null) {
+      states[1].speedMetersPerSecond *= 0.86;
+    }
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule swerveModule : swerveModules) {
@@ -516,6 +530,11 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    */
   public double getVelocityY() {
     return chassisSpeeds.vyMetersPerSecond;
+  }
+
+  public double getPercentMaxSpeed() {
+    return Math.sqrt(getVelocityX() * getVelocityX() + getVelocityY() * getVelocityY())
+        / DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
   }
 
   /**

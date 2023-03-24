@@ -47,7 +47,7 @@ public class HilltopSwerveControllerCommand extends CommandBase {
   private final SwerveDriveKinematics m_kinematics;
   private final HolonomicDriveController m_controller;
   private final Consumer<SwerveModuleState[]> m_outputModuleStates;
-  private final List<Translation2d> m_internalWaypoints;
+  private List<Translation2d> m_internalWaypoints;
 
   @SuppressWarnings("ParameterName")
   public HilltopSwerveControllerCommand(
@@ -79,6 +79,7 @@ public class HilltopSwerveControllerCommand extends CommandBase {
   @Override
   public void initialize() {
     m_endPose = CommandFactory.getAllianceCorrectedPose(m_endPose);
+    m_internalWaypoints = CommandFactory.getAllianceCorrectedWaypoints(m_internalWaypoints);
     m_trajectory =
         getTrajectory(
             m_pose.get().getTranslation(),

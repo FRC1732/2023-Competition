@@ -40,6 +40,10 @@ public class SmartIntakeCommand extends CommandBase {
       prevPieceMode = robotContainer.pieceMode;
       robotContainer.indexerSubsystem.intake(prevPieceMode);
     }
+    if (prevPieceMode == PieceMode.CUBE) {
+      robotContainer.indexerSubsystem.grabberIntake(
+          robotContainer.drivetrainSubsystem.getPercentMaxSpeed());
+    }
   }
 
   @Override

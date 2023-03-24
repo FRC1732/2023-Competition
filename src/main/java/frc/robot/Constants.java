@@ -178,10 +178,11 @@ public final class Constants {
   public static final Pose2d CONE_NODE_4 = new Pose2d(0.419, 2.187, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_NODE_5 = new Pose2d(0.419, 1.628, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_NODE_6 = new Pose2d(0.419, 0.512, Rotation2d.fromDegrees(180));
-  public static final Pose2d CUBE_NODE_1 = new Pose2d(0.419, 4.419, Rotation2d.fromDegrees(180));
+  public static final Pose2d CUBE_NODE_1 =
+      new Pose2d(0.419, 4.419 - 0.1, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_2 = new Pose2d(0.419, 2.745, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_3 = new Pose2d(0.419, 1.072, Rotation2d.fromDegrees(180));
-  public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.833, 4.580, Rotation2d.fromDegrees(0));
+  public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.7, 4.9, Rotation2d.fromDegrees(-15));
   public static final Pose2d NEUTRAL_PIECE_2 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
   public static final Pose2d NEUTRAL_PIECE_3 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
   public static final Pose2d NEUTRAL_PIECE_4 = new Pose2d(4.833, 0.925, Rotation2d.fromDegrees(0));
@@ -192,13 +193,18 @@ public final class Constants {
   public static final Pose2d CHARGING_STATION_RIGHT =
       new Pose2d(2.51, 2.187, Rotation2d.fromDegrees(180));
   public static final Pose2d FLAT_LANE_NEAR = new Pose2d(1.089, 4.665, Rotation2d.fromDegrees(180));
-  public static final Pose2d FLAT_LANE_FAR = new Pose2d(3.972, 4.665, Rotation2d.fromDegrees(0));
+  public static final Pose2d FLAT_LANE_FAR = new Pose2d(3.972, 4.665, Rotation2d.fromDegrees(-15));
+  public static final Pose2d FLAT_LANE_NEAR_ADJUSTED =
+      new Pose2d(1.089, 4.665 - 0.1, Rotation2d.fromDegrees(180));
+  public static final Pose2d FLAT_LANE_FAR_ADJUSTED =
+      new Pose2d(3.972, 4.665 - 0.1, Rotation2d.fromDegrees(-15));
   public static final Pose2d BUMP_LANE_NEAR = new Pose2d(1.089, 0.747, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_LANE_FAR = new Pose2d(3.972, 0.747, Rotation2d.fromDegrees(0));
   public static final List<Translation2d> FLAT_LANE_OUT_WAYPOINTS =
       Arrays.asList(FLAT_LANE_NEAR.getTranslation(), FLAT_LANE_FAR.getTranslation());
   public static final List<Translation2d> FLAT_LANE_IN_WAYPOINTS =
-      Arrays.asList(FLAT_LANE_FAR.getTranslation(), FLAT_LANE_NEAR.getTranslation());
+      Arrays.asList(
+          FLAT_LANE_FAR_ADJUSTED.getTranslation(), FLAT_LANE_NEAR_ADJUSTED.getTranslation());
   public static final List<Translation2d> BUMP_LANE_OUT_WAYPOINTS =
       Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
   public static final List<Translation2d> BUMP_LANE_IN_WAYPOINTS =
