@@ -179,10 +179,10 @@ public final class Constants {
   public static final Pose2d CONE_NODE_5 = new Pose2d(0.419, 1.628, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_NODE_6 = new Pose2d(0.419, 0.512, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_1 =
-      new Pose2d(0.419, 4.419 - 0.1, Rotation2d.fromDegrees(180));
+      new Pose2d(0.419 + 0.15, 4.419 - 0.35, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_2 = new Pose2d(0.419, 2.745, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_3 = new Pose2d(0.419, 1.072, Rotation2d.fromDegrees(180));
-  public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.7, 4.9, Rotation2d.fromDegrees(-15));
+  public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.75, 4.85, Rotation2d.fromDegrees(-15));
   public static final Pose2d NEUTRAL_PIECE_2 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
   public static final Pose2d NEUTRAL_PIECE_3 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
   public static final Pose2d NEUTRAL_PIECE_4 = new Pose2d(4.833, 0.925, Rotation2d.fromDegrees(0));

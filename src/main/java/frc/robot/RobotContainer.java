@@ -18,7 +18,6 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
@@ -438,21 +437,24 @@ public class RobotContainer {
             new DriveDistance(
                 drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.3)));
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.3),
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
-    autoChooser.addOption(
-        "Auto Balance Test",
-        Commands.sequence(
-            // new InitializeRobotCommand(this, pieceMode, scoringHeight, new Rotation2d(Math.PI)),
-            // CommandFactory.getScoreWithHolderCommand(this).raceWith(new CustomWaitCommand(6.5)),
-            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
-            // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
-            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+    // autoChooser.addOption(
+    //     "Auto Balance Test",
+    //     Commands.sequence(
+    //         // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
+    // Rotation2d(Math.PI)),
+    //         // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
+    // CustomWaitCommand(6.5)),
+    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
+    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
+    //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
-    autoChooser.addOption(
-        "Two Piece, Balance",
-        Commands.sequence(
-            new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
+    // autoChooser.addOption(
+    //     "Two Piece, Balance",
+    //     Commands.sequence(
+    //         new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
 
     autoChooser.addOption(
         "Two Piece, Taxi",
@@ -489,17 +491,17 @@ public class RobotContainer {
     //     Constants.NEUTRAL_PIECE_1,
     //     Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
-    autoChooser.addOption(
-        "Bump-side Two Piece, Taxi",
-        Commands.sequence(
-            new InitializeRobotCommand(this, Constants.CONE_NODE_1),
-            new InstantCommand(
-                () ->
-                    CommandScheduler.getInstance()
-                        .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-            new WaitCommand(3),
-            new InstantCommand(() -> pieceMode = PieceMode.CUBE),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_NODE_1plus)));
+    // autoChooser.addOption(
+    //     "Bump-side Two Piece, Taxi",
+    //     Commands.sequence(
+    //         new InitializeRobotCommand(this, Constants.CONE_NODE_1),
+    //         new InstantCommand(
+    //             () ->
+    //                 CommandScheduler.getInstance()
+    //                     .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+    //         new WaitCommand(3),
+    //         new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+    //         new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_NODE_1plus)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
