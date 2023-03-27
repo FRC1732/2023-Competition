@@ -179,7 +179,7 @@ public final class Constants {
   public static final Pose2d CONE_NODE_5 = new Pose2d(0.419, 1.628, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_NODE_6 = new Pose2d(0.419, 0.512, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_1 =
-      new Pose2d(0.419 + 0.15, 4.419 - 0.35, Rotation2d.fromDegrees(180));
+      new Pose2d(0.419 + 0.25, 4.419 - 0.35, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_2 = new Pose2d(0.419, 2.745, Rotation2d.fromDegrees(180));
   public static final Pose2d CUBE_NODE_3 = new Pose2d(0.419, 1.072, Rotation2d.fromDegrees(180));
   public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.75, 4.85, Rotation2d.fromDegrees(-15));
@@ -195,9 +195,9 @@ public final class Constants {
   public static final Pose2d FLAT_LANE_NEAR = new Pose2d(1.089, 4.665, Rotation2d.fromDegrees(180));
   public static final Pose2d FLAT_LANE_FAR = new Pose2d(3.972, 4.665, Rotation2d.fromDegrees(-15));
   public static final Pose2d FLAT_LANE_NEAR_ADJUSTED =
-      new Pose2d(1.089, 4.665 - 0.1, Rotation2d.fromDegrees(180));
+      new Pose2d(1.089, 4.665 - 0.15, Rotation2d.fromDegrees(180));
   public static final Pose2d FLAT_LANE_FAR_ADJUSTED =
-      new Pose2d(3.972, 4.665 - 0.1, Rotation2d.fromDegrees(-15));
+      new Pose2d(3.972, 4.665 - 0.15, Rotation2d.fromDegrees(-15));
   public static final Pose2d BUMP_LANE_NEAR = new Pose2d(1.089, 0.747, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_LANE_FAR = new Pose2d(3.972, 0.747, Rotation2d.fromDegrees(0));
   public static final List<Translation2d> FLAT_LANE_OUT_WAYPOINTS =

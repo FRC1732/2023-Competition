@@ -185,7 +185,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     if (pieceMode == PieceMode.CONE) {
       setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES;
     } else {
-      setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES - 3;
+      setPoint = Constants.EXTENDER_HIGH_CONE_POSITION_INCHES - 2.5;
     }
   }
 
