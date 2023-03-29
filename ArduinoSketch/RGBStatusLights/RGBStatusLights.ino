@@ -23,7 +23,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 int mode = 0;
 int timer = 0;
 
-#define IDLE_CYCLE 200
+#define IDLE_CYCLE 100
 #define IDLE_BLOCK 8
 uint32_t lowBlue = pixels.Color(0, 0, INTENSITY / 2);
 uint32_t highBlue = pixels.Color(0, 0, INTENSITY);
