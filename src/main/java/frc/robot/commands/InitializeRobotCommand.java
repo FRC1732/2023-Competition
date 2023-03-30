@@ -11,23 +11,38 @@ public class InitializeRobotCommand extends CommandBase {
   private RobotContainer robotContainer;
   private final PieceMode pieceMode;
   private final ScoringHeight scoringHeight;
-  private final Rotation2d startingAngle;
+  private Pose2d startingPose;
 
   public InitializeRobotCommand(
       RobotContainer robotContainer,
       PieceMode pieceMode,
       ScoringHeight scoringHeight,
-      Rotation2d startingAngle) {
+      Pose2d startingPose) {
     this.robotContainer = robotContainer;
     this.pieceMode = pieceMode;
     this.scoringHeight = scoringHeight;
-    this.startingAngle = startingAngle;
+    this.startingPose = startingPose;
+  }
+
+  public InitializeRobotCommand(RobotContainer robotContainer) {
+    this.robotContainer = robotContainer;
+    this.pieceMode = PieceMode.CONE;
+    this.scoringHeight = ScoringHeight.HIGH;
+    this.startingPose = new Pose2d(0, 0, Rotation2d.fromRadians(Math.PI));
+  }
+
+  public InitializeRobotCommand(RobotContainer robotContainer, Pose2d startingPose) {
+    this.robotContainer = robotContainer;
+    this.pieceMode = PieceMode.CONE;
+    this.scoringHeight = ScoringHeight.HIGH;
+    this.startingPose = startingPose;
   }
 
   public void initialize() {
     robotContainer.pieceMode = pieceMode;
     robotContainer.scoringHeight = scoringHeight;
-    robotContainer.drivetrainSubsystem.resetOdometry(new Pose2d(0, 0, startingAngle));
+    robotContainer.drivetrainSubsystem.resetOdometry(
+        CommandFactory.getAllianceCorrectedPose(startingPose));
   }
 
   public void execute() {}

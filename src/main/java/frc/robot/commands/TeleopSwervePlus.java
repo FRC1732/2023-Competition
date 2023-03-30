@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
@@ -34,7 +35,7 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = 8; // p8 d0 was good
+  private final double KP = 7; // p8 d0 was good
   private final double KI = 0;
   private final double KD = 0;
 
@@ -64,6 +65,7 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
+    drivetrainSubsystem.printModuleDistances();
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
@@ -75,7 +77,7 @@ public class TeleopSwervePlus extends CommandBase {
         && !oi.getIndexerManualOverrideButton().getAsBoolean()) {
       robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
     }
-    if (oi.getVisionAssistButton().getAsBoolean()) {
+    if (oi.getVisionAssistButton().getAsBoolean() || DriverStation.isAutonomousEnabled()) {
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
         robotContainer.limelightObjectDetectionSubsystem.doDetection();
@@ -110,6 +112,7 @@ public class TeleopSwervePlus extends CommandBase {
           xPercentage = -1 * xPercentage;
           break;
         case DRIVER:
+          robotContainer.drivetrainSubsystem.enableFieldRelative();
           translationPidController.reset();
           break;
         case PIECE_TRACKING:
@@ -118,6 +121,12 @@ public class TeleopSwervePlus extends CommandBase {
         case SLOW_MODE:
           xPercentage = SLOW_MODE_SCALER * xPercentage;
           yPercentage = SLOW_MODE_SCALER * yPercentage;
+          break;
+        case AUTO_PIECE_TRACKING:
+          xPercentage = 0.15;
+          yPercentage = 0;
+          robotContainer.drivetrainSubsystem.disableFieldRelative();
+          System.out.println("WE SHOULD BE DRIVING FORWARD");
           break;
         default:
           break;
