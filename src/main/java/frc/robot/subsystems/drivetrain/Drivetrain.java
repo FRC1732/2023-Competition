@@ -19,12 +19,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.commands.AutoDriving.AutoSwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -32,8 +32,9 @@ import org.littletonrobotics.junction.Logger;
  * each with two motors and an encoder. It also consists of a Pigeon which is used to measure the
  * robot's rotation.
  */
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends AutoSwerveDriveSubsystem {
   private final GyroIO gyroIO;
+  private int printCount = 0;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
   private final TunableNumber autoDriveKp =
@@ -80,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
 
   private boolean isFieldRelative;
 
-  private double gyroOffset;
+  private final double gyroOffset = 180;
 
   private ChassisSpeeds chassisSpeeds;
 
@@ -108,13 +109,13 @@ public class Drivetrain extends SubsystemBase {
 
     this.autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.centerGravity = new Translation2d(); // default to (0,0)
+    this.centerGravity = new Translation2d(-0.05, 0); // default to (0,0)
 
     this.zeroGyroscope();
 
     this.isFieldRelative = true; // TODO: toggle as nescessary
 
-    this.gyroOffset = 0;
+    // this.gyroOffset = 0;
 
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -186,9 +187,9 @@ public class Drivetrain extends SubsystemBase {
     //      taking effect. As a result, it is recommended to never set the yaw and
     //      adjust the local offset instead.
     if (gyroInputs.connected) {
-      this.gyroOffset = expectedYaw - gyroInputs.positionDeg;
+      // this.gyroOffset = expectedYaw - gyroInputs.positionDeg;
     } else {
-      this.gyroOffset = 0;
+      // this.gyroOffset = 0;
       this.estimatedPoseWithoutGyro =
           new Pose2d(
               estimatedPoseWithoutGyro.getX(),
@@ -210,6 +211,16 @@ public class Drivetrain extends SubsystemBase {
 
   public double getModuleDistance() {
     return swerveModulePositions[0].distanceMeters;
+  }
+
+  public void printModuleDistances() {
+    if (printCount > 100) {
+      printCount = 0;
+      for (int i = 0; i < 4; i++) {
+        System.out.println("Module " + i + ": " + swerveModulePositions[i].distanceMeters);
+      }
+    }
+    printCount++;
   }
 
   /**
@@ -428,11 +439,18 @@ public class Drivetrain extends SubsystemBase {
    * @param states the specified swerve module state for each swerve module
    */
   public void setSwerveModuleStates(SwerveModuleState[] states) {
+    if (states[1] != null) {
+      states[1].speedMetersPerSecond *= 0.86;
+    }
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule swerveModule : swerveModules) {
       swerveModule.setDesiredState(states[swerveModule.getModuleNumber()], false, false);
     }
+  }
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    setSwerveModuleStates(desiredStates);
   }
 
   /**
@@ -514,6 +532,11 @@ public class Drivetrain extends SubsystemBase {
     return chassisSpeeds.vyMetersPerSecond;
   }
 
+  public double getPercentMaxSpeed() {
+    return Math.sqrt(getVelocityX() * getVelocityX() + getVelocityY() * getVelocityY())
+        / DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
+  }
+
   /**
    * Puts the drivetrain into the x-stance orientation. In this orientation the wheels are aligned
    * to make an 'X'. This makes it more difficult for other robots to push the robot, which is
@@ -581,6 +604,10 @@ public class Drivetrain extends SubsystemBase {
       driveVelocityAverage += swerveModule.getState().speedMetersPerSecond;
     }
     return driveVelocityAverage / 4.0;
+  }
+
+  public SwerveDriveKinematics getKinematics() {
+    return KINEMATICS;
   }
 
   private enum DriveMode {

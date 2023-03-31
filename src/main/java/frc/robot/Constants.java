@@ -8,6 +8,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -75,7 +81,7 @@ public final class Constants {
   public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
-  public static final double INDEXER_TRANSFER_SPEED = 0.1;
+  public static final double INDEXER_TRANSFER_SPEED = 0.2;
   public static final double INDEXER_CONE_POSITION = -115;
   public static final double INDEXER_CUBE_POSITION = -110;
   public static final double INDEXER_SCORING_POSITION = -45;
@@ -156,6 +162,53 @@ public final class Constants {
       AUTOBALANCE_SET_POINT_RADIANS_COMPETITION;
 
   public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 7.0;
+
+  // #endregion
+
+  // #region Auto Waypoints
+
+  // All waypoints assume blue alliance
+  // Locations are numbered left->right
+  public static final Pose2d ORIGIN = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+  public static final Pose2d CONE_NODE_1 = new Pose2d(0.419, 4.977, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_1plus =
+      new Pose2d(2.419, 4.977, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_2 = new Pose2d(0.419, 3.865, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_3 = new Pose2d(0.419, 3.309, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_4 = new Pose2d(0.419, 2.187, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_5 = new Pose2d(0.419, 1.628, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_NODE_6 = new Pose2d(0.419, 0.512, Rotation2d.fromDegrees(180));
+  public static final Pose2d CUBE_NODE_1 =
+      new Pose2d(0.419 + 0.25, 4.419 - 0.35, Rotation2d.fromDegrees(180));
+  public static final Pose2d CUBE_NODE_2 = new Pose2d(0.419, 2.745, Rotation2d.fromDegrees(180));
+  public static final Pose2d CUBE_NODE_3 = new Pose2d(0.419, 1.072, Rotation2d.fromDegrees(180));
+  public static final Pose2d NEUTRAL_PIECE_1 = new Pose2d(4.75, 4.85, Rotation2d.fromDegrees(-15));
+  public static final Pose2d NEUTRAL_PIECE_2 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+  public static final Pose2d NEUTRAL_PIECE_3 = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+  public static final Pose2d NEUTRAL_PIECE_4 = new Pose2d(4.833, 0.925, Rotation2d.fromDegrees(0));
+  public static final Pose2d CHARGING_STATION_LEFT =
+      new Pose2d(2.51, 3.309, Rotation2d.fromDegrees(180));
+  public static final Pose2d CHARGING_STATION_CENTER =
+      new Pose2d(2.51, 2.745, Rotation2d.fromDegrees(180));
+  public static final Pose2d CHARGING_STATION_RIGHT =
+      new Pose2d(2.51, 2.187, Rotation2d.fromDegrees(180));
+  public static final Pose2d FLAT_LANE_NEAR = new Pose2d(1.089, 4.665, Rotation2d.fromDegrees(180));
+  public static final Pose2d FLAT_LANE_FAR = new Pose2d(3.972, 4.665, Rotation2d.fromDegrees(-15));
+  public static final Pose2d FLAT_LANE_NEAR_ADJUSTED =
+      new Pose2d(1.089, 4.665 - 0.15, Rotation2d.fromDegrees(180));
+  public static final Pose2d FLAT_LANE_FAR_ADJUSTED =
+      new Pose2d(3.972, 4.665 - 0.15, Rotation2d.fromDegrees(-15));
+  public static final Pose2d BUMP_LANE_NEAR = new Pose2d(1.089, 0.747, Rotation2d.fromDegrees(180));
+  public static final Pose2d BUMP_LANE_FAR = new Pose2d(3.972, 0.747, Rotation2d.fromDegrees(0));
+  public static final List<Translation2d> FLAT_LANE_OUT_WAYPOINTS =
+      Arrays.asList(FLAT_LANE_NEAR.getTranslation(), FLAT_LANE_FAR.getTranslation());
+  public static final List<Translation2d> FLAT_LANE_IN_WAYPOINTS =
+      Arrays.asList(
+          FLAT_LANE_FAR_ADJUSTED.getTranslation(), FLAT_LANE_NEAR_ADJUSTED.getTranslation());
+  public static final List<Translation2d> BUMP_LANE_OUT_WAYPOINTS =
+      Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
+  public static final List<Translation2d> BUMP_LANE_IN_WAYPOINTS =
+      Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
 
   // #endregion
 }
