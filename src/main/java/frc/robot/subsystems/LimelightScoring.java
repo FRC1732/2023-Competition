@@ -114,7 +114,7 @@ public class LimelightScoring extends SubsystemBase {
       reflectiveTv = tv.getDouble(0);
       reflectiveTx = tx.getDouble(0);
       reflectiveTy = ty.getDouble(0);
-      reflectiveTy = ta.getDouble(0);
+      reflectiveTa = ta.getDouble(0);
     }
     pipelineVal = (int) pipeline.getDouble(-1);
   }

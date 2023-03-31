@@ -77,27 +77,19 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (hasBeenEnabled && DriverStation.isDisabled()) {
-      out0.set(!false);
-      out1.set(!false);
-      out2.set(!false);
-      out3.set(!false);
-      out4.set(!false);
-      return;
+      specialMode = SpecialMode.GAME_IDLE_MODE;
+      targetElapsedTimeSeconds = 0;
     }
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
         && robotContainer.limelightScoringSubSystem.isAligned()) {
-      setScoreHieghtBits();
-
-      out2.set(!false);
-      out3.set(!false);
-      out4.set(!false);
-      return;
+      specialMode = SpecialMode.SCORE_POSITION_ACQUIRED;
+      targetElapsedTimeSeconds = 0;
     }
 
     // Invert the digital sigs; HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
-      if (timer.hasElapsed(targetElapsedTimeSeconds)) {
+      if (targetElapsedTimeSeconds > 0 && timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
         timer.stop();
       } else {
@@ -112,6 +104,23 @@ public class RGBStatusSubsytem extends SubsystemBase {
             out3.set(!false);
             break;
 
+          case GAME_IDLE_MODE:
+            // all bits off
+            out0.set(!false);
+            out1.set(!false);
+            out2.set(!false);
+            out3.set(!false);
+            out4.set(!false);
+            break;
+
+          case SCORE_POSITION_ACQUIRED:
+            setScoreHeightBits();
+
+            out2.set(!false);
+            out3.set(!false);
+            out4.set(!false);
+            break;
+
           case NONE:
           default:
             break;
@@ -120,10 +129,9 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (specialMode == SpecialMode.NONE) {
-      out4.set(!false);
-
-      setScoreHieghtBits();
+      setScoreHeightBits();
       setGamePieceBits();
+      out4.set(!robotContainer.isVisionOn());
     }
   }
 
@@ -147,7 +155,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
   }
 
-  private void setScoreHieghtBits() {
+  private void setScoreHeightBits() {
     switch (scoreHeight) {
       case HIGH: // 3
         out0.set(!true);
@@ -210,6 +218,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   protected enum SpecialMode {
     NONE,
-    GAME_PIECE_CAPTURED;
+    GAME_PIECE_CAPTURED,
+    GAME_IDLE_MODE,
+    SCORE_POSITION_ACQUIRED;
   }
 }
