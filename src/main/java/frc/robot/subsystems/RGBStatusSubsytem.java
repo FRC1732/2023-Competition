@@ -24,8 +24,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
    *   Cone - Bit 3
    *   Cube - Bit 2
    *
-   * Output 4 is the modifer for every other mode we want to represent
-   *   Capture Game Piece - Bit 4 and 0
+   * Output 4 is vision on/off
+   *   Vision on/off - Bit 4
+   *
+   * Special modes fill in around whats left
+   *   Idle Mode - All bits offs
+   *   Capture Game Piece - Bits 4, 3, and 2
+   *   Scoring Target Ready - Combination of Scoring Height, no game piece and vision bit on
    *
    */
 
@@ -83,7 +88,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
         && robotContainer.limelightScoringSubSystem.isAligned()) {
-      specialMode = SpecialMode.SCORE_POSITION_ACQUIRED;
+      specialMode = SpecialMode.SCORING_POSITION_READY;
       targetElapsedTimeSeconds = 0;
     }
 
@@ -95,13 +100,12 @@ public class RGBStatusSubsytem extends SubsystemBase {
       } else {
         switch (specialMode) {
           case GAME_PIECE_CAPTURED:
-            // bits 4 and 0 -- 17
-            out4.set(!true);
-            out0.set(!true);
-
+            // bits 4, 3, 2 -- 28
+            out0.set(!false);
             out1.set(!false);
-            out2.set(!false);
-            out3.set(!false);
+            out2.set(!true);
+            out3.set(!true);
+            out4.set(!true);
             break;
 
           case GAME_IDLE_MODE:
@@ -113,12 +117,12 @@ public class RGBStatusSubsytem extends SubsystemBase {
             out4.set(!false);
             break;
 
-          case SCORE_POSITION_ACQUIRED:
+          case SCORING_POSITION_READY:
             setScoreHeightBits();
 
             out2.set(!false);
             out3.set(!false);
-            out4.set(!false);
+            out4.set(!true);
             break;
 
           case NONE:
@@ -220,6 +224,6 @@ public class RGBStatusSubsytem extends SubsystemBase {
     NONE,
     GAME_PIECE_CAPTURED,
     GAME_IDLE_MODE,
-    SCORE_POSITION_ACQUIRED;
+    SCORING_POSITION_READY;
   }
 }
