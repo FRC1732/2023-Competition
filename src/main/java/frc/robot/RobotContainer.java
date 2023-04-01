@@ -25,6 +25,15 @@ import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwervePlus;
+import frc.robot.commands.TransitionCommands.DelayCloseHolderCommand;
+import frc.robot.commands.TransitionCommands.DeployExtenderCommand;
+import frc.robot.commands.TransitionCommands.LowerElevatorToTransferCommand;
+import frc.robot.commands.TransitionCommands.MoveIndexerToScoringCommand;
+import frc.robot.commands.TransitionCommands.OpenHolderCommand;
+import frc.robot.commands.TransitionCommands.ResetToReadyCommand;
+import frc.robot.commands.TransitionCommands.RetractExtenderCommand;
+import frc.robot.commands.TransitionCommands.SmartIntakeCommand;
+import frc.robot.commands.TransitionCommands.StageGamePieceCommand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
@@ -325,6 +334,21 @@ public class RobotContainer {
     oi.getScoreButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
 
+    // Lock Onto Score Button
+    oi.getScoreLockButton()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  this.robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  this.robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                }));
+    oi.getScoreLockButton()
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  this.robotRotationMode = RobotRotationMode.DRIVER;
+                  this.robotTranslationMode = RobotTranslationMode.DRIVER;
+                }));
     // oi.getDeployHolderButton()
     // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
     // FinishScorePressed())));
@@ -451,10 +475,10 @@ public class RobotContainer {
     //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
     //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
-    // autoChooser.addOption(
-    //     "Two Piece, Balance",
-    //     Commands.sequence(
-    //         new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
+    autoChooser.addOption(
+        "Two Piece, Balance (NOT TESTED! DO NOT USE)",
+        Commands.sequence(
+            new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
 
     autoChooser.addOption(
         "Two Piece, Taxi",
@@ -486,6 +510,113 @@ public class RobotContainer {
                 Commands.sequence(
                     new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
                     new WaitCommand(2.55)))));
+
+    autoChooser.addOption(
+        "Three Piece, Test",
+        Commands.sequence(
+            // Initialize Robot
+            new InitializeRobotCommand(this, Constants.THREE_PIECE_START),
+            // Drop Game Piece
+            new InstantCommand(
+                () ->
+                    CommandScheduler.getInstance()
+                        .schedule(CommandFactory.getDropConeCommand(this)))));
+    autoChooser.addOption(
+        "Three Piece, Taxi (NOT TESTED! DO NOT USE)",
+        Commands.sequence(
+            // Initialize Robot
+            new InitializeRobotCommand(this, Constants.THREE_PIECE_START),
+            // Drop Game Piece
+            new InstantCommand(
+                () ->
+                    CommandScheduler.getInstance()
+                        .schedule(CommandFactory.getDropConeCommand(this))),
+            new WaitCommand(.5),
+            // Goto Neutral Piece 1
+            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, null),
+            // Make sure we are in cone mode
+            new InstantCommand(() -> pieceMode = PieceMode.CONE),
+            // Intake the neutral piece
+            // Race commands to make sure TeleopSwervePlus is running
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+                    // Run the smart intake
+                    new SmartIntakeCommand(this, null).withTimeout(3),
+                    // When smart intake has the piece or after 3 seconds move to carrying mode
+                    Commands.sequence(
+                        new MoveIndexerToScoringCommand(robotContainer),
+                        new LowerElevatorToTransferCommand(robotContainer),
+                        new DelayCloseHolderCommand(robotContainer)),
+                    new InstantCommand(() -> scoringHeight = ScoringHeight.MEDIUM),
+                    new StageGamePieceCommand(this, null),
+                    // Might remove this line
+                    new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER))),
+            // Move Back to starting position
+            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.THREE_PIECE_START, null),
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+                    // Run the smart intake
+                    new SmartIntakeCommand(this, null).withTimeout(3),
+                    // When smart intake has the piece or after 3 seconds move to carrying
+                    // mode
+                    new InstantCommand(() -> indexerSubsystem.setCarrying()),
+                    new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER))),
+            // Goto Cond Node 1
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.CONE_NODE_1, Constants.FLAT_LANE_IN_WAYPOINTS),
+            // Place first cone
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(() -> scoringHeight = ScoringHeight.HIGH),
+                    new DeployExtenderCommand(robotContainer),
+                    new OpenHolderCommand(robotContainer),
+                    new RetractExtenderCommand(robotContainer),
+                    new ResetToReadyCommand(robotContainer))),
+            // Stage Second cone
+            // When smart intake has the piece or after 3 seconds move to carrying mode
+            Commands.sequence(
+                new MoveIndexerToScoringCommand(robotContainer),
+                new LowerElevatorToTransferCommand(robotContainer),
+                new DelayCloseHolderCommand(robotContainer)),
+            new StageGamePieceCommand(this, null),
+            // Place Second Cone
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(() -> scoringHeight = ScoringHeight.MEDIUM),
+                    new DeployExtenderCommand(robotContainer),
+                    new OpenHolderCommand(robotContainer),
+                    new RetractExtenderCommand(robotContainer),
+                    new ResetToReadyCommand(robotContainer))),
+            // Switch To Cube Mode
+            new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+            // Goto Third Piece Waypoint
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.NEUTRAL_PIECE_2, Constants.FLAT_LANE_OUT_WAYPOINTS),
+            // Pickup Third Piece
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+                    // Run the smart intake
+                    new SmartIntakeCommand(this, null).withTimeout(3),
+                    // When smart intake has the piece or after 3 seconds move to carrying
+                    // mode
+                    Commands.sequence(
+                        new MoveIndexerToScoringCommand(robotContainer),
+                        new LowerElevatorToTransferCommand(robotContainer),
+                        new DelayCloseHolderCommand(robotContainer)),
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.DRIVER)))));
+
     // new SwerveToWaypointCommand(
     //     drivetrainSubsystem,
     //     Constants.NEUTRAL_PIECE_1,

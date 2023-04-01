@@ -56,7 +56,9 @@ public class StageGamePieceCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    robotStateMachine.fireEvent(new FinishScorePressed());
+    if (robotStateMachine != null) {
+      robotStateMachine.fireEvent(new FinishScorePressed());
+    }
   }
 
   @Override

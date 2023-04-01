@@ -54,9 +54,9 @@ public class SmartIntakeCommand extends CommandBase {
     }
     robotContainer.rgbStatusSubsytem.capturedGamePiece();
     if (robotContainer.scoringHeight == ScoringHeight.LOW) {
-      robotStateMachine.fireEvent(new PieceDetectedLow());
+      if (robotStateMachine != null) robotStateMachine.fireEvent(new PieceDetectedLow());
     } else {
-      robotStateMachine.fireEvent(new PieceDetectedMidHigh());
+      if (robotStateMachine != null) robotStateMachine.fireEvent(new PieceDetectedMidHigh());
     }
   }
 

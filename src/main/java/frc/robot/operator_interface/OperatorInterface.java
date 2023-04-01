@@ -23,6 +23,10 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default Trigger getScoreLockButton() {
+    return new Trigger(() -> false);
+  }
+
   public default Trigger getDeployHolderButton() {
     return new Trigger(() -> false);
   }

@@ -56,6 +56,11 @@ public class PlayerControls implements OperatorInterface {
   }
 
   @Override
+  public Trigger getScoreLockButton() {
+    return rotateJoystickButtons[3];
+  }
+
+  @Override
   public Trigger getDeployHolderButton() {
     return rotateJoystickButtons[2];
   }

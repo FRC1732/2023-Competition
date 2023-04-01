@@ -210,5 +210,7 @@ public final class Constants {
   public static final List<Translation2d> BUMP_LANE_IN_WAYPOINTS =
       Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
 
+  public static final Pose2d THREE_PIECE_START = new Pose2d(3, 4.97, Rotation2d.fromDegrees(180));
+
   // #endregion
 }

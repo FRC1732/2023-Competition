@@ -97,7 +97,7 @@ public class TeleopSwervePlus extends CommandBase {
           rotationPercentage = doPieceTrackingRotation(rotationPercentage);
           break;
         case SCORE_PIECE:
-          // rotationPercentage = doLockToZeroRotation(); // currently LEDS only
+          rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
           rotationPidController.reset();

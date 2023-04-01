@@ -27,6 +27,11 @@ public final class CommandFactory {
             .until(() -> robotContainer.elevatorSubsystem.isAtSetpoint()));
   }
 
+  public static Command getDropConeCommand(RobotContainer robotContainer) {
+    return Commands.sequence(
+        new HoldGamePieceLowCommand(robotContainer), new ScoreLowCommand(robotContainer));
+  }
+
   public static Pose2d getAllianceCorrectedPose(Pose2d pose) {
     if (DriverStation.getAlliance() == Alliance.Blue) {
       return pose;
