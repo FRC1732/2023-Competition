@@ -9,6 +9,9 @@ import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -36,8 +39,31 @@ public class LimelightObjectDetection extends SubsystemBase {
   private double coneConfidence = 0.0;
   private double cubeConfidence = 0.0;
 
+  private NetworkTable table;
+  private NetworkTableEntry tv;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  private NetworkTableEntry pipeline;
+
+  private double limelightTv;
+  private double limelightTx;
+  private double limelightTy;
+  private double limelightTa;
+  private int pipelineVal;
+
+  private void configureNetworkTableEntries() {
+    table = NetworkTableInstance.getDefault().getTable(LIMELIGHTNAME);
+    tv = table.getEntry("tv");
+    tx = table.getEntry("tx");
+    ty = table.getEntry("ty");
+    ta = table.getEntry("ta");
+    pipeline = table.getEntry("pipeline");
+  }
+
   /** Creates a new Limelight. */
   public LimelightObjectDetection() {
+    configureNetworkTableEntries();
     configureShuffleBoard();
     LimelightHelpers.getFirstParse();
   }
@@ -77,9 +103,17 @@ public class LimelightObjectDetection extends SubsystemBase {
   public void periodic() {
     // read and store values periodically
     if (detectionOn) {
+
       // note: because parsing the JSON method takes ~2.5ms, only do it when needed.
-      llresults = LimelightHelpers.getLatestResults(LIMELIGHTNAME);
-      processLlResults(llresults);
+      // llresults = LimelightHelpers.getLatestResults(LIMELIGHTNAME);
+      // processLlResults(llresults);
+      limelightTv = tv.getDouble(0);
+      limelightTx = tx.getDouble(0);
+      limelightTy = ty.getDouble(0);
+      limelightTa = ta.getDouble(0);
+      pipeline.setDouble(0);
+      conePose2d = new Translation2d(limelightTx, limelightTy);
+      coneTarget = true;
 
       if (llresults != null) {
         // System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));

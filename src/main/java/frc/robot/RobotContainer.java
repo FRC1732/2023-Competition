@@ -326,11 +326,11 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  if (areWeAbleToScore()) {
-                    robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
-                    robotRotationMode = RobotRotationMode.SCORE_PIECE;
-                    robotStateMachine.fireEvent(new ScorePressed());
-                  }
+                  // if (areWeAbleToScore()) {
+                  //  robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  //  robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  robotStateMachine.fireEvent(new ScorePressed());
+                  // }
                 }));
 
     // oi.getDeployHolderButton()

@@ -40,14 +40,14 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private double KP = 7; // p8 d0 was good
-  private double KI = 0;
-  private double KD = 0;
-  private double deadzone = 0;
+  private static double KP = 7; // p8 d0 was good
+  private static double KI = 0;
+  private static double KD = 0;
+  private static double deadzone = 0;
 
   private static boolean shuffleboardIsSetup = false;
 
-  private GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry;
+  private static GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -75,25 +75,26 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
-    if (kPEntry != null) {
+    // System.out.println(kPEntry);
+    if (TeleopSwervePlus.kPEntry != null) {
       double kP = kPEntry.getDouble(Constants.PIECE_DETECTION_P); // p8 d0 was good
       double kI = kIEntry.getDouble(Constants.PIECE_DETECTION_I);
       double kD = kDEntry.getDouble(Constants.PIECE_DETECTION_D);
       double deadzone = deadzoneEntry.getDouble(Constants.PIECE_DETECTION_DEADZONE);
       if (kP != this.KP) {
-        this.KP = kP;
+        TeleopSwervePlus.KP = kP;
         rotationPidController.setP(kP);
       }
       if (kI != this.KI) {
-        this.KI = kI;
+        TeleopSwervePlus.KI = kI;
         rotationPidController.setI(kI);
       }
       if (kD != this.KD) {
-        this.KD = kD;
+        TeleopSwervePlus.KD = kD;
         rotationPidController.setD(kD);
       }
       if (deadzone != this.deadzone) {
-        this.deadzone = deadzone;
+        TeleopSwervePlus.deadzone = deadzone;
       }
     }
 
@@ -129,7 +130,7 @@ public class TeleopSwervePlus extends CommandBase {
           rotationPercentage = doPieceTrackingRotation(rotationPercentage);
           break;
         case SCORE_PIECE:
-          rotationPercentage = doLockToZeroRotation(); // currently LEDS only
+          // rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
           rotationPidController.reset();
@@ -182,13 +183,13 @@ public class TeleopSwervePlus extends CommandBase {
 
   private double doPieceTrackingRotation(double defaultResponse) {
     LimelightObjectDetection ll = robotContainer.limelightObjectDetectionSubsystem;
-
     if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
       double val =
           rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
               / Math.PI
               * 0.6;
-      if (Math.abs(val) < deadzone) {
+      System.out.println(ll.getClosestConeTarget().getX() + " " + deadzone);
+      if (Math.abs(ll.getClosestConeTarget().getX()) < deadzone) {
         return 0;
       }
       return val;
@@ -199,7 +200,8 @@ public class TeleopSwervePlus extends CommandBase {
           rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
               / Math.PI
               * 0.6;
-      if (Math.abs(val) < deadzone) {
+      System.out.println(ll.getClosestCubeTarget().getX() + " " + deadzone);
+      if (Math.abs(ll.getClosestCubeTarget().getX()) < deadzone) {
         return 0;
       }
       return val;
@@ -227,7 +229,7 @@ public class TeleopSwervePlus extends CommandBase {
     return defaultResponse;
   }
 
-  private void setupShuffleboard() {
+  private static void setupShuffleboard() {
     if (!shuffleboardIsSetup) {
       shuffleboardIsSetup = true;
       System.out.println("Hello");
