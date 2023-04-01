@@ -323,7 +323,15 @@ public class RobotContainer {
 
     // Scoring
     oi.getScoreButton()
-        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  if (areWeAbleToScore()) {
+                    robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                    robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                    robotStateMachine.fireEvent(new ScorePressed());
+                  }
+                }));
 
     // oi.getDeployHolderButton()
     // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
@@ -547,5 +555,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public boolean areWeAbleToScore() {
+    boolean isTyInTolerance = limelightScoringSubSystem.isWithinTolerance();
+    boolean isDistanceInTolerance = limelightScoringSubSystem.isWithinDistanceTolerance();
+    boolean isRotationInTolerance =
+        Math.abs(drivetrainSubsystem.getPose().getRotation().getDegrees() - 180)
+            < Constants.SCORING_DISTANCE_TOLERANCE;
+
+    return isTyInTolerance && isDistanceInTolerance && isRotationInTolerance;
   }
 }

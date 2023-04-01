@@ -70,7 +70,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
-        && robotContainer.limelightScoringSubSystem.isAligned()) {
+        && robotContainer
+            .areWeAbleToScore() /*robotContainer.limelightScoringSubSystem.isAligned()*/) {
       setScoreHieghtBits();
 
       out2.set(!false);

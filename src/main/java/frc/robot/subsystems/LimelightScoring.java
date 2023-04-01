@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.Map;
 
 public class LimelightScoring extends SubsystemBase {
@@ -143,6 +144,19 @@ public class LimelightScoring extends SubsystemBase {
       tx = tx - 1;
     }
     return hasTarget() && Math.abs(tx) < 1.75;
+  }
+
+  public boolean isWithinTolerance() {
+    double tx = getTx();
+    // Low goal is off by 1 degree
+    if (getTy() < 0) {
+      tx = tx - 1;
+    }
+    return hasTarget() && Math.abs(tx) < Constants.SCORING_TRANSLATION_TOLERANCE;
+  }
+
+  public boolean isWithinDistanceTolerance() {
+    return hasTarget() && position.getX() < Constants.SCORING_DISTANCE_TOLERANCE;
   }
 
   /**

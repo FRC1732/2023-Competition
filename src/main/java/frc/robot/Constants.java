@@ -142,6 +142,10 @@ public final class Constants {
   public static final double EXTENDER_PID_MAX_OUTPUT = 1;
   public static final double EXTENDER_PID_MIN_OUTPUT = -1;
 
+  public static final double SCORING_DISTANCE_TOLERANCE = 6;
+  public static final double SCORING_TRANSLATION_TOLERANCE = 6;
+  public static final double SCORING_ROTATION_TOLERANCE = 5;
+
   // #endregion
 
   // #region Limelight Constants
