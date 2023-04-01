@@ -557,6 +557,10 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
+  public boolean isVisionOn() {
+    return oi.getVisionAssistButton().getAsBoolean();
+  }
+
   public boolean areWeAbleToScore() {
     boolean isTyInTolerance = limelightScoringSubSystem.isWithinTolerance();
     boolean isDistanceInTolerance = limelightScoringSubSystem.isWithinDistanceTolerance();

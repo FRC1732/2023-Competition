@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -23,8 +24,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
    *   Cone - Bit 3
    *   Cube - Bit 2
    *
-   * Output 4 is the modifer for every other mode we want to represent
-   *   Capture Game Piece - Bit 4 and 0
+   * Output 4 is vision on/off
+   *   Vision on/off - Bit 4
+   *
+   * Special modes fill in around whats left
+   *   Idle Mode - All bits offs
+   *   Capture Game Piece - Bits 4, 3, and 2
+   *   Scoring Target Ready - Combination of Scoring Height, no game piece and vision bit on
    *
    */
 
@@ -42,6 +48,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
   private double targetElapsedTimeSeconds;
 
   private RobotContainer robotContainer;
+
+  private boolean hasBeenEnabled = false;
 
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
@@ -69,32 +77,52 @@ public class RGBStatusSubsytem extends SubsystemBase {
       scoreHeight = ScoreHeight.LOW;
     }
 
-    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
-        && robotContainer
-            .areWeAbleToScore() /*robotContainer.limelightScoringSubSystem.isAligned()*/) {
-      setScoreHieghtBits();
+    if (!hasBeenEnabled && DriverStation.isEnabled()) {
+      hasBeenEnabled = true;
+    }
 
-      out2.set(!false);
-      out3.set(!false);
-      out4.set(!false);
-      return;
+    if (hasBeenEnabled && DriverStation.isDisabled()) {
+      specialMode = SpecialMode.GAME_IDLE_MODE;
+      targetElapsedTimeSeconds = 0;
+    }
+
+    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
+        && robotContainer.limelightScoringSubSystem.isAligned()) {
+      specialMode = SpecialMode.SCORING_POSITION_READY;
+      targetElapsedTimeSeconds = 0;
     }
 
     // Invert the digital sigs; HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
-      if (timer.hasElapsed(targetElapsedTimeSeconds)) {
+      if (targetElapsedTimeSeconds > 0 && timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
         timer.stop();
       } else {
         switch (specialMode) {
           case GAME_PIECE_CAPTURED:
-            // bits 4 and 0 -- 17
+            // bits 4, 3, 2 -- 28
+            out0.set(!false);
+            out1.set(!false);
+            out2.set(!true);
+            out3.set(!true);
             out4.set(!true);
-            out0.set(!true);
+            break;
 
+          case GAME_IDLE_MODE:
+            // all bits off
+            out0.set(!false);
             out1.set(!false);
             out2.set(!false);
             out3.set(!false);
+            out4.set(!false);
+            break;
+
+          case SCORING_POSITION_READY:
+            setScoreHeightBits();
+
+            out2.set(!false);
+            out3.set(!false);
+            out4.set(!true);
             break;
 
           case NONE:
@@ -105,10 +133,9 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (specialMode == SpecialMode.NONE) {
-      out4.set(!false);
-
-      setScoreHieghtBits();
+      setScoreHeightBits();
       setGamePieceBits();
+      out4.set(!robotContainer.isVisionOn());
     }
   }
 
@@ -132,7 +159,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
   }
 
-  private void setScoreHieghtBits() {
+  private void setScoreHeightBits() {
     switch (scoreHeight) {
       case HIGH: // 3
         out0.set(!true);
@@ -195,6 +222,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   protected enum SpecialMode {
     NONE,
-    GAME_PIECE_CAPTURED;
+    GAME_PIECE_CAPTURED,
+    GAME_IDLE_MODE,
+    SCORING_POSITION_READY;
   }
 }
