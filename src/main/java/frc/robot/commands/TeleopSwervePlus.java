@@ -5,8 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 import frc.robot.RobotContainer.RobotRotationMode;
@@ -35,9 +40,14 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private final double KP = 7; // p8 d0 was good
-  private final double KI = 0;
-  private final double KD = 0;
+  private double KP = 7; // p8 d0 was good
+  private double KI = 0;
+  private double KD = 0;
+  private double deadzone = 0;
+
+  private static boolean shuffleboardIsSetup = false;
+
+  private GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -53,7 +63,7 @@ public class TeleopSwervePlus extends CommandBase {
 
     drivetrainSubsystem = robotContainer.drivetrainSubsystem;
     addRequirements(drivetrainSubsystem);
-
+    setupShuffleboard();
     rotationPidController = new PIDController(KP, KI, KD);
     rotationPidController.enableContinuousInput(Math.PI * -1, Math.PI);
     translationPidController =
@@ -65,6 +75,28 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
+    if (kPEntry != null) {
+      double kP = kPEntry.getDouble(Constants.PIECE_DETECTION_P); // p8 d0 was good
+      double kI = kIEntry.getDouble(Constants.PIECE_DETECTION_I);
+      double kD = kDEntry.getDouble(Constants.PIECE_DETECTION_D);
+      double deadzone = deadzoneEntry.getDouble(Constants.PIECE_DETECTION_DEADZONE);
+      if (kP != this.KP) {
+        this.KP = kP;
+        rotationPidController.setP(kP);
+      }
+      if (kI != this.KI) {
+        this.KI = kI;
+        rotationPidController.setI(kI);
+      }
+      if (kD != this.KD) {
+        this.KD = kD;
+        rotationPidController.setD(kD);
+      }
+      if (deadzone != this.deadzone) {
+        this.deadzone = deadzone;
+      }
+    }
+
     drivetrainSubsystem.printModuleDistances();
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
@@ -152,15 +184,25 @@ public class TeleopSwervePlus extends CommandBase {
     LimelightObjectDetection ll = robotContainer.limelightObjectDetectionSubsystem;
 
     if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
-      return rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
-          / Math.PI
-          * 0.6;
+      double val =
+          rotationPidController.calculate(Math.toRadians(ll.getClosestConeTarget().getX()), 0)
+              / Math.PI
+              * 0.6;
+      if (Math.abs(val) < deadzone) {
+        return 0;
+      }
+      return val;
     }
 
     if (robotContainer.pieceMode == PieceMode.CUBE && ll.hasCubeTarget()) {
-      return rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
-          / Math.PI
-          * 0.6;
+      double val =
+          rotationPidController.calculate(Math.toRadians(ll.getClosestCubeTarget().getX()), 0)
+              / Math.PI
+              * 0.6;
+      if (Math.abs(val) < deadzone) {
+        return 0;
+      }
+      return val;
     }
 
     return defaultResponse;
@@ -183,5 +225,32 @@ public class TeleopSwervePlus extends CommandBase {
     }
 
     return defaultResponse;
+  }
+
+  private void setupShuffleboard() {
+    if (!shuffleboardIsSetup) {
+      shuffleboardIsSetup = true;
+      System.out.println("Hello");
+      ShuffleboardTab tab;
+      tab = Shuffleboard.getTab("Piece Detection");
+      // if (true) {
+      kPEntry =
+          tab.add("PieceDetect_P", Constants.PIECE_DETECTION_P)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kIEntry =
+          tab.add("PieceDetect_I", Constants.PIECE_DETECTION_I)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kDEntry =
+          tab.add("PieceDetect_D", Constants.PIECE_DETECTION_D)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      deadzoneEntry =
+          tab.add("PieceDetect_Deadzone", Constants.PIECE_DETECTION_DEADZONE)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      // }
+    }
   }
 }

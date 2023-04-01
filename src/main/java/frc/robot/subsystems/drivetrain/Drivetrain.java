@@ -439,9 +439,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * @param states the specified swerve module state for each swerve module
    */
   public void setSwerveModuleStates(SwerveModuleState[] states) {
-    if (states[1] != null) {
-      states[1].speedMetersPerSecond *= 0.86;
-    }
+
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule swerveModule : swerveModules) {

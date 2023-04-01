@@ -146,6 +146,10 @@ public final class Constants {
   public static final double SCORING_TRANSLATION_TOLERANCE = 6;
   public static final double SCORING_ROTATION_TOLERANCE = 5;
 
+  public static final double PIECE_DETECTION_P = 7;
+  public static final double PIECE_DETECTION_I = 0;
+  public static final double PIECE_DETECTION_D = 0;
+  public static final double PIECE_DETECTION_DEADZONE = 0;
   // #endregion
 
   // #region Limelight Constants
