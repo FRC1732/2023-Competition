@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
-    // setupShuffleboard();
+    setupShuffleboard();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
@@ -102,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // if (motorSpeed != motorSpeedEntryDouble) {
     //  motorSpeed = motorSpeedEntryDouble;
     // }
-    /*if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
+    if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
       double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
       double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
       double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
@@ -112,7 +112,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       double maxOut = kMaxOutput.getDouble(Constants.ELEVATOR_PID_MAX_OUTPUT);
       double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
       double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-      double setpoint = positionSet.getDouble(0);
+      double setpoint = positionSet.getDouble(Constants.ELEVATOR_STARTING_POSITION_INCHES);
       if (preP != p) {
         pidController.setP(p);
         preP = p;
@@ -153,13 +153,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController.setSmartMotionMaxAccel(maxAccel, 0);
         preMaxAccel = maxAccel;
       }
-
-
-    }*/
-    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
-      System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setPoint);
-      pidController.setReference(setPoint, ControlType.kSmartMotion);
-      prevSetpoint = setPoint;
+      System.out.println(prevSetpoint + " " + setpoint);
+      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+        System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setpoint);
+        pidController.setReference(setpoint, ControlType.kSmartMotion);
+        prevSetpoint = setpoint;
+      }
     }
   }
 
@@ -309,11 +308,9 @@ public class ElevatorSubsystem extends SubsystemBase {
           tab.add("Max Accell", Constants.ELEVATOR_MAX_ACCELERATION_RPM2)
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
-      kMaxAccel =
-          motorSpeedEntry =
-              tab.add("Motor Speed", .4).withWidget(BuiltInWidgets.kTextView).getEntry();
+      motorSpeedEntry = tab.add("Motor Speed", .4).withWidget(BuiltInWidgets.kTextView).getEntry();
       positionSet =
-          tab.add("Set Position", 0)
+          tab.add("Set Position", Constants.ELEVATOR_STARTING_POSITION_INCHES)
               .withWidget(BuiltInWidgets.kTextView)
               .withPosition(0, 0)
               .getEntry();

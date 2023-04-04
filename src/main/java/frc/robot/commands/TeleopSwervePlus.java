@@ -63,7 +63,7 @@ public class TeleopSwervePlus extends CommandBase {
 
     drivetrainSubsystem = robotContainer.drivetrainSubsystem;
     addRequirements(drivetrainSubsystem);
-    setupShuffleboard();
+    // setupShuffleboard();
     rotationPidController = new PIDController(KP, KI, KD);
     rotationPidController.enableContinuousInput(Math.PI * -1, Math.PI);
     translationPidController =
