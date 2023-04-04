@@ -109,7 +109,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
 
     this.autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.centerGravity = new Translation2d(-0.05, 0); // default to (0,0)
+    this.centerGravity = new Translation2d(0, 0); // default to (0,0)
 
     this.zeroGyroscope();
 

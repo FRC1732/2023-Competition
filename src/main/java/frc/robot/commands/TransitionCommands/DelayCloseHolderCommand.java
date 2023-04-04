@@ -10,7 +10,7 @@ public class DelayCloseHolderCommand extends WaitCommand {
   private PieceMode prevPieceMode;
 
   public DelayCloseHolderCommand(RobotContainer robotContainer) {
-    super(.5); // run for .5 seconds
+    super(.05); // run for .5 seconds
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.holderSubsystem);
   }

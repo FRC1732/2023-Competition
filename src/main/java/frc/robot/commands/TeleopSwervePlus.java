@@ -40,10 +40,10 @@ public class TeleopSwervePlus extends CommandBase {
   private final double KOWALSKI_2022_I = 0;
   private final double KOWALSKI_2022_D = 1;
 
-  private static double KP = 7; // p8 d0 was good
+  private static double KP = 10; // p8 d0 was good
   private static double KI = 0;
-  private static double KD = 0;
-  private static double deadzone = 0;
+  private static double KD = 0.5;
+  private static double deadzone = 0.25;
 
   private static boolean shuffleboardIsSetup = false;
 
@@ -127,7 +127,8 @@ public class TeleopSwervePlus extends CommandBase {
 
       switch (robotContainer.robotRotationMode) {
         case PIECE_TRACKING:
-          rotationPercentage = doPieceTrackingRotation(rotationPercentage);
+          rotationPercentage =
+              doPieceTrackingRotation(rotationPercentage, drivetrainSubsystem.getPercentMaxSpeed());
           break;
         case SCORE_PIECE:
           // rotationPercentage = doLockToZeroRotation(); // currently LEDS only
@@ -181,7 +182,7 @@ public class TeleopSwervePlus extends CommandBase {
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwervePlus", false);
   }
 
-  private double doPieceTrackingRotation(double defaultResponse) {
+  private double doPieceTrackingRotation(double defaultResponse, double drivetrainPercentSpeed) {
     LimelightObjectDetection ll = robotContainer.limelightObjectDetectionSubsystem;
     if (robotContainer.pieceMode == PieceMode.CONE && ll.hasConeTarget()) {
       double val =
@@ -204,7 +205,7 @@ public class TeleopSwervePlus extends CommandBase {
       if (Math.abs(ll.getClosestCubeTarget().getX()) < deadzone) {
         return 0;
       }
-      return val;
+      return val * (0.7 + 0.3 * drivetrainPercentSpeed);
     }
 
     return defaultResponse;
