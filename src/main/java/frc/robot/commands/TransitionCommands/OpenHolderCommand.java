@@ -10,7 +10,7 @@ public class OpenHolderCommand extends WaitCommand {
   private PieceMode prevPieceMode;
 
   public OpenHolderCommand(RobotContainer robotContainer) {
-    super(.2); // run for .5 seconds
+    super(.4); // run for .5 seconds
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.holderSubsystem);
   }

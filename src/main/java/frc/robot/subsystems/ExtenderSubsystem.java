@@ -122,7 +122,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     //   brakeMode = false;
     //   setCoastMode();
     // }
-    // if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
+    /* if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
     double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
     double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
     double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
@@ -178,11 +178,11 @@ public class ExtenderSubsystem extends SubsystemBase {
       pidController.setReference(setpoint, ControlType.kSmartMotion);
       prevSetpoint = setpoint;
     }
-    /*}
+    } */
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
-    } */
+    }
   }
 
   public void goToMiddleScoringPosition(PieceMode pieceMode) {
