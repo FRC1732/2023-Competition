@@ -11,8 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -46,7 +44,8 @@ public class ExtenderSubsystem extends SubsystemBase {
   private double prevSetpoint;
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
-    extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH, Constants.EXTENDER_STABLIZER_ID);
+    // extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH,
+    // Constants.EXTENDER_STABLIZER_ID);
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
@@ -58,7 +57,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    setupShuffleboard();
+    // setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -123,67 +122,67 @@ public class ExtenderSubsystem extends SubsystemBase {
     //   brakeMode = false;
     //   setCoastMode();
     // }
-    if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
-      double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
-      double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
-      double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
-      double iz = kIz.getDouble(0);
-      double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
-      double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
-      double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
-      double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-      double setpoint = positionSet.getDouble(0);
-      if (preP != p) {
-        pidController.setP(p);
-        preP = p;
-      }
-
-      if (preI != i) {
-        pidController.setI(i);
-        preI = i;
-      }
-
-      if (preD != d) {
-        pidController.setD(d);
-        preD = d;
-      }
-
-      if (preIz != iz) {
-        // pidController.setIZone(iz);
-        preIz = iz;
-      }
-
-      if (preFF != ff) {
-        // pidController.setFF(ff);
-        preFF = ff;
-      }
-
-      if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        pidController.setOutputRange(minOut, maxOut);
-        preMinOutput = minOut;
-        preMaxOutput = maxOut;
-      }
-
-      if (preMaxVelocity != maxVelocity) {
-        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
-        preMaxVelocity = maxVelocity;
-      }
-
-      if (preMaxAccel != maxAccel) {
-        pidController.setSmartMotionMaxAccel(maxAccel, 0);
-        preMaxAccel = maxAccel;
-      }
-
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        pidController.setReference(setpoint, ControlType.kSmartMotion);
-        prevSetpoint = setpoint;
-      }
+    // if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
+    double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
+    double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
+    double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
+    double iz = kIz.getDouble(0);
+    double ff = kFF.getDouble(0);
+    double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
+    double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
+    double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+    double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+    double setpoint = positionSet.getDouble(0);
+    if (preP != p) {
+      pidController.setP(p);
+      preP = p;
     }
-    /*if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+
+    if (preI != i) {
+      pidController.setI(i);
+      preI = i;
+    }
+
+    if (preD != d) {
+      pidController.setD(d);
+      preD = d;
+    }
+
+    if (preIz != iz) {
+      // pidController.setIZone(iz);
+      preIz = iz;
+    }
+
+    if (preFF != ff) {
+      // pidController.setFF(ff);
+      preFF = ff;
+    }
+
+    if (preMinOutput != minOut || preMaxOutput != maxOut) {
+      pidController.setOutputRange(minOut, maxOut);
+      preMinOutput = minOut;
+      preMaxOutput = maxOut;
+    }
+
+    if (preMaxVelocity != maxVelocity) {
+      pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+      preMaxVelocity = maxVelocity;
+    }
+
+    if (preMaxAccel != maxAccel) {
+      pidController.setSmartMotionMaxAccel(maxAccel, 0);
+      preMaxAccel = maxAccel;
+    }
+
+    if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+      pidController.setReference(setpoint, ControlType.kSmartMotion);
+      prevSetpoint = setpoint;
+    }
+    /*}
+    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
-    }*/
+    } */
   }
 
   public void goToMiddleScoringPosition(PieceMode pieceMode) {
@@ -214,39 +213,39 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    // if (true) { // Constants.TUNING_MODE) {
-    kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    // updatePID = tab.addBoolean("Update PID",
-    // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
+    if (true) { // Constants.TUNING_MODE) {
+      kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kIz = tab.add("Iz", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      kFF = tab.add("FF", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+      // updatePID = tab.addBoolean("Update PID",
+      // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
 
-    // updatePID = tab.addBoolean("Update PID",
-    // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
+      // updatePID = tab.addBoolean("Update PID",
+      // ()->updatePIDbool).withWidget(BuiltInWidgets.kToggleButton);
 
-    kMaxOutput =
-        tab.add("Max Output", Constants.EXTENDER_PID_MAX_OUTPUT)
-            .withWidget(BuiltInWidgets.kTextView)
-            .getEntry();
-    kMinOutput =
-        tab.add("Min Output", Constants.EXTENDER_PID_MIN_OUTPUT)
-            .withWidget(BuiltInWidgets.kTextView)
-            .getEntry();
-    kMaxVelocity =
-        tab.add("Max Velocity", Constants.EXTENDER_MAX_SPEED_RPM)
-            .withWidget(BuiltInWidgets.kTextView)
-            .getEntry();
-    kMaxAccel =
-        tab.add("Max Accell", Constants.EXTENDER_MAX_ACCELERATION_RPM2)
-            .withWidget(BuiltInWidgets.kTextView)
-            .getEntry();
-    positionSet =
-        tab.add("Set Position", 0)
-            .withWidget(BuiltInWidgets.kTextView)
-            .withPosition(0, 0)
-            .getEntry();
-    // }
+      kMaxOutput =
+          tab.add("Max Output", Constants.EXTENDER_PID_MAX_OUTPUT)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMinOutput =
+          tab.add("Min Output", Constants.EXTENDER_PID_MIN_OUTPUT)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxVelocity =
+          tab.add("Max Velocity", Constants.EXTENDER_MAX_SPEED_RPM)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      kMaxAccel =
+          tab.add("Max Accell", Constants.EXTENDER_MAX_ACCELERATION_RPM2)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
+      positionSet =
+          tab.add("Set Position", 0)
+              .withWidget(BuiltInWidgets.kTextView)
+              .withPosition(0, 0)
+              .getEntry();
+    }
   }
 }
