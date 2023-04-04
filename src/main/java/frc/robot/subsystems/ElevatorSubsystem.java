@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Constants.ELEVATOR_STARTING_POSITION_INCHES, ControlType.kSmartMotion);
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
-    setupShuffleboard();
+    // setupShuffleboard();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
@@ -102,72 +102,72 @@ public class ElevatorSubsystem extends SubsystemBase {
     // if (motorSpeed != motorSpeedEntryDouble) {
     //  motorSpeed = motorSpeedEntryDouble;
     // }
-    if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
-      double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
-      double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
-      double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
-      double iz = kIz.getDouble(0);
-      double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(Constants.ELEVATOR_PID_MIN_OUTPUT);
-      double maxOut = kMaxOutput.getDouble(Constants.ELEVATOR_PID_MAX_OUTPUT);
-      double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
-      double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-      double setpoint = positionSet.getDouble(Constants.ELEVATOR_STARTING_POSITION_INCHES);
-      if (preP != p) {
-        pidController.setP(p);
-        preP = p;
-      }
+    /* if (DriverStation.isEnabled()) { // && Constants.TUNING_MODE) {
+    double p = kP.getDouble(Constants.ELEVATOR_P_VALUE);
+    double i = kI.getDouble(Constants.ELEVATOR_I_VALUE);
+    double d = kD.getDouble(Constants.ELEVATOR_D_VALUE);
+    double iz = kIz.getDouble(0);
+    double ff = kFF.getDouble(0);
+    double minOut = kMinOutput.getDouble(Constants.ELEVATOR_PID_MIN_OUTPUT);
+    double maxOut = kMaxOutput.getDouble(Constants.ELEVATOR_PID_MAX_OUTPUT);
+    double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+    double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+    double setpoint = positionSet.getDouble(Constants.ELEVATOR_STARTING_POSITION_INCHES);
 
-      if (preI != i) {
-        pidController.setI(i);
-        preI = i;
-      }
+    if (preP != p) {
+      pidController.setP(p);
+      preP = p;
+    }
 
-      if (preD != d) {
-        pidController.setD(d);
-        preD = d;
-      }
+    if (preI != i) {
+      pidController.setI(i);
+      preI = i;
+    }
 
-      if (preIz != iz) {
-        // pidController.setIZone(iz);
-        preIz = iz;
-      }
+    if (preD != d) {
+      pidController.setD(d);
+      preD = d;
+    }
 
-      if (preFF != ff) {
-        // pidController.setFF(ff);
-        preFF = ff;
-      }
+    if (preIz != iz) {
+      // pidController.setIZone(iz);
+      preIz = iz;
+    }
 
-      if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        pidController.setOutputRange(minOut, maxOut);
-        preMinOutput = minOut;
-        preMaxOutput = maxOut;
-      }
+    if (preFF != ff) {
+      // pidController.setFF(ff);
+      preFF = ff;
+    }
 
-      if (preMaxVelocity != maxVelocity) {
-        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
-        preMaxVelocity = maxVelocity;
-      }
+    if (preMinOutput != minOut || preMaxOutput != maxOut) {
+      pidController.setOutputRange(minOut, maxOut);
+      preMinOutput = minOut;
+      preMaxOutput = maxOut;
+    }
 
-      if (preMaxAccel != maxAccel) {
-        pidController.setSmartMotionMaxAccel(maxAccel, 0);
-        preMaxAccel = maxAccel;
-      }
-      System.out.println(prevSetpoint + " " + setpoint);
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setpoint);
-        pidController.setReference(setpoint, ControlType.kSmartMotion);
-        prevSetpoint = setpoint;
-      }
+    if (preMaxVelocity != maxVelocity) {
+      pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+      preMaxVelocity = maxVelocity;
+    }
+
+    if (preMaxAccel != maxAccel) {
+      pidController.setSmartMotionMaxAccel(maxAccel, 0);
+      preMaxAccel = maxAccel;
+    }*/
+    if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
+      System.out.println("Elevator CHANGING SETPOINT FROM:" + prevSetpoint + "TO: " + setPoint);
+      pidController.setReference(setPoint, ControlType.kSmartMotion);
+      prevSetpoint = setPoint;
     }
   }
 
   public void goToTransferPosition(PieceMode pieceMode) {
-    if (pieceMode == PieceMode.CONE) {
+    /*if (pieceMode == PieceMode.CONE) {
       setPoint = Constants.ELEVATOR_CONE_TRANSFER_POSITION_INCHES;
     } else {
       setPoint = Constants.ELEVATOR_CUBE_TRANSFER_POSITION_INCHES;
-    }
+    } */
+    elevatorBaseMotorOne.set(Constants.ELEVATOR_SLOW_DOWN_SPEED);
   }
 
   public void goToMiddleScoringPosition(PieceMode pieceMode) {
@@ -226,6 +226,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isLowerThanTransfer(PieceMode pieceMode) {
+    if (pieceMode == PieceMode.CONE) {
+      return elevatorBaseMotorOne.getEncoder().getPosition()
+          < Constants.ELEVATOR_CONE_TRANSFER_POSITION_INCHES;
+    } else if (pieceMode == PieceMode.CUBE) {
+      return elevatorBaseMotorOne.getEncoder().getPosition()
+          < Constants.ELEVATOR_CUBE_TRANSFER_POSITION_INCHES;
+    }
+    return true;
+  }
+
   public boolean isAtStartPoint() {
     return Math.abs(
             elevatorBaseMotorOne.getEncoder().getPosition()
@@ -236,7 +247,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean isHigherThanNeutral() {
     boolean temp =
         elevatorBaseMotorOne.getEncoder().getPosition()
-            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES + 6;
+            > Constants.ELEVATOR_NEUTRAL_POSITION_INCHES;
     if (temp) {
       System.out.println("Elevator higher than neutral");
     } else {

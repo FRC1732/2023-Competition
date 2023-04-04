@@ -43,10 +43,11 @@ public class LowerElevatorToTransferCommand extends CommandBase {
     robotContainer.indexerSubsystem.grabberOff();
     robotContainer.indexerSubsystem.rotateOff();
     robotContainer.holderSubsystem.open();
+    robotContainer.elevatorSubsystem.off();
   }
 
   @Override
   public boolean isFinished() {
-    return robotContainer.elevatorSubsystem.isAtSetpoint();
+    return robotContainer.elevatorSubsystem.isLowerThanTransfer(robotContainer.pieceMode);
   }
 }

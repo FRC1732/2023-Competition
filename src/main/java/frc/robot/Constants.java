@@ -108,19 +108,20 @@ public final class Constants {
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
-  public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1;
-  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.5;
+  public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1.5;
+  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 2.0;
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 9;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
   public static final double ELEVATOR_MAX_SPEED_RPM = 150000;
   public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 160000;
   public static final double ELEVATOR_DEADBAND = 0.5;
-  public static final double ELEVATOR_P_VALUE = 0.00025;
+  public static final double ELEVATOR_P_VALUE = 0.0002;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
   public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
   public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
+  public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.2;
 
   // #endregion
 

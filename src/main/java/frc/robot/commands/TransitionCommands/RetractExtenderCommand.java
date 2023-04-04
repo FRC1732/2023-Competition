@@ -11,7 +11,7 @@ public class RetractExtenderCommand extends WaitCommand {
   private ScoringHeight prevScoringHeight;
 
   public RetractExtenderCommand(RobotContainer robotContainer) {
-    super(0.2);
+    super(0.4);
     this.robotContainer = robotContainer;
     addRequirements(robotContainer.elevatorSubsystem);
     addRequirements(robotContainer.extenderSubsystem);
