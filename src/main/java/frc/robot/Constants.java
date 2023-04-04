@@ -57,6 +57,7 @@ public final class Constants {
   public static final int CAN_PNEUMATIC_ID = 60;
   public static final int INDEXER_SOLENOID_ID = 0;
   public static final int HOLDER_SOLENOID_ID = 1;
+  public static final int EXTENDER_STABLIZER_ID = 2;
 
   public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get port
   public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get port
