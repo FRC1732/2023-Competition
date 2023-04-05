@@ -9,9 +9,9 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,8 +23,8 @@ import frc.robot.RobotContainer.PieceMode;
 @SuppressWarnings("unused")
 public class ElevatorSubsystem extends SubsystemBase {
   private CANSparkMax elevatorBaseMotorOne, elevatorBaseMotorTwo;
+  private SparkMaxLimitSwitch upperMagLimitSwitch, lowerMagLimitSwitch;
   private RelativeEncoder relativeEncoder;
-  private DigitalInput magLimitSwitch;
   private SparkMaxPIDController pidController;
   private GenericEntry positionSet;
   private GenericEntry kP,
@@ -59,7 +59,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
-    // magLimitSwitch = new DigitalInput(Constants.ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL);
+    upperMagLimitSwitch =
+        elevatorBaseMotorOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    lowerMagLimitSwitch =
+        elevatorBaseMotorOne.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     elevatorBaseMotorOne
         .getEncoder()
@@ -73,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
     // setupShuffleboard();
+    setupShuffleboardMagSwitch();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
@@ -282,8 +286,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     return elevatorBaseMotorOne.getEncoder().getPosition();
   }
 
-  public boolean getMagLimitSwitch() {
-    return magLimitSwitch.get();
+  public boolean getUpperMagLimitSwitch() {
+    return upperMagLimitSwitch.isPressed();
+  }
+
+  public boolean getLowerMagLimitSwitch() {
+    return lowerMagLimitSwitch.isPressed();
+  }
+
+  private void setupShuffleboardMagSwitch() {
+    ShuffleboardTab tab;
+    tab = Shuffleboard.getTab("elevator magswitch");
+    tab.addBoolean("UpperMagSwitch", () -> upperMagLimitSwitch.isPressed());
+    tab.addBoolean("LowerMagSwitch", () -> lowerMagLimitSwitch.isPressed());
   }
 
   private void setupShuffleboard() {
