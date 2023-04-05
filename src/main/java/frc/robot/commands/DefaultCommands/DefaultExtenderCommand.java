@@ -20,8 +20,4 @@ public class DefaultExtenderCommand extends CommandBase {
   public void end(boolean interrupted) {
     extenderSubsystem.stop();
   }
-
-  public boolean isFinished() {
-    return extenderSubsystem.getMagSwitch();
-  }
 }
