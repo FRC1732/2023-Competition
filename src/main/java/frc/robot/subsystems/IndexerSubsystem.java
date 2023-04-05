@@ -316,6 +316,10 @@ public class IndexerSubsystem extends SubsystemBase {
     setpoint = Constants.INDEXER_SCORING_POSITION;
   }
 
+  public void setAutoPosition(double point) {
+    setpoint = point;
+  }
+
   public void open() {
     indexerSolenoid.set(true);
     isOpen = true;

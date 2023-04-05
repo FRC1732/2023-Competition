@@ -59,7 +59,8 @@ public final class Constants {
   public static final int HOLDER_SOLENOID_ID = 1;
   public static final int EXTENDER_STABLIZER_ID = 2;
 
-  public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get port
+  public static final int ELEVATOR_UPPER_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get port
+  public static final int ELEVATOR_LOWER_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get port
   public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get port
 
   public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 50;
@@ -84,6 +85,7 @@ public final class Constants {
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.2;
   public static final double INDEXER_CONE_POSITION = -115;
+  public static final double INDEXER_CONE_AUTO_POSITION = -45;
   public static final double INDEXER_CUBE_POSITION = -110;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
