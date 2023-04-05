@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,7 +22,6 @@ import frc.robot.RobotContainer.PieceMode;
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private Solenoid extenderStablizer;
-  private DigitalInput extenderMagneticLimitSwitch;
   private SparkMaxPIDController pidController;
 
   private GenericEntry positionSet;
@@ -47,7 +45,6 @@ public class ExtenderSubsystem extends SubsystemBase {
     // extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH,
     // Constants.EXTENDER_STABLIZER_ID);
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
-    extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
     extenderMotor.getEncoder().setPositionConversionFactor(Constants.EXTENDER_INCHES_PER_ROTATION);
@@ -98,10 +95,6 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   public void disengageStablizer() {
     extenderStablizer.set(false);
-  }
-
-  public boolean getMagSwitch() {
-    return extenderMagneticLimitSwitch.get();
   }
 
   public boolean isAtSetpoint() {
