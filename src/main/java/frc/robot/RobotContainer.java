@@ -20,6 +20,7 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
@@ -235,8 +236,7 @@ public class RobotContainer {
     }
 
     if (extenderSubsystem != null) {
-      // extenderSubsystem.setDefaultCommand(new
-      // DefaultExtenderCommand(extenderSubsystem));
+      extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
     }
 
     if (stateMachineSubsystem != null) {
@@ -327,8 +327,8 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   // if (areWeAbleToScore()) {
-                  //  robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
-                  //  robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  // robotRotationMode = RobotRotationMode.SCORE_PIECE;
                   robotStateMachine.fireEvent(new ScorePressed());
                   // }
                 }));
@@ -398,23 +398,24 @@ public class RobotContainer {
 
     // "auto" command for tuning the drive velocity PID
     // autoChooser.addOption(
-    //     "Drive Velocity Tuning",
-    //     Commands.sequence(
-    //         Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
-    //         Commands.deadline(
-    //             Commands.waitSeconds(5.0),
-    //             Commands.run(
-    //                 () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
+    // "Drive Velocity Tuning",
+    // Commands.sequence(
+    // Commands.runOnce(drivetrainSubsystem::disableFieldRelative,
+    // drivetrainSubsystem),
+    // Commands.deadline(
+    // Commands.waitSeconds(5.0),
+    // Commands.run(
+    // () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
     // autoChooser.addOption(
-    //     "Drive Characterization",
-    //     new FeedForwardCharacterization(
-    //         drivetrainSubsystem,
-    //         true,
-    //         new FeedForwardCharacterizationData("drive"),
-    //         drivetrainSubsystem::runCharacterizationVolts,
-    //         drivetrainSubsystem::getCharacterizationVelocity));
+    // "Drive Characterization",
+    // new FeedForwardCharacterization(
+    // drivetrainSubsystem,
+    // true,
+    // new FeedForwardCharacterizationData("drive"),
+    // drivetrainSubsystem::runCharacterizationVolts,
+    // drivetrainSubsystem::getCharacterizationVelocity));
 
     autoChooser.addOption(
         "Place High",
@@ -449,20 +450,23 @@ public class RobotContainer {
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     // autoChooser.addOption(
-    //     "Auto Balance Test",
-    //     Commands.sequence(
-    //         // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
+    // "Auto Balance Test",
+    // Commands.sequence(
+    // // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
     // Rotation2d(Math.PI)),
-    //         // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
+    // // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
     // CustomWaitCommand(6.5)),
-    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
-    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
-    //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+    // // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD,
+    // 3, 0.4),
+    // // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD,
+    // 1.5, 0.4),
+    // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     // autoChooser.addOption(
-    //     "Two Piece, Balance",
-    //     Commands.sequence(
-    //         new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
+    // "Two Piece, Balance",
+    // Commands.sequence(
+    // new InitializeRobotCommand(this),
+    // CommandFactory.getScoreWithHolderCommand(this)));
 
     autoChooser.addOption(
         "Two Piece, Taxi",
@@ -495,21 +499,22 @@ public class RobotContainer {
                     new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
                     new WaitCommand(2.55)))));
     // new SwerveToWaypointCommand(
-    //     drivetrainSubsystem,
-    //     Constants.NEUTRAL_PIECE_1,
-    //     Constants.FLAT_LANE_OUT_WAYPOINTS)));
+    // drivetrainSubsystem,
+    // Constants.NEUTRAL_PIECE_1,
+    // Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
     // autoChooser.addOption(
-    //     "Bump-side Two Piece, Taxi",
-    //     Commands.sequence(
-    //         new InitializeRobotCommand(this, Constants.CONE_NODE_1),
-    //         new InstantCommand(
-    //             () ->
-    //                 CommandScheduler.getInstance()
-    //                     .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-    //         new WaitCommand(3),
-    //         new InstantCommand(() -> pieceMode = PieceMode.CUBE),
-    //         new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_NODE_1plus)));
+    // "Bump-side Two Piece, Taxi",
+    // Commands.sequence(
+    // new InitializeRobotCommand(this, Constants.CONE_NODE_1),
+    // new InstantCommand(
+    // () ->
+    // CommandScheduler.getInstance()
+    // .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+    // new WaitCommand(3),
+    // new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+    // new SwerveToWaypointCommand(drivetrainSubsystem,
+    // Constants.CONE_NODE_1plus)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

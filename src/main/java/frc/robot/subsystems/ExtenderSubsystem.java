@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Helpers.DoubleNearEquals;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -22,6 +24,8 @@ import frc.robot.RobotContainer.PieceMode;
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private Solenoid extenderStablizer;
+  private boolean forksOn;
+  private boolean forksOverride = false;
   private SparkMaxPIDController pidController;
 
   private GenericEntry positionSet;
@@ -40,6 +44,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   // private SuppliedValueWidget updatePID;
   private boolean brakeMode;
   private double prevSetpoint;
+
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
     // extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH,
@@ -54,6 +59,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
+
     // setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
@@ -90,11 +96,13 @@ public class ExtenderSubsystem extends SubsystemBase {
   }
 
   public void engageStablizer() {
-    extenderStablizer.set(true);
+    forksOn = true;
+    forksOverride = true;
   }
 
   public void disengageStablizer() {
-    extenderStablizer.set(false);
+    forksOn = false;
+    forksOverride = true;
   }
 
   public boolean isAtSetpoint() {
@@ -108,73 +116,89 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double currentPostion = extenderMotor.getEncoder().getPosition();
+    if (!forksOverride) {
+      if (DoubleNearEquals(setPoint, Constants.EXTENDER_STARTING_POSITION_INCHES)
+          && DoubleNearEquals(currentPostion, Constants.EXTENDER_STARTING_POSITION_INCHES, 0.25)) {
+        forksOn = true;
+      } else {
+        forksOn = false;
+      }
+    }
+    extenderStablizer.set(forksOn);
+
     // if (DriverStation.isEnabled() && !brakeMode) {
-    //   brakeMode = true;
-    //   setBrakeMode();
+    // brakeMode = true;
+    // setBrakeMode();
     // } else if (DriverStation.isDisabled() && brakeMode) {
-    //   brakeMode = false;
-    //   setCoastMode();
+    // brakeMode = false;
+    // setCoastMode();
     // }
-    /* if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
-    double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
-    double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
-    double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
-    double iz = kIz.getDouble(0);
-    double ff = kFF.getDouble(0);
-    double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
-    double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
-    double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
-    double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-    double setpoint = positionSet.getDouble(0);
-    if (preP != p) {
-      pidController.setP(p);
-      preP = p;
-    }
-
-    if (preI != i) {
-      pidController.setI(i);
-      preI = i;
-    }
-
-    if (preD != d) {
-      pidController.setD(d);
-      preD = d;
-    }
-
-    if (preIz != iz) {
-      // pidController.setIZone(iz);
-      preIz = iz;
-    }
-
-    if (preFF != ff) {
-      // pidController.setFF(ff);
-      preFF = ff;
-    }
-
-    if (preMinOutput != minOut || preMaxOutput != maxOut) {
-      pidController.setOutputRange(minOut, maxOut);
-      preMinOutput = minOut;
-      preMaxOutput = maxOut;
-    }
-
-    if (preMaxVelocity != maxVelocity) {
-      pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
-      preMaxVelocity = maxVelocity;
-    }
-
-    if (preMaxAccel != maxAccel) {
-      pidController.setSmartMotionMaxAccel(maxAccel, 0);
-      preMaxAccel = maxAccel;
-    }
-
-    if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-      pidController.setReference(setpoint, ControlType.kSmartMotion);
-      prevSetpoint = setpoint;
-    }
-    } */
+    /*
+     * if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
+     * double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
+     * double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
+     * double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
+     * double iz = kIz.getDouble(0);
+     * double ff = kFF.getDouble(0);
+     * double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
+     * double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
+     * double maxVelocity =
+     * kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+     * double maxAccel =
+     * kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+     * double setpoint = positionSet.getDouble(0);
+     * if (preP != p) {
+     * pidController.setP(p);
+     * preP = p;
+     * }
+     *
+     * if (preI != i) {
+     * pidController.setI(i);
+     * preI = i;
+     * }
+     *
+     * if (preD != d) {
+     * pidController.setD(d);
+     * preD = d;
+     * }
+     *
+     * if (preIz != iz) {
+     * // pidController.setIZone(iz);
+     * preIz = iz;
+     * }
+     *
+     * if (preFF != ff) {
+     * // pidController.setFF(ff);
+     * preFF = ff;
+     * }
+     *
+     * if (preMinOutput != minOut || preMaxOutput != maxOut) {
+     * pidController.setOutputRange(minOut, maxOut);
+     * preMinOutput = minOut;
+     * preMaxOutput = maxOut;
+     * }
+     *
+     * if (preMaxVelocity != maxVelocity) {
+     * pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+     * preMaxVelocity = maxVelocity;
+     * }
+     *
+     * if (preMaxAccel != maxAccel) {
+     * pidController.setSmartMotionMaxAccel(maxAccel, 0);
+     * preMaxAccel = maxAccel;
+     * }
+     *
+     * if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+     * pidController.setReference(setpoint, ControlType.kSmartMotion);
+     * prevSetpoint = setpoint;
+     * }
+     * }
+     */
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
+      forksOverride = false;
     }
   }
 
