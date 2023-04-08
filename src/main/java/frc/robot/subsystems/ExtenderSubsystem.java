@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -25,7 +26,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private Solenoid extenderStablizer;
   private boolean forksOn;
-  private boolean forksOverride = false;
+  private boolean forksOverride = true;
   private SparkMaxPIDController pidController;
 
   private GenericEntry positionSet;
@@ -47,8 +48,7 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
-    // extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH,
-    // Constants.EXTENDER_STABLIZER_ID);
+    extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH, Constants.EXTENDER_STABLIZER_ID);
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
@@ -60,7 +60,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
 
-    // setupShuffleboard();
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -230,7 +230,9 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    if (true) { // Constants.TUNING_MODE) {
+    tab.addBoolean("Forks On", () -> forksOn);
+    tab.addBoolean("Forks Overrid", () -> forksOverride);
+    if (false) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();

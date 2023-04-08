@@ -337,6 +337,12 @@ public class RobotContainer {
     // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
     // FinishScorePressed())));
 
+    // extender buttons
+    oi.getExtenderStablizerButton()
+        .onTrue(Commands.runOnce(extenderSubsystem::engageStablizer, extenderSubsystem));
+    oi.getExtenderStablizerButton()
+        .onTrue(Commands.runOnce(extenderSubsystem::disengageStablizer, extenderSubsystem));
+
     // Scoring Height buttons
     oi.getLowGoalButton()
         .onTrue(

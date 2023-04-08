@@ -119,5 +119,13 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default Trigger getExtenderStablizerButton() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getExtenderStablizerDisengageButton() {
+    return new Trigger(() -> false);
+  }
+
   // #endregion
 }

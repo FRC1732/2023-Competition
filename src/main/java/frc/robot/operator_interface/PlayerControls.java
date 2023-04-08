@@ -173,6 +173,16 @@ public class PlayerControls implements OperatorInterface {
     return operatorJoystickButtons[12];
   }
 
+  @Override
+  public Trigger getExtenderStablizerButton() {
+    return translateJoystickButtons[2];
+  }
+
+  @Override
+  public Trigger getExtenderStablizerDisengageButton() {
+    return rotateJoystickButtons[2];
+  }
+
   // #endregion
 
   /**
