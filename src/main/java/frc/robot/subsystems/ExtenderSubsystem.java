@@ -119,6 +119,21 @@ public class ExtenderSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isCloseToSetpoint() {
+    boolean temp =
+      (setPoint - extenderMotor.getEncoder().getPosition()) < 6;
+    if (temp) {
+      System.out.println("Extender is close to setpoint");
+      System.out.println("Setpoint = " + setPoint);
+      System.out.println("current position = " + extenderMotor.getEncoder().getPosition());
+    } else {
+      System.out.println("Extender is not close to setpoint");
+      System.out.println("Setpoint = " + setPoint);
+      System.out.println("current position = " + extenderMotor.getEncoder().getPosition());
+    }
+    return temp;
+  }
+
   @Override
   public void periodic() {
     double currentPostion = extenderMotor.getEncoder().getPosition();
