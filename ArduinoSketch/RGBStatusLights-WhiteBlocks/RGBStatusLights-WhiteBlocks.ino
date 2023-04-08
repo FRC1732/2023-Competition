@@ -23,6 +23,9 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 int mode = 0;
 int timer = 0;
 
+#define VISION_CYCLE 50
+#define VISION_BLOCK 4
+
 #define IDLE_CYCLE 100
 #define IDLE_BLOCK 8
 uint32_t lowBlue = pixels.Color(0, 0, INTENSITY / 3);
@@ -191,34 +194,35 @@ void flashFast(bool red, bool green, bool blue) {
 }
 
 void setColorLow(bool red, bool green, bool blue, bool withVis) {
-  pixels.clear();
-  for (int i = 0; i < NUMPIXELS; i++) {
-    if (i < NUM_SEG) {
-      if (withVis || i % 2 == 0) {
-        pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
-      }
-    }
-  }
-  pixels.show();
+  setColorPosition(red, green, blue, NUM_SEG, withVis);
 }
 
 void setColorMid(bool red, bool green, bool blue, bool withVis) {
-  pixels.clear();
-  for (int i = 0; i < NUMPIXELS; i++) {
-    if (i < NUM_SEG * 2) {
-      if (withVis || i % 2 == 0) {
-        pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
-      }
-    }
-  }
-  pixels.show();
+  setColorPosition(red, green, blue, NUM_SEG * 2, withVis);
 }
 
 void setColorHigh(bool red, bool green, bool blue, bool withVis) {
+  setColorPosition(red, green, blue, NUMPIXELS, withVis);
+}
+
+void setColorPosition(bool red, bool green, bool blue, int pos, bool withVis) {
+  if (timer > VISION_BLOCK * VISION_CYCLE * NUMPIXELS || timer < 0) {
+    timer = 0;
+  }
+
+  int offset = timer / VISION_CYCLE;
+  int visPos = offset % (NUMPIXELS - VISION_BLOCK);
+
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    if (withVis || i % 2 == 0) {
+    if (i < pos) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+    }
+
+    if (withVis) {
+      if (i >= visPos && i < visPos + VISION_BLOCK) {
+        pixels.setPixelColor(i, pixels.Color(INTENSITY, INTENSITY, INTENSITY));
+      }
     }
   }
   pixels.show();

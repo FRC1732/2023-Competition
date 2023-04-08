@@ -5,6 +5,7 @@
 #define NUMPIXELS 69  // number of neopixels in strip
 #define NUM_SEG 23    // number of neopixels in a segment
 #define INTENSITY 255
+#define BLOCK 3
 
 Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
@@ -194,7 +195,7 @@ void setColorLow(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     if (i < NUM_SEG) {
-      if (withVis || i % 2 == 0) {
+      if (withVis || (i / BLOCK) % 2 == 0) {
         pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
       }
     }
@@ -206,7 +207,7 @@ void setColorMid(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     if (i < NUM_SEG * 2) {
-      if (withVis || i % 2 == 0) {
+      if (withVis || (i / BLOCK) % 2 == 0) {
         pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
       }
     }
@@ -217,7 +218,7 @@ void setColorMid(bool red, bool green, bool blue, bool withVis) {
 void setColorHigh(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    if (withVis || i % 2 == 0) {
+    if (withVis || (i / BLOCK) % 2 == 0) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
     }
   }
