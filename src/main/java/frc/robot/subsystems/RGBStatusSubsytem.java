@@ -50,6 +50,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
   private RobotContainer robotContainer;
 
   private boolean hasBeenEnabled = false;
+  private boolean previousDriverstationState;
 
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
@@ -59,6 +60,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     specialMode = SpecialMode.NONE;
     targetElapsedTimeSeconds = 0;
     timer = new Timer();
+    previousDriverstationState = false;
   }
 
   @Override
@@ -84,6 +86,21 @@ public class RGBStatusSubsytem extends SubsystemBase {
     if (hasBeenEnabled && DriverStation.isDisabled()) {
       specialMode = SpecialMode.GAME_IDLE_MODE;
       targetElapsedTimeSeconds = 0;
+    }
+
+    if (hasBeenEnabled && DriverStation.isEnabled()) {
+      hasBeenEnabled = true;
+    }
+
+    if (previousDriverstationState != DriverStation.isEnabled()) {
+      previousDriverstationState = DriverStation.isEnabled();
+      if (DriverStation.isEnabled()) {
+        specialMode = SpecialMode.NONE;
+        targetElapsedTimeSeconds = 0;
+      } else {
+        specialMode = SpecialMode.GAME_IDLE_MODE;
+        targetElapsedTimeSeconds = 0;
+      }
     }
 
     if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE

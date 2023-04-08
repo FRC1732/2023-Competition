@@ -59,10 +59,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
-    upperMagLimitSwitch =
-        elevatorBaseMotorOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-    lowerMagLimitSwitch =
-        elevatorBaseMotorOne.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    // upperMagLimitSwitch =
+    //     elevatorBaseMotorOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    // lowerMagLimitSwitch =
+    //     elevatorBaseMotorOne.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     elevatorBaseMotorOne
         .getEncoder()
@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
     // setupShuffleboard();
-    setupShuffleboardMagSwitch();
+    // setupShuffleboardMagSwitch();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
@@ -286,20 +286,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     return elevatorBaseMotorOne.getEncoder().getPosition();
   }
 
-  public boolean getUpperMagLimitSwitch() {
-    return upperMagLimitSwitch.isPressed();
-  }
+  // public boolean getUpperMagLimitSwitch() {
+  //   return upperMagLimitSwitch.isPressed();
+  // }
 
-  public boolean getLowerMagLimitSwitch() {
-    return lowerMagLimitSwitch.isPressed();
-  }
+  // public boolean getLowerMagLimitSwitch() {
+  //   return lowerMagLimitSwitch.isPressed();
+  // }
 
-  private void setupShuffleboardMagSwitch() {
-    ShuffleboardTab tab;
-    tab = Shuffleboard.getTab("elevator magswitch");
-    tab.addBoolean("UpperMagSwitch", () -> upperMagLimitSwitch.isPressed());
-    tab.addBoolean("LowerMagSwitch", () -> lowerMagLimitSwitch.isPressed());
-  }
+  // private void setupShuffleboardMagSwitch() {
+  //   ShuffleboardTab tab;
+  //   tab = Shuffleboard.getTab("elevator magswitch");
+  //   tab.addBoolean("UpperMagSwitch", () -> upperMagLimitSwitch.isPressed());
+  //   tab.addBoolean("LowerMagSwitch", () -> lowerMagLimitSwitch.isPressed());
+  // }
 
   private void setupShuffleboard() {
     ShuffleboardTab tab;
