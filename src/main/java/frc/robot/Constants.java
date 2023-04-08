@@ -131,7 +131,7 @@ public final class Constants {
   public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
-  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 53;
+  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 51;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 32.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 180000;
   public static final double EXTENDER_DEADBAND = 0.5;

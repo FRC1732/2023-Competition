@@ -178,7 +178,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (pieceMode == PieceMode.CONE) {
       setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES;
     } else {
-      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES - 7;
+      setPoint = Constants.ELEVATOR_MID_CONE_POSITION_INCHES - 5;
     }
   }
 
@@ -186,7 +186,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (pieceMode == PieceMode.CONE) {
       setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES;
     } else {
-      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES - 7;
+      setPoint = Constants.ELEVATOR_HIGH_CONE_POSITION_INCHES - 5;
     }
   }
 
