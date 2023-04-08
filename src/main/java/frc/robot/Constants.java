@@ -119,7 +119,7 @@ public final class Constants {
   public static final double ELEVATOR_D_VALUE = 0;
   public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
   public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
-  public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.2;
+  public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.5;
 
   // #endregion
 

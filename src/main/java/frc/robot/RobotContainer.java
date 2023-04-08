@@ -340,7 +340,7 @@ public class RobotContainer {
     // extender buttons
     oi.getExtenderStablizerButton()
         .onTrue(Commands.runOnce(extenderSubsystem::engageStablizer, extenderSubsystem));
-    oi.getExtenderStablizerButton()
+    oi.getExtenderStablizerDisengageButton()
         .onTrue(Commands.runOnce(extenderSubsystem::disengageStablizer, extenderSubsystem));
 
     // Scoring Height buttons

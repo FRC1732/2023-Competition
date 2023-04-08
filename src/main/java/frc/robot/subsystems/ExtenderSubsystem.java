@@ -26,7 +26,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
   private Solenoid extenderStablizer;
   private boolean forksOn;
-  private boolean forksOverride = true;
+  private boolean forksOverride = false;
   private SparkMaxPIDController pidController;
 
   private GenericEntry positionSet;
@@ -48,7 +48,11 @@ public class ExtenderSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
-    extenderStablizer = new Solenoid(PneumaticsModuleType.REVPH, Constants.EXTENDER_STABLIZER_ID);
+    extenderStablizer =
+        new Solenoid(
+            Constants.CAN_PNEUMATIC_ID,
+            PneumaticsModuleType.REVPH,
+            Constants.EXTENDER_STABLIZER_ID);
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
@@ -103,6 +107,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   public void disengageStablizer() {
     forksOn = false;
     forksOverride = true;
+    extenderStablizer.set(false);
   }
 
   public boolean isAtSetpoint() {

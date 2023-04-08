@@ -32,6 +32,7 @@ public class StageGamePieceCommand extends CommandBase {
       robotContainer.elevatorSubsystem.goToHighScoringPosition(prevPieceMode);
     }
     robotContainer.extenderSubsystem.goToStartingPosition();
+    robotContainer.extenderSubsystem.disengageStablizer();
     robotContainer.holderSubsystem.close();
     robotContainer.indexerSubsystem.transferPiece();
   }
