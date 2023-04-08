@@ -554,7 +554,7 @@ public class RobotContainer {
       LimelightHelpers.profileJSON = true;
       LimelightHelpers.getObjectMapper();
 
-      limelightObjectDetectionSubsystem = new LimelightObjectDetection();
+      limelightObjectDetectionSubsystem = new LimelightObjectDetection(this);
       limelightScoringSubSystem = new LimelightScoring();
     }
   }
