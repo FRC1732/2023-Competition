@@ -103,9 +103,16 @@ public class RGBStatusSubsytem extends SubsystemBase {
       }
     }
 
-    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
-        && robotContainer.limelightScoringSubSystem.isAligned()) {
-      specialMode = SpecialMode.SCORING_POSITION_READY;
+    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE){
+      if( robotContainer.limelightScoringSubSystem.isAligned()){
+        specialMode = SpecialMode.SCORING_POSITION_READY;
+        targetElapsedTimeSeconds = 0;
+      } else {
+        specialMode = SpecialMode.NONE;
+        targetElapsedTimeSeconds = 0;
+      }
+    } else if (specialMode == SpecialMode.SCORING_POSITION_READY) {
+      specialMode = SpecialMode.NONE;
       targetElapsedTimeSeconds = 0;
     }
 
