@@ -107,7 +107,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   public void disengageStablizer() {
     forksOn = false;
     forksOverride = true;
-    extenderStablizer.set(false);
+    extenderStablizer.set(!forksOn);
   }
 
   public boolean isAtSetpoint() {
@@ -130,7 +130,7 @@ public class ExtenderSubsystem extends SubsystemBase {
         forksOn = false;
       }
     }
-    extenderStablizer.set(forksOn);
+    extenderStablizer.set(!forksOn);
 
     // if (DriverStation.isEnabled() && !brakeMode) {
     // brakeMode = true;
