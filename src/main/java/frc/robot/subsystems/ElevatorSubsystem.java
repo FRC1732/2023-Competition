@@ -59,10 +59,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.ELEVATOR_BASE_MOTOR_TWO_CAN_ID, MotorType.kBrushless);
     elevatorBaseMotorOne.restoreFactoryDefaults();
     elevatorBaseMotorTwo.restoreFactoryDefaults();
-    upperMagLimitSwitch =
-        elevatorBaseMotorOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-    lowerMagLimitSwitch =
-        elevatorBaseMotorOne.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    // upperMagLimitSwitch =
+    //     elevatorBaseMotorOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    // lowerMagLimitSwitch =
+    //     elevatorBaseMotorOne.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     elevatorBaseMotorTwo.follow(elevatorBaseMotorOne, true);
     elevatorBaseMotorOne
         .getEncoder()
@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     prevSetpoint = Constants.ELEVATOR_STARTING_POSITION_INCHES;
     setPoint = prevSetpoint;
     // setupShuffleboard();
-    setupShuffleboardMagSwitch();
+    // setupShuffleboardMagSwitch();
     motorSpeed = .4;
     // set PID coefficients
     pidController.setP(Constants.ELEVATOR_P_VALUE);
