@@ -23,7 +23,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 int mode = 0;
 int timer = 0;
 
-#define VISION_CYCLE 10
+#define VISION_CYCLE 5
 #define VISION_BLOCK 4
 
 #define IDLE_CYCLE 100
