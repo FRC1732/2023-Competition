@@ -44,9 +44,11 @@ public class TeleopSwervePlus extends CommandBase {
   private static double KD = 0.5;
   private static double deadzone = 0.25;
 
+  private static double KP_Translation = Constants.VISION_TRANSLATION_P;
+
   private static boolean shuffleboardIsSetup = false;
 
-  private static GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry;
+  private static GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry, kPEntryTranslation;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -62,7 +64,7 @@ public class TeleopSwervePlus extends CommandBase {
 
     drivetrainSubsystem = robotContainer.drivetrainSubsystem;
     addRequirements(drivetrainSubsystem);
-    // setupShuffleboard();
+    setupShuffleboard();
     rotationPidController = new PIDController(KP, KI, KD);
     rotationPidController.enableContinuousInput(Math.PI * -1, Math.PI);
     translationPidController = new PIDController(0.01, 0, 0);
@@ -90,6 +92,14 @@ public class TeleopSwervePlus extends CommandBase {
       }
       if (deadzone != this.deadzone) {
         TeleopSwervePlus.deadzone = deadzone;
+      }
+    }
+
+    if (TeleopSwervePlus.kPEntryTranslation != null) {
+      double kP_Translation = kPEntryTranslation.getDouble(Constants.VISION_TRANSLATION_P);
+      if (kP_Translation != KP_Translation) {
+        TeleopSwervePlus.KP_Translation = kP_Translation;
+        translationPidController.setP(kP_Translation);
       }
     }
 
@@ -255,6 +265,11 @@ public class TeleopSwervePlus extends CommandBase {
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
       // }
+
+      kPEntryTranslation =
+          tab.add("Vision_Translation_P", Constants.VISION_TRANSLATION_P)
+              .withWidget(BuiltInWidgets.kTextView)
+              .getEntry();
     }
   }
 }
