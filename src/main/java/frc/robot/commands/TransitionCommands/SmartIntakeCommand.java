@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 import frc.robot.RobotContainer.RobotRotationMode;
+import frc.robot.RobotContainer.RobotTranslationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.PieceDetectedLow;
@@ -32,6 +33,7 @@ public class SmartIntakeCommand extends CommandBase {
     robotContainer.holderSubsystem.open();
     robotContainer.indexerSubsystem.intake(prevPieceMode);
     robotContainer.robotRotationMode = RobotRotationMode.PIECE_TRACKING;
+    robotContainer.robotTranslationMode = RobotTranslationMode.PIECE_TRACKING;
   }
 
   @Override
@@ -49,6 +51,7 @@ public class SmartIntakeCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     robotContainer.robotRotationMode = RobotRotationMode.DRIVER;
+    robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
     if (interrupted) {
       return;
     }

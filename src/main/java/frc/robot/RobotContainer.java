@@ -88,7 +88,6 @@ public class RobotContainer {
     DRIVER,
     SCORE_PIECE,
     PIECE_TRACKING,
-    SLOW_MODE,
     AUTO_PIECE_TRACKING
   }
 
@@ -273,9 +272,9 @@ public class RobotContainer {
 
     // x-stance
     oi.getXStanceButton()
-        .onTrue(Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem));
+        .onTrue(Commands.runOnce(() -> robotTranslationMode = RobotTranslationMode.SCORE_PIECE));
     oi.getXStanceButton()
-        .onFalse(Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
+        .onFalse(Commands.runOnce(() -> robotTranslationMode = RobotTranslationMode.DRIVER));
 
     // Raise/Lower Indexer Arm
     oi.getIndexerRotateUpButton()

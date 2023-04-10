@@ -3,7 +3,6 @@ package frc.robot.commands.TransitionCommands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
-import frc.robot.RobotContainer.RobotRotationMode;
 
 public class DelayCloseHolderCommand extends WaitCommand {
   private RobotContainer robotContainer;
@@ -35,6 +34,6 @@ public class DelayCloseHolderCommand extends WaitCommand {
   public void end(boolean interrupted) {
     super.end(interrupted);
     robotContainer.holderSubsystem.close();
-    robotContainer.robotRotationMode = RobotRotationMode.SCORE_PIECE;
+    // robotContainer.robotRotationMode = RobotRotationMode.SCORE_PIECE;
   }
 }

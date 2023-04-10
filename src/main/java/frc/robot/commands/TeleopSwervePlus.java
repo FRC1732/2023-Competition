@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -15,14 +17,11 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
 import frc.robot.RobotContainer.RobotRotationMode;
-import frc.robot.RobotContainer.RobotTranslationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.LimelightObjectDetection;
 import frc.robot.subsystems.LimelightScoring;
-import frc.robot.subsystems.LimelightScoring.ScoringMode;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TeleopSwervePlus extends CommandBase {
@@ -66,11 +65,7 @@ public class TeleopSwervePlus extends CommandBase {
     // setupShuffleboard();
     rotationPidController = new PIDController(KP, KI, KD);
     rotationPidController.enableContinuousInput(Math.PI * -1, Math.PI);
-    translationPidController =
-        new PIDController(
-            DrivetrainConstants.AUTO_DRIVE_P_CONTROLLER,
-            DrivetrainConstants.AUTO_DRIVE_I_CONTROLLER,
-            DrivetrainConstants.AUTO_DRIVE_D_CONTROLLER);
+    translationPidController = new PIDController(0.01, 0, 0);
   }
 
   @Override
@@ -102,14 +97,6 @@ public class TeleopSwervePlus extends CommandBase {
     double xPercentage = oi.getTranslateX();
     double yPercentage = oi.getTranslateY();
     double rotationPercentage = oi.getRotate();
-    if (robotContainer.robotTranslationMode == RobotTranslationMode.DRIVER
-        && oi.getIndexerManualOverrideButton().getAsBoolean()) {
-      robotContainer.robotTranslationMode = RobotTranslationMode.SLOW_MODE;
-    }
-    if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE
-        && !oi.getIndexerManualOverrideButton().getAsBoolean()) {
-      robotContainer.robotTranslationMode = RobotTranslationMode.DRIVER;
-    }
     if (oi.getVisionAssistButton().getAsBoolean() || DriverStation.isAutonomousEnabled()) {
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
@@ -131,7 +118,7 @@ public class TeleopSwervePlus extends CommandBase {
               doPieceTrackingRotation(rotationPercentage, drivetrainSubsystem.getPercentMaxSpeed());
           break;
         case SCORE_PIECE:
-          // rotationPercentage = doLockToZeroRotation(); // currently LEDS only
+          rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
           rotationPidController.reset();
@@ -142,19 +129,33 @@ public class TeleopSwervePlus extends CommandBase {
 
       switch (robotContainer.robotTranslationMode) {
         case SCORE_PIECE:
+          robotContainer.drivetrainSubsystem.disableFieldRelative();
           yPercentage = doScorePieceTranslation(yPercentage);
-          xPercentage = -1 * .1;
+          xPercentage = .1;
           break;
         case DRIVER:
           robotContainer.drivetrainSubsystem.enableFieldRelative();
           translationPidController.reset();
+          if (oi.getIndexerManualOverrideButton().getAsBoolean()) {
+            xPercentage = SLOW_MODE_SCALER * xPercentage;
+            yPercentage = SLOW_MODE_SCALER * yPercentage;
+            if (xPercentage == 0.0 && yPercentage == 0.0) {
+              drivetrainSubsystem.setXStance();
+              return;
+            }
+          }
           break;
         case PIECE_TRACKING:
-          yPercentage = 0;
-          break;
-        case SLOW_MODE:
-          xPercentage = SLOW_MODE_SCALER * xPercentage;
-          yPercentage = SLOW_MODE_SCALER * yPercentage;
+          robotContainer.drivetrainSubsystem.enableFieldRelative();
+          Rotation2d curAngle = drivetrainSubsystem.getPose().getRotation();
+          Double distPercent = robotContainer.limelightObjectDetectionSubsystem.getPercentDist();
+          Translation2d curInput = new Translation2d(xPercentage, yPercentage);
+          curInput = curInput.rotateBy(curAngle.times(-1));
+          curInput =
+              new Translation2d(curInput.getX(), curInput.getY() * (distPercent * 0.75 + 0.25));
+          curInput = curInput.rotateBy(curAngle);
+          xPercentage = curInput.getX();
+          yPercentage = curInput.getY();
           break;
         case AUTO_PIECE_TRACKING:
           xPercentage = 0.15;
@@ -166,7 +167,7 @@ public class TeleopSwervePlus extends CommandBase {
           break;
       }
     } else {
-      if (robotContainer.robotTranslationMode == RobotTranslationMode.SLOW_MODE) {
+      if (oi.getIndexerManualOverrideButton().getAsBoolean()) {
         xPercentage = SLOW_MODE_SCALER * xPercentage;
         yPercentage = SLOW_MODE_SCALER * yPercentage;
       }
@@ -220,10 +221,10 @@ public class TeleopSwervePlus extends CommandBase {
 
   private double doScorePieceTranslation(double defaultResponse) {
     LimelightScoring ll = robotContainer.limelightScoringSubSystem;
-    ll.setScoringMode(ScoringMode.ReflectiveTape);
+    // ll.setScoringMode(ScoringMode.ReflectiveTape);
 
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
-      return translationPidController.calculate(ll.getTx(), 0) / 1.0;
+      return translationPidController.calculate(ll.getTx(), 0) / 5.0;
       // divide by some unknown scaling factor to translate position into percentage
     }
 

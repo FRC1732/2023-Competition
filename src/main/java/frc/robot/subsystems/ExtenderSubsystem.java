@@ -120,8 +120,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   }
 
   public boolean isCloseToSetpoint() {
-    boolean temp =
-      (setPoint - extenderMotor.getEncoder().getPosition()) < 6;
+    boolean temp = (setPoint - extenderMotor.getEncoder().getPosition()) < 6;
     if (temp) {
       System.out.println("Extender is close to setpoint");
     } else {

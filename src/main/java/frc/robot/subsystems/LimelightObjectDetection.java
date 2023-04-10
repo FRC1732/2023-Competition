@@ -186,6 +186,36 @@ public class LimelightObjectDetection extends SubsystemBase {
     return conePose2d;
   }
 
+  /**
+   * Provides X (horizontal) value from limelight target when in Reflective Tape mode. Undefined
+   * when in AprilTag mode.
+   *
+   * @return a horizontal "distance" from center of camera. Positive to the right.
+   */
+  public double getTx() {
+    return limelightTx;
+  }
+
+  /**
+   * Provides Y (vertical) value from limelight target when in Reflective Tape mode. Undefined when
+   * in AprilTag mode.
+   *
+   * @return a vertical "distance" from center of camera. Positive is up.
+   */
+  public double getTy() {
+    return limelightTy;
+  }
+
+  public double getTa() {
+    return limelightTa;
+  }
+
+  public double getPercentDist() {
+    double closeDist = 3.5;
+    double farDist = 35.0;
+    return Math.min(1, Math.abs((getTy() - closeDist) / (farDist - closeDist)));
+  }
+
   private LimelightTarget_Detector[] fetchTargetDetector() {
     if (llresults != null
         && llresults.targetingResults != null
