@@ -272,9 +272,19 @@ public class RobotContainer {
 
     // x-stance
     oi.getXStanceButton()
-        .onTrue(Commands.runOnce(() -> robotTranslationMode = RobotTranslationMode.SCORE_PIECE));
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                }));
     oi.getXStanceButton()
-        .onFalse(Commands.runOnce(() -> robotTranslationMode = RobotTranslationMode.DRIVER));
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  robotTranslationMode = RobotTranslationMode.DRIVER;
+                  robotRotationMode = RobotRotationMode.DRIVER;
+                }));
 
     // Raise/Lower Indexer Arm
     oi.getIndexerRotateUpButton()

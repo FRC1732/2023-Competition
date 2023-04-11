@@ -48,7 +48,12 @@ public class TeleopSwervePlus extends CommandBase {
 
   private static boolean shuffleboardIsSetup = false;
 
-  private static GenericEntry kPEntry, kIEntry, kDEntry, deadzoneEntry, kPEntryTranslation;
+  private static GenericEntry kPEntry,
+      kIEntry,
+      kDEntry,
+      deadzoneEntry,
+      kPEntryTranslation,
+      xPercentageEntry;
 
   private final double SLOW_MODE_SCALER = 0.25;
 
@@ -67,7 +72,7 @@ public class TeleopSwervePlus extends CommandBase {
     setupShuffleboard();
     rotationPidController = new PIDController(KP, KI, KD);
     rotationPidController.enableContinuousInput(Math.PI * -1, Math.PI);
-    translationPidController = new PIDController(0.01, 0, 0);
+    translationPidController = new PIDController(KP_Translation, 0, 0);
   }
 
   @Override
@@ -139,9 +144,11 @@ public class TeleopSwervePlus extends CommandBase {
 
       switch (robotContainer.robotTranslationMode) {
         case SCORE_PIECE:
-          robotContainer.drivetrainSubsystem.disableFieldRelative();
-          yPercentage = doScorePieceTranslation(yPercentage);
-          xPercentage = .1;
+          if (Math.abs(robotContainer.limelightScoringSubSystem.getTx()) < 1) {
+            robotContainer.drivetrainSubsystem.disableFieldRelative();
+            yPercentage = doScorePieceTranslation(yPercentage);
+            xPercentage = xPercentageEntry.getDouble(0);
+          }
           break;
         case DRIVER:
           robotContainer.drivetrainSubsystem.enableFieldRelative();
@@ -232,9 +239,11 @@ public class TeleopSwervePlus extends CommandBase {
   private double doScorePieceTranslation(double defaultResponse) {
     LimelightScoring ll = robotContainer.limelightScoringSubSystem;
     // ll.setScoringMode(ScoringMode.ReflectiveTape);
-
+    // System.out.println(
+    //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
+    // System.out.println(ll.getTx() + " " + ll.hasTarget());
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
-      return translationPidController.calculate(ll.getTx(), 0) / 5.0;
+      return translationPidController.calculate(ll.getTx(), 0);
       // divide by some unknown scaling factor to translate position into percentage
     }
 
@@ -265,6 +274,7 @@ public class TeleopSwervePlus extends CommandBase {
               .withWidget(BuiltInWidgets.kTextView)
               .getEntry();
       // }
+      xPercentageEntry = tab.add("xPercentage", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
       kPEntryTranslation =
           tab.add("Vision_Translation_P", Constants.VISION_TRANSLATION_P)
