@@ -155,43 +155,36 @@ public class LimelightScoring extends SubsystemBase {
     return hasTarget() && Math.abs(tx) < Constants.SCORING_TRANSLATION_TOLERANCE;
   }
 
-  public double getDistance() {
-    double ty = getTy();
-    return ty;
-  }
-
   public double interpDistance() {
     double ty = getTy();
-    boolean scoringHigh = false;
-    if (scoringHigh) {
+    if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
       double x1 = 9.6;
       double y1 = 0;
-      double x2 = 13.26;
-      double y2 = 35.25;
+      double x2 = 13.06;
+      double y2 = 33.375;
       return interp(x1, y1, x2, y2, ty);
     } else {
       double x1 = -18.15;
       double y1 = 0;
-      double x2 = -2.42;
-      double y2 = 35.25;
+      double x2 = -3;
+      double y2 = 33.375;
       return interp(x1, y1, x2, y2, ty);
     }
   }
 
   public double interpXSetpoint() {
     double ty = getTy();
-    boolean scoringHigh = false;
-    if (scoringHigh) {
+    if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
       double x1 = 9.6;
-      double y1 = 0;
-      double x2 = 13.26;
-      double y2 = -1.21;
+      double y1 = 1.41;
+      double x2 = 13.06;
+      double y2 = .43;
       return interp(x1, y1, x2, y2, ty);
     } else {
       double x1 = -18.15;
-      double y1 = 1;
-      double x2 = -2.42;
-      double y2 = -.79;
+      double y1 = 2.48;
+      double x2 = -3;
+      double y2 = .89;
       return interp(x1, y1, x2, y2, ty);
     }
   }
@@ -250,9 +243,12 @@ public class LimelightScoring extends SubsystemBase {
     // set the pipeline to match the scoring mode.
     if (currentScoringMode == ScoringMode.AprilTag) {
       // FIXME: verify pipeline indices
-      pipeline.setDouble(1);
-    } else if (currentScoringMode == ScoringMode.ReflectiveTape) {
+      pipeline.setDouble(2);
+    } else if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
       pipeline.setDouble(0);
+
+    } else if (currentScoringMode == ScoringMode.ReflectiveTapeMid) {
+      pipeline.setDouble(1);
     }
   }
 
@@ -262,7 +258,8 @@ public class LimelightScoring extends SubsystemBase {
 
   public enum ScoringMode {
     AprilTag,
-    ReflectiveTape,
+    ReflectiveTapeMid,
+    ReflectiveTapeHigh,
     Undefined;
   }
 }
