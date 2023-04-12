@@ -144,7 +144,7 @@ public class TeleopSwervePlus extends CommandBase {
 
       switch (robotContainer.robotTranslationMode) {
         case SCORE_PIECE:
-          if (Math.abs(robotContainer.limelightScoringSubSystem.getTx()) < 1) {
+          if (robotContainer.drivetrainSubsystem.getPose().getRotation().getDegrees() < 1) {
             robotContainer.drivetrainSubsystem.disableFieldRelative();
             yPercentage = doScorePieceTranslation(yPercentage);
             xPercentage = xPercentageEntry.getDouble(0);
@@ -243,7 +243,7 @@ public class TeleopSwervePlus extends CommandBase {
     //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
     // System.out.println(ll.getTx() + " " + ll.hasTarget());
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
-      return translationPidController.calculate(ll.getTx(), 0);
+      return translationPidController.calculate(ll.getTx(), 0) / 5;
       // divide by some unknown scaling factor to translate position into percentage
     }
 
