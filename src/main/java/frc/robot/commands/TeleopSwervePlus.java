@@ -144,10 +144,10 @@ public class TeleopSwervePlus extends CommandBase {
 
       switch (robotContainer.robotTranslationMode) {
         case SCORE_PIECE:
-          if (robotContainer.drivetrainSubsystem.getPose().getRotation().getDegrees() < 1) {
+          if (robotContainer.drivetrainSubsystem.getPose().getRotation().getDegrees() < 3) {
             robotContainer.drivetrainSubsystem.disableFieldRelative();
             yPercentage = doScorePieceTranslation(yPercentage);
-            xPercentage = xPercentageEntry.getDouble(0);
+            xPercentage = doScorePieceMoveForward(xPercentage); // xPercentageEntry.getDouble(0);
           }
           break;
         case DRIVER:
@@ -243,7 +243,22 @@ public class TeleopSwervePlus extends CommandBase {
     //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
     // System.out.println(ll.getTx() + " " + ll.hasTarget());
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
-      return translationPidController.calculate(ll.getTx(), 0) / 5;
+      return translationPidController.calculate(ll.getTx(), ll.interpXSetpoint()) / 5;
+      // divide by some unknown scaling factor to translate position into percentage
+    }
+
+    return defaultResponse;
+  }
+
+  private double doScorePieceMoveForward(double defaultResponse) {
+    LimelightScoring ll = robotContainer.limelightScoringSubSystem;
+    // ll.setScoringMode(ScoringMode.ReflectiveTape);
+    // System.out.println(
+    //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
+    // System.out.println(ll.getTx() + " " + ll.hasTarget());
+    if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
+      return (ll.interpDistance() / 33.375) * .2;
+      // return translationPidController.calculate(ll.interpDistance(), 0) / 5;
       // divide by some unknown scaling factor to translate position into percentage
     }
 

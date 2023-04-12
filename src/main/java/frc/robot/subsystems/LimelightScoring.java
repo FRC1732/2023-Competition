@@ -162,7 +162,9 @@ public class LimelightScoring extends SubsystemBase {
       double y1 = 0;
       double x2 = 13.06;
       double y2 = 33.375;
-      return interp(x1, y1, x2, y2, ty);
+      double temp = interp(x1, y1, x2, y2, ty);
+      System.out.println(ty + " " + temp);
+      return temp;
     } else {
       double x1 = -18.15;
       double y1 = 0;

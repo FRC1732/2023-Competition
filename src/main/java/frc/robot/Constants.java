@@ -151,7 +151,7 @@ public final class Constants {
   public static final double PIECE_DETECTION_D = 0;
   public static final double PIECE_DETECTION_DEADZONE = 0;
 
-  public static final double VISION_TRANSLATION_P = 0;
+  public static final double VISION_TRANSLATION_P = .1;
   // #endregion
 
   // #region Limelight Constants
