@@ -66,7 +66,7 @@ public class LimelightScoring extends SubsystemBase {
   private void configureShuffleBoard() {
     ShuffleboardTab tab;
     tab = Shuffleboard.getTab(LIMELIGHTNAME);
-
+    setScoringMode(ScoringMode.ReflectiveTapeHigh);
     LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.11:5800/stream.mjpg");
     server = CameraServer.addSwitchedCamera("Object Camera");
     server.setSource(LLFeed);
@@ -115,7 +115,7 @@ public class LimelightScoring extends SubsystemBase {
       reflectiveTv = tv.getDouble(0);
       reflectiveTx = tx.getDouble(0);
       reflectiveTy = ty.getDouble(0);
-      reflectiveTy = ta.getDouble(0);
+      reflectiveTa = ta.getDouble(0);
     }
     pipelineVal = (int) pipeline.getDouble(-1);
   }
@@ -163,14 +163,16 @@ public class LimelightScoring extends SubsystemBase {
       double x2 = 13.06;
       double y2 = 33.375;
       double temp = interp(x1, y1, x2, y2, ty);
-      System.out.println(ty + " " + temp);
+      System.out.println(currentScoringMode + " INTERP DIST H" + ty + " " + temp);
       return temp;
     } else {
       double x1 = -18.15;
       double y1 = 0;
       double x2 = -3;
       double y2 = 33.375;
-      return interp(x1, y1, x2, y2, ty);
+      double temp = interp(x1, y1, x2, y2, ty);
+      System.out.println(currentScoringMode + "INTERP DIST M" + ty + " " + temp);
+      return temp;
     }
   }
 
