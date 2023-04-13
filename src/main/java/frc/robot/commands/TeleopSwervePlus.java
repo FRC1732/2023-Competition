@@ -259,7 +259,7 @@ public class TeleopSwervePlus extends CommandBase {
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
       return ll.interpDistance() < .2
           ? 0
-          : ll.interpDistance() < 16.7 ? .1 : (ll.interpDistance() / 33.375) * .2;
+          : ll.interpDistance() < 16.7 ? .15 : (ll.interpDistance() / 33.375) * .20;
       // return translationPidController.calculate(ll.interpDistance(), 0) / 5;
       // divide by some unknown scaling factor to translate position into percentage
     }
