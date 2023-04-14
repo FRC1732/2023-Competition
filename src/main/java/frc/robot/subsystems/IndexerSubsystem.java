@@ -284,6 +284,10 @@ public class IndexerSubsystem extends SubsystemBase {
     grabberEject();
   }
 
+  public void dropOffPiece() {
+    indexerGrabbingMotor.set(Constants.INDEXER_DROPOFF_SPEED);
+  }
+
   public void grabberHoldPiece() {
     if (isOpen) {
       indexerGrabbingMotor.set(-1 * 0.1);

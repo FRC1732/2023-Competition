@@ -80,6 +80,7 @@ public final class Constants {
   public static final double INDEXER_HOLD_SPEED = 0.025;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.2;
+  public static final double INDEXER_DROPOFF_SPEED = 0.2;
   public static final double INDEXER_CONE_POSITION = -115;
   public static final double INDEXER_CONE_AUTO_POSITION = -45;
   public static final double INDEXER_CUBE_POSITION = -110;
