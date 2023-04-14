@@ -19,6 +19,7 @@ import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
+import frc.robot.commands.AutoScoring.AutoConeDropOffCommand;
 import frc.robot.commands.CommandFactory;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
@@ -518,18 +519,12 @@ public class RobotContainer {
     // Constants.NEUTRAL_PIECE_1,
     // Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
-    // autoChooser.addOption(
-    // "Bump-side Two Piece, Taxi",
-    // Commands.sequence(
-    // new InitializeRobotCommand(this, Constants.CONE_NODE_1),
-    // new InstantCommand(
-    // () ->
-    // CommandScheduler.getInstance()
-    // .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-    // new WaitCommand(3),
-    // new InstantCommand(() -> pieceMode = PieceMode.CUBE),
-    // new SwerveToWaypointCommand(drivetrainSubsystem,
-    // Constants.CONE_NODE_1plus)));
+    autoChooser.addOption(
+        "Bump-side Two Piece, Taxi",
+        Commands.sequence(
+            new InitializeRobotCommand(
+                this, Constants.CONE_NODE_1), // TODO: Need the starting point
+            new AutoConeDropOffCommand(robotContainer)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

@@ -19,5 +19,7 @@ public class AutoIndexerPositionCommand extends InstantCommand {
   }
 
   @Override
-  public void execute() {}
+  public boolean isFinished() {
+    return robotContainer.indexerSubsystem.isAtSetpoint();
+  }
 }

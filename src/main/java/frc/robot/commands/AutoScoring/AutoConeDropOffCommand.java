@@ -27,4 +27,9 @@ public class AutoConeDropOffCommand extends CommandBase {
     robotContainer.indexerSubsystem.grabberOff();
     robotContainer.indexerSubsystem.rotateUp();
   }
+
+  @Override
+  public boolean isFinished() {
+    return robotContainer.indexerSubsystem.isAtSetpoint();
+  }
 }
