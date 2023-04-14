@@ -30,6 +30,7 @@ public class ElevatorToScoringHeightCommand extends CommandBase {
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.close();
     robotContainer.indexerSubsystem.rotateOff();
+    robotContainer.extenderSubsystem.disengageStablizer();
   }
 
   @Override
