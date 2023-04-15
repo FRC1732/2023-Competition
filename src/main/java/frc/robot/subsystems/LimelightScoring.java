@@ -139,21 +139,13 @@ public class LimelightScoring extends SubsystemBase {
 
   public boolean isAligned() {
     double tx = getTx();
-    // Low goal is off by 1 degree
-    if (getTy() < 0) {
-      tx = tx - 1;
-    }
-    return hasTarget() && Math.abs(tx) < 1.75;
+    return hasTarget() && Math.abs(tx - interpXSetpoint()) < 1.75;
   }
 
   public boolean isWithinTolerance() {
     double tx = getTx();
-    // Low goal is off by 1 degree
-    if (getTy() < 0) {
-      tx = tx - 1;
-    }
     return hasTarget()
-        && Math.abs(tx) - interpXSetpoint() < Constants.SCORING_TRANSLATION_TOLERANCE;
+        && Math.abs(tx - interpXSetpoint()) < Constants.SCORING_TRANSLATION_TOLERANCE;
   }
 
   public double interpDistance() {

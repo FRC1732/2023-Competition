@@ -148,7 +148,7 @@ public class TeleopSwervePlus extends CommandBase {
           robotContainer.drivetrainSubsystem.disableFieldRelative();
           yPercentage = doScorePieceTranslation(yPercentage);
           // }
-          if (robotContainer.limelightScoringSubSystem.isWithinTolerance()) {
+          if (robotContainer.limelightScoringSubSystem.isAligned()) {
             xPercentage = doScorePieceMoveForward(xPercentage); // xPercentageEntry.getDouble(0);
           } else {
             xPercentage = 0;
