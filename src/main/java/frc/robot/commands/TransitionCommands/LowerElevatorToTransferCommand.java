@@ -40,6 +40,7 @@ public class LowerElevatorToTransferCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    robotContainer.extenderSubsystem.disengageStablizer();
     robotContainer.indexerSubsystem.grabberOff();
     robotContainer.indexerSubsystem.rotateOff();
     robotContainer.holderSubsystem.open();

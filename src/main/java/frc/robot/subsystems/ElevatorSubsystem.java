@@ -267,6 +267,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setToNeutralPosition() {
+    prevSetpoint = 0;
     // pidController.setReference(
     //     Constants.ELEVATOR_NEUTRAL_POSITION_INCHES, CANSparkMax.ControlType.kSmartMotion);
     setPoint = Constants.ELEVATOR_NEUTRAL_POSITION_INCHES;
