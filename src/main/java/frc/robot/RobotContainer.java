@@ -18,6 +18,7 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.AutoDriving.AutoAlignToScore;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
@@ -103,6 +104,7 @@ public class RobotContainer {
   public ScoringHeight scoringHeight = ScoringHeight.HIGH;
   public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
   public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
+  private boolean UseAutoAlign = false;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -275,15 +277,17 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
-                  robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  UseAutoAlign = true;
+                  // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  // robotRotationMode = RobotRotationMode.SCORE_PIECE;
                 }));
     oi.getXStanceButton()
         .onFalse(
             Commands.runOnce(
                 () -> {
-                  robotTranslationMode = RobotTranslationMode.DRIVER;
-                  robotRotationMode = RobotRotationMode.DRIVER;
+                  UseAutoAlign = false;
+                  // robotTranslationMode = RobotTranslationMode.DRIVER;
+                  // robotRotationMode = RobotRotationMode.DRIVER;
                 }));
 
     // Raise/Lower Indexer Arm
@@ -335,10 +339,17 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  // if (areWeAbleToScore()) {
+                  if (UseAutoAlign && areWeAbleToScore()) {
+                    CommandScheduler.getInstance()
+                        .schedule(
+                            new AutoAlignToScore(
+                                robotContainer, robotStateMachine, limelightScoringSubSystem));
+                  }
                   // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
                   // robotRotationMode = RobotRotationMode.SCORE_PIECE;
-                  robotStateMachine.fireEvent(new ScorePressed());
+                  else {
+                    robotStateMachine.fireEvent(new ScorePressed());
+                  }
                   // }
                 }));
 
@@ -347,10 +358,10 @@ public class RobotContainer {
     // FinishScorePressed())));
 
     // extender buttons
-    oi.getExtenderStablizerButton()
-        .onTrue(Commands.runOnce(extenderSubsystem::engageStablizer, extenderSubsystem));
-    oi.getExtenderStablizerDisengageButton()
-        .onTrue(Commands.runOnce(extenderSubsystem::disengageStablizer, extenderSubsystem));
+    // oi.getExtenderStablizerButton()
+    //     .onTrue(Commands.runOnce(extenderSubsystem::engageStablizer, extenderSubsystem));
+    // oi.getExtenderStablizerDisengageButton()
+    //     .onTrue(Commands.runOnce(extenderSubsystem::disengageStablizer, extenderSubsystem));
 
     // Scoring Height buttons
     oi.getLowGoalButton()
@@ -585,8 +596,8 @@ public class RobotContainer {
     boolean isTyInTolerance = limelightScoringSubSystem.isWithinTolerance();
     boolean isDistanceInTolerance = limelightScoringSubSystem.isWithinDistanceTolerance();
     boolean isRotationInTolerance =
-        Math.abs(drivetrainSubsystem.getPose().getRotation().getDegrees() - 180)
-            < Constants.SCORING_DISTANCE_TOLERANCE;
+        Math.abs(drivetrainSubsystem.getPose().getRotation().getDegrees())
+            < Constants.SCORING_ROTATION_TOLERANCE;
 
     return isTyInTolerance && isDistanceInTolerance && isRotationInTolerance;
   }

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
-import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 
 public class RGBStatusSubsytem extends SubsystemBase {
@@ -103,18 +102,19 @@ public class RGBStatusSubsytem extends SubsystemBase {
       }
     }
 
-    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE) {
-      if (robotContainer.limelightScoringSubSystem.isAligned()) {
-        specialMode = SpecialMode.SCORING_POSITION_READY;
-        targetElapsedTimeSeconds = 0;
-      } else {
-        specialMode = SpecialMode.NONE;
-        targetElapsedTimeSeconds = 0;
-      }
-    } else if (specialMode == SpecialMode.SCORING_POSITION_READY) {
+    // if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE) {
+
+    if (hasBeenEnabled && DriverStation.isEnabled() && robotContainer.areWeAbleToScore()) {
+      specialMode = SpecialMode.SCORING_POSITION_READY;
+      targetElapsedTimeSeconds = 0;
+    } else {
       specialMode = SpecialMode.NONE;
       targetElapsedTimeSeconds = 0;
     }
+    // } else if (specialMode == SpecialMode.SCORING_POSITION_READY) {
+    //   specialMode = SpecialMode.NONE;
+    //   targetElapsedTimeSeconds = 0;
+    // }
 
     // Invert the digital sigs; HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
