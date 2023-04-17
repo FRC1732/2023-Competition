@@ -223,5 +223,33 @@ public final class Constants {
   public static final List<Translation2d> BUMP_LANE_IN_WAYPOINTS =
       Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
 
+  public static final Pose2d BUMP_START = new Pose2d(3.021, 1.081, Rotation2d.fromDegrees(0));
+  public static final Pose2d LAYING_DOWN_4_APPROACH =
+      new Pose2d(4.25, 0.917, Rotation2d.fromDegrees(0));
+  public static final Pose2d LAYING_DOWN_4 = new Pose2d(5.25, 0.917, Rotation2d.fromDegrees(0));
+  public static final Pose2d CONE_DROPOFF = new Pose2d(3.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3_APPROACH_1 =
+      new Pose2d(6.357, 1.468, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3_APPROACH_2 =
+      new Pose2d(6.357, 2.05, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3 = new Pose2d(6, 2.05, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_DROPOFF_APPROACH =
+      new Pose2d(3.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PICKUP = new Pose2d(3.45, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_APPROACH =
+      new Pose2d(0.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_5 = new Pose2d(0.75, 1.63, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_6 =
+      new Pose2d(0.75, 0.513, Rotation2d.fromDegrees(180));
+
+  public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_4_APPROACH.getTranslation());
+  public static final List<Translation2d> LAYING_DOWN_3_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_3_APPROACH_1.getTranslation());
+  public static final List<Translation2d> PICKUP_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_3.getTranslation(), CONE_DROPOFF_APPROACH.getTranslation());
+  public static final List<Translation2d> PLACEMENT_5_WAYPOINTS =
+      Arrays.asList(CONE_PLACEMENT_APPROACH.getTranslation());
+
   // #endregion
 }
