@@ -48,6 +48,8 @@ public class TeleopSwervePlus extends CommandBase {
 
   private static boolean shuffleboardIsSetup = false;
 
+  private static boolean initialAlignmentComplete = false;
+
   private static GenericEntry kPEntry,
       kIEntry,
       kDEntry,
@@ -146,12 +148,18 @@ public class TeleopSwervePlus extends CommandBase {
         case SCORE_PIECE:
           // if (robotContainer.drivetrainSubsystem.getPose().getRotation().getDegrees() < 10) {
           robotContainer.drivetrainSubsystem.disableFieldRelative();
-          yPercentage = doScorePieceTranslation(yPercentage);
-          // }
-          if (robotContainer.limelightScoringSubSystem.isAligned()) {
-            xPercentage = doScorePieceMoveForward(xPercentage); // xPercentageEntry.getDouble(0);
+          if (robotContainer.limelightScoringSubSystem.hasTarget()) {
+            yPercentage = doScorePieceTranslation(yPercentage);
+            // }
+            if (initialAlignmentComplete || robotContainer.limelightScoringSubSystem.isAligned()) {
+              xPercentage = doScorePieceMoveForward(xPercentage); // xPercentageEntry.getDouble(0);
+              initialAlignmentComplete = true;
+            } else if (!initialAlignmentComplete) {
+              xPercentage = 0;
+            }
           } else {
-            xPercentage = 0;
+            yPercentage = 0;
+            xPercentage = Constants.AUTO_SCORE_SLOW_FORWARD_SPEED;
           }
           break;
         case DRIVER:
@@ -202,6 +210,10 @@ public class TeleopSwervePlus extends CommandBase {
     super.end(interrupted);
 
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwervePlus", false);
+  }
+
+  public static void resetInitialAlignment() {
+    initialAlignmentComplete = false;
   }
 
   private double doPieceTrackingRotation(double defaultResponse, double drivetrainPercentSpeed) {
@@ -263,7 +275,9 @@ public class TeleopSwervePlus extends CommandBase {
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
       return ll.interpDistance() < .2
           ? 0
-          : ll.interpDistance() < 6 ? .075 : (ll.interpDistance() / 33.375) * .25 + 0.035;
+          : ll.interpDistance() < 6
+              ? Constants.AUTO_SCORE_SLOW_FORWARD_SPEED
+              : (ll.interpDistance() / 33.375) * .25 + 0.035;
       // return translationPidController.calculate(ll.interpDistance(), 0) / 5;
       // divide by some unknown scaling factor to translate position into percentage
     }

@@ -143,9 +143,11 @@ public final class Constants {
   public static final double EXTENDER_PID_MIN_OUTPUT = -1;
 
   public static final double SCORING_DISTANCE_TOLERANCE = 36;
-  public static final double SCORING_TRANSLATION_TOLERANCE = 7;
-  public static final double SCORING_ROTATION_TOLERANCE = 30;
-  public static final double SCORING_ABLE_TO_PLACE_TOLERANCE = 1;
+  public static final double SCORING_TRANSLATION_TOLERANCE = 8;
+  public static final double SCORING_ROTATION_TOLERANCE = 40;
+  public static final double SCORING_ABLE_TO_PLACE_TOLERANCE = 5;
+
+  public static final double AUTO_SCORE_SLOW_FORWARD_SPEED = .075;
 
   public static final double PIECE_DETECTION_P = 7;
   public static final double PIECE_DETECTION_I = 0;

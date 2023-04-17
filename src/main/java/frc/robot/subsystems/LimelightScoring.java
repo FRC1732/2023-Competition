@@ -137,6 +137,14 @@ public class LimelightScoring extends SubsystemBase {
     return -1;
   }
 
+  public boolean isRawAligned() {
+    double tx = getTx();
+    if (getTy() < 0) {
+      tx -= 1;
+    }
+    return hasTarget() && Math.abs(tx) < 1.75;
+  }
+
   public boolean isAligned() {
     double tx = getTx();
     return hasTarget() && Math.abs(tx - interpXSetpoint()) < 1.75;
@@ -197,7 +205,11 @@ public class LimelightScoring extends SubsystemBase {
   }
 
   public boolean isAtInterpDistanceSetpoint() {
-    return interpDistance() < Constants.SCORING_ABLE_TO_PLACE_TOLERANCE;
+    return hasTarget()
+        && interpDistance()
+            < Constants
+                .SCORING_ABLE_TO_PLACE_TOLERANCE; // TODO: include x setpoint tolerance & rotation
+    // tolerance
   }
 
   /**

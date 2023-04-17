@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +43,7 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightObjectDetection;
 import frc.robot.subsystems.LimelightScoring;
+import frc.robot.subsystems.LimelightScoring.ScoringMode;
 import frc.robot.subsystems.RGBStatusSubsytem;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -104,7 +106,7 @@ public class RobotContainer {
   public ScoringHeight scoringHeight = ScoringHeight.HIGH;
   public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
   public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
-  private boolean UseAutoAlign = false;
+  public boolean UseAutoAlign = true;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -131,7 +133,7 @@ public class RobotContainer {
     // disable all telemetry in the LiveWindow to reduce the processing during each
     // iteration
     LiveWindow.disableAllTelemetry();
-
+    UseAutoAlign = true;
     updateOI();
     configureDefaultCommands();
     configureAutoCommands();
@@ -286,8 +288,8 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   UseAutoAlign = false;
-                  // robotTranslationMode = RobotTranslationMode.DRIVER;
-                  // robotRotationMode = RobotRotationMode.DRIVER;
+                  robotTranslationMode = RobotTranslationMode.DRIVER;
+                  robotRotationMode = RobotRotationMode.DRIVER;
                 }));
 
     // Raise/Lower Indexer Arm
@@ -339,7 +341,8 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  if (UseAutoAlign && areWeAbleToScore()) {
+                  UseAutoAlign = oi.getXStanceButton().getAsBoolean();
+                  if (UseAutoAlign && areWeAbleToScore() && scoringHeight != ScoringHeight.LOW) {
                     CommandScheduler.getInstance()
                         .schedule(
                             new AutoAlignToScore(
@@ -347,7 +350,10 @@ public class RobotContainer {
                   }
                   // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
                   // robotRotationMode = RobotRotationMode.SCORE_PIECE;
-                  else {
+                  else if (!UseAutoAlign
+                      || scoringHeight == ScoringHeight.LOW
+                      || pieceMode == PieceMode.CUBE) {
+
                     robotStateMachine.fireEvent(new ScorePressed());
                   }
                   // }
@@ -380,6 +386,7 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   ScoringHeight prev = scoringHeight;
+                  limelightScoringSubSystem.setScoringMode(ScoringMode.ReflectiveTapeMid);
                   scoringHeight = ScoringHeight.MEDIUM;
                   if (scoringHeight != prev) {
                     robotStateMachine.fireEvent(new SwitchToMidHigh());
@@ -392,6 +399,7 @@ public class RobotContainer {
                 () -> {
                   ScoringHeight prev = scoringHeight;
                   scoringHeight = ScoringHeight.HIGH;
+                  limelightScoringSubSystem.setScoringMode(ScoringMode.ReflectiveTapeHigh);
                   if (scoringHeight != prev) {
                     robotStateMachine.fireEvent(new SwitchToMidHigh());
                   }
@@ -596,9 +604,17 @@ public class RobotContainer {
     boolean isTyInTolerance = limelightScoringSubSystem.isWithinTolerance();
     boolean isDistanceInTolerance = limelightScoringSubSystem.isWithinDistanceTolerance();
     boolean isRotationInTolerance =
-        Math.abs(drivetrainSubsystem.getPose().getRotation().getDegrees())
+        Math.abs(
+                drivetrainSubsystem
+                    .getPose()
+                    .getRotation()
+                    .minus(Rotation2d.fromDegrees(180))
+                    .getDegrees())
             < Constants.SCORING_ROTATION_TOLERANCE;
 
-    return isTyInTolerance && isDistanceInTolerance && isRotationInTolerance;
+    return robotStateMachine.getCurrentState().equals("carrying")
+        && isTyInTolerance
+        && isDistanceInTolerance
+        && isRotationInTolerance;
   }
 }

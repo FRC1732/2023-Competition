@@ -45,6 +45,7 @@ public class ExtenderSubsystem extends SubsystemBase {
   // private SuppliedValueWidget updatePID;
   private boolean brakeMode;
   private double prevSetpoint;
+  private boolean forkqueue = false;
 
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
@@ -63,6 +64,7 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
+    forkqueue = false;
 
     setupShuffleboard();
 
@@ -100,14 +102,15 @@ public class ExtenderSubsystem extends SubsystemBase {
   }
 
   public void engageStablizer() {
-    forksOn = true;
-    forksOverride = true;
+    forkqueue = true;
+    // forksOverride = true;
   }
 
   public void disengageStablizer() {
     forksOn = false;
-    forksOverride = true;
-    extenderStablizer.set(!forksOn);
+    forkqueue = false;
+    // forksOverride = true;
+    extenderStablizer.set(forksOn);
   }
 
   public boolean isAtSetpoint() {
@@ -119,8 +122,18 @@ public class ExtenderSubsystem extends SubsystemBase {
     return temp;
   }
 
-  public boolean isCloseToSetpoint() {
+  public boolean isCloseToSetpointHigh() {
     boolean temp = (setPoint - extenderMotor.getEncoder().getPosition()) < 6;
+    if (temp) {
+      System.out.println("Extender is close to setpoint");
+    } else {
+      System.out.println("Extender is not close to setpoint");
+    }
+    return temp;
+  }
+
+  public boolean isCloseToSetpointMedium() {
+    boolean temp = (setPoint - extenderMotor.getEncoder().getPosition()) < 4;
     if (temp) {
       System.out.println("Extender is close to setpoint");
     } else {
@@ -132,15 +145,15 @@ public class ExtenderSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     double currentPostion = extenderMotor.getEncoder().getPosition();
-    if (!forksOverride) {
-      if (DoubleNearEquals(setPoint, Constants.EXTENDER_STARTING_POSITION_INCHES)
-          && DoubleNearEquals(currentPostion, Constants.EXTENDER_STARTING_POSITION_INCHES, 0.25)) {
-        forksOn = true;
-      } else {
-        forksOn = false;
-      }
+    //  if (!forksOverride) {
+    if (DoubleNearEquals(setPoint, Constants.EXTENDER_STARTING_POSITION_INCHES)
+        && DoubleNearEquals(currentPostion, Constants.EXTENDER_STARTING_POSITION_INCHES, 0.25)) {
+      forksOn = forkqueue;
+    } else {
+      forksOn = false;
     }
-    extenderStablizer.set(!forksOn);
+    // }
+    extenderStablizer.set(forksOn);
 
     // if (DriverStation.isEnabled() && !brakeMode) {
     // brakeMode = true;

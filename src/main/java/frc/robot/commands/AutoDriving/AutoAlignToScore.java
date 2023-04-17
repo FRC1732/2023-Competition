@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.RobotTranslationMode;
+import frc.robot.commands.TeleopSwervePlus;
 import frc.robot.state_machine.RobotStateMachine;
 import frc.robot.state_machine.events.ScorePressed;
 import frc.robot.subsystems.LimelightScoring;
@@ -26,6 +27,7 @@ public class AutoAlignToScore extends CommandBase {
   public void initialize() {
     robotContainer.robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
     robotContainer.robotRotationMode = RobotRotationMode.SCORE_PIECE;
+    TeleopSwervePlus.resetInitialAlignment();
   }
 
   @Override
