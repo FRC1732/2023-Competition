@@ -152,7 +152,8 @@ public class LimelightScoring extends SubsystemBase {
     if (getTy() < 0) {
       tx = tx - 1;
     }
-    return hasTarget() && Math.abs(tx) < Constants.SCORING_TRANSLATION_TOLERANCE;
+    return hasTarget()
+        && Math.abs(tx) - interpXSetpoint() < Constants.SCORING_TRANSLATION_TOLERANCE;
   }
 
   public double interpDistance() {
@@ -200,7 +201,11 @@ public class LimelightScoring extends SubsystemBase {
   }
 
   public boolean isWithinDistanceTolerance() {
-    return hasTarget() && position.getX() < Constants.SCORING_DISTANCE_TOLERANCE;
+    return hasTarget() && interpDistance() < Constants.SCORING_DISTANCE_TOLERANCE;
+  }
+
+  public boolean isAtInterpDistanceSetpoint() {
+    return interpDistance() < Constants.SCORING_ABLE_TO_PLACE_TOLERANCE;
   }
 
   /**

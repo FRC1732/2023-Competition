@@ -53,7 +53,8 @@ public class RobotStateMachine {
         Commands.sequence(
             new MoveIndexerToScoringCommand(robotContainer),
             new LowerElevatorToTransferCommand(robotContainer),
-            new DelayCloseHolderCommand(robotContainer));
+            new DelayCloseHolderCommand(robotContainer),
+            new SetExtenderStabilizerCommand(robotContainer, false));
     switchFromCarryingToHoldingLowCommand =
         Commands.sequence(
             new OpenHolderCommand(robotContainer),
