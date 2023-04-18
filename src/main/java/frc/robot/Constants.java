@@ -241,6 +241,8 @@ public final class Constants {
   public static final Pose2d CONE_PLACEMENT_5 = new Pose2d(0.75, 1.63, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_PLACEMENT_6 =
       new Pose2d(0.75, 0.513, Rotation2d.fromDegrees(180));
+  public static final Pose2d FINAL_CONE_APPROACH =
+      new Pose2d(5.7, 0.917, Rotation2d.fromDegrees(90));
 
   public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =
       Arrays.asList(LAYING_DOWN_4_APPROACH.getTranslation());

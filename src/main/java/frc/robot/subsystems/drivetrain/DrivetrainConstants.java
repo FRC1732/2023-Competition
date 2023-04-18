@@ -87,8 +87,8 @@ public final class DrivetrainConstants {
       MAX_VELOCITY_METERS_PER_SECOND / 1.6;
   public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1.9;
   public static final double AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND =
-      MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND / 1.1;
-  public static final double AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 5.5 / 1.1;
+      MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND / .75;
+  public static final double AUTO_MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 5.5 / .75;
 
   // FIXME: tune PID values for auto paths
 

@@ -584,8 +584,7 @@ public class RobotContainer {
             Commands.race(
                 new TeleopSwervePlus(this, oi),
                 Commands.sequence(
-                    new AutoAlignToScore(
-                        robotContainer, robotStateMachine, limelightScoringSubSystem),
+                    new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
                     new WaitUntilCommand(
                             () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
                         .withTimeout(3))),
@@ -601,6 +600,32 @@ public class RobotContainer {
                     new WaitUntilCommand(
                             () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
                         .withTimeout(3)))));
+
+    autoChooser.addOption(
+        "Two Plus One Piece Bump",
+        Commands.sequence(
+            // Start
+            new InitializeRobotCommand(this, Constants.BUMP_START),
+            // Intake to launch cube
+            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+            new WaitCommand(1),
+            // Intake the first cone
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
+            // Drive to cone node 6
+            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_PLACEMENT_6),
+            // Score Cone High
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new AutoAlignToScore(
+                        robotContainer, robotStateMachine, limelightScoringSubSystem),
+                    new WaitUntilCommand(
+                            () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+                        .withTimeout(3))),
+            // Drive to next cone
+            new WaitCommand(1),
+            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FINAL_CONE_APPROACH)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
