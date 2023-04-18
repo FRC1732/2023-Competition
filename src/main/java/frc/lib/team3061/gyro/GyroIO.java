@@ -29,6 +29,7 @@ public interface GyroIO {
     public double velocityDegPerSec = 0.0;
   }
 
+  public void calibrate();
   /**
    * Updates the set of loggable inputs.
    *

@@ -168,6 +168,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * @return the rotation of the robot
    */
   private Rotation2d getRotation() {
+    System.out.println("Gyro Connected? " + gyroInputs.connected);
     if (gyroInputs.connected) {
       return Rotation2d.fromDegrees(gyroInputs.positionDeg + this.gyroOffset);
     } else {

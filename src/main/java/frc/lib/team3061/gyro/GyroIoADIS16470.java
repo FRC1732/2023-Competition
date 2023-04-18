@@ -16,6 +16,10 @@ public class GyroIoADIS16470 implements GyroIO {
     inputs.velocityDegPerSec = -1 * imu.getRate(); // degrees per second
   }
 
+  public void calibrate() {
+    imu.calibrate();
+  }
+
   public double xComplementary() {
     return imu.getXComplementaryAngle();
   }

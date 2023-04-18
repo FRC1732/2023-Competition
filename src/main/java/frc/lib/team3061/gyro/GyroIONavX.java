@@ -14,6 +14,10 @@ public class GyroIONavX implements GyroIO {
     gyro = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
   }
 
+  public void calibrate() {
+    gyro.calibrate();
+  }
+
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = gyro.isConnected();
