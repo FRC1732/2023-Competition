@@ -57,7 +57,7 @@ public class TeleopSwervePlus extends CommandBase {
       kPEntryTranslation,
       xPercentageEntry;
 
-  private final double SLOW_MODE_SCALER = 0.25;
+  private final double SLOW_MODE_SCALER = 0.35;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -138,7 +138,11 @@ public class TeleopSwervePlus extends CommandBase {
           rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
-          rotationPidController.reset();
+          if (robotContainer.UseAutoAlign && robotContainer.areWeAbleToScore()) {
+            robotContainer.robotRotationMode = RobotRotationMode.SCORE_PIECE;
+          } else {
+            rotationPidController.reset();
+          }
           break;
         default:
           break;
@@ -149,7 +153,13 @@ public class TeleopSwervePlus extends CommandBase {
           // if (robotContainer.drivetrainSubsystem.getPose().getRotation().getDegrees() < 10) {
           robotContainer.drivetrainSubsystem.disableFieldRelative();
           if (robotContainer.limelightScoringSubSystem.hasTarget()) {
-            yPercentage = doScorePieceTranslation(yPercentage);
+            if (!initialAlignmentComplete) {
+              yPercentage = doScorePieceTranslation(yPercentage);
+              yPercentage =
+                  Math.abs(yPercentage) < .15 ? Math.signum(yPercentage) * .15 : yPercentage;
+            } else {
+              yPercentage = doScorePieceTranslation(yPercentage);
+            }
             // }
             if (initialAlignmentComplete || robotContainer.limelightScoringSubSystem.isAligned()) {
               xPercentage = doScorePieceMoveForward(xPercentage); // xPercentageEntry.getDouble(0);
@@ -254,10 +264,6 @@ public class TeleopSwervePlus extends CommandBase {
 
   private double doScorePieceTranslation(double defaultResponse) {
     LimelightScoring ll = robotContainer.limelightScoringSubSystem;
-    // ll.setScoringMode(ScoringMode.ReflectiveTape);
-    // System.out.println(
-    //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
-    // System.out.println(ll.getTx() + " " + ll.hasTarget());
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
       return translationPidController.calculate(ll.getTx(), ll.interpXSetpoint()) / 5;
       // divide by some unknown scaling factor to translate position into percentage
@@ -268,18 +274,14 @@ public class TeleopSwervePlus extends CommandBase {
 
   private double doScorePieceMoveForward(double defaultResponse) {
     LimelightScoring ll = robotContainer.limelightScoringSubSystem;
-    // ll.setScoringMode(ScoringMode.ReflectiveTape);
-    // System.out.println(
-    //   robotContainer.robotTranslationMode + " " + robotContainer.robotRotationMode);
-    // System.out.println(ll.getTx() + " " + ll.hasTarget());
+
     if (robotContainer.scoringHeight != ScoringHeight.LOW && ll.hasTarget()) {
-      return ll.interpDistance() < .2
-          ? 0
-          : ll.interpDistance() < 6
-              ? Constants.AUTO_SCORE_SLOW_FORWARD_SPEED
-              : (ll.interpDistance() / 33.375) * .25 + 0.035;
-      // return translationPidController.calculate(ll.interpDistance(), 0) / 5;
-      // divide by some unknown scaling factor to translate position into percentage
+      return ll.interpDistance() < 6
+          ? Constants.AUTO_SCORE_SLOW_FORWARD_SPEED
+          : (ll.interpDistance() / 33.375) * .40 + 0.0031;
+      /*ll.interpDistance() < .2
+      ? 0
+      : */
     }
 
     return defaultResponse;
