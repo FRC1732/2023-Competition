@@ -550,56 +550,58 @@ public class RobotContainer {
     // new SwerveToWaypointCommand(drivetrainSubsystem,
     // Constants.CONE_NODE_1plus)));
 
-    autoChooser.addOption(
-        "Three Piece Bump",
-        Commands.sequence(
-            // Start
-            new InitializeRobotCommand(this, Constants.BUMP_START),
-            // Intake to launch cube
-            new InstantCommand(() -> scoringHeight = ScoringHeight.LOW),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
-            new WaitCommand(0.5),
-            // Intake the first cone
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
-            // Drop off the cone
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_DROPOFF),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
-            // Drive to next cone
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem,
-                Constants.LAYING_DOWN_3_APPROACH_2,
-                Constants.LAYING_DOWN_3_WAYPOINTS),
-            new InstantCommand(() -> scoringHeight = ScoringHeight.HIGH),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
-            // Intake cone while moving back
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CONE_PICKUP, Constants.PICKUP_WAYPOINTS),
-            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
-            // Go to scoring location
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CONE_PLACEMENT_5, Constants.PLACEMENT_5_WAYPOINTS),
-            // Score Cone High
-            Commands.race(
-                new TeleopSwervePlus(this, oi),
-                Commands.sequence(
-                    new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
-                    new WaitUntilCommand(
-                            () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
-                        .withTimeout(3))),
-            // Transfer Cone and move to next scoring location
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CONE_PLACEMENT_6, Constants.PLACEMENT_5_WAYPOINTS),
-            // Score Cone High
-            Commands.race(
-                new TeleopSwervePlus(this, oi),
-                Commands.sequence(
-                    new AutoAlignToScore(
-                        robotContainer, robotStateMachine, limelightScoringSubSystem),
-                    new WaitUntilCommand(
-                            () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
-                        .withTimeout(3)))));
+    // autoChooser.addOption(
+    //     "Three Piece Bump",
+    //     Commands.sequence(
+    //         // Start
+    //         new InitializeRobotCommand(this, Constants.BUMP_START),
+    //         // Intake to launch cube
+    //         new InstantCommand(() -> scoringHeight = ScoringHeight.LOW),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+    //         new WaitCommand(0.5),
+    //         // Intake the first cone
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
+    //         // Drop off the cone
+    //         new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_DROPOFF),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
+    //         // Drive to next cone
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem,
+    //             Constants.LAYING_DOWN_3_APPROACH_2,
+    //             Constants.LAYING_DOWN_3_WAYPOINTS),
+    //         new InstantCommand(() -> scoringHeight = ScoringHeight.HIGH),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+    //         // Intake cone while moving back
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PICKUP, Constants.PICKUP_WAYPOINTS),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+    //         // Go to scoring location
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PLACEMENT_5,
+    // Constants.PLACEMENT_5_WAYPOINTS),
+    //         // Score Cone High
+    //         Commands.race(
+    //             new TeleopSwervePlus(this, oi),
+    //             Commands.sequence(
+    //                 new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
+    //                 new WaitUntilCommand(
+    //                         () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+    //                     .withTimeout(3))),
+    //         // Transfer Cone and move to next scoring location
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PLACEMENT_6,
+    // Constants.PLACEMENT_5_WAYPOINTS),
+    //         // Score Cone High
+    //         Commands.race(
+    //             new TeleopSwervePlus(this, oi),
+    //             Commands.sequence(
+    //                 new AutoAlignToScore(
+    //                     robotContainer, robotStateMachine, limelightScoringSubSystem),
+    //                 new WaitUntilCommand(
+    //                         () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+    //                     .withTimeout(3)))));
 
     autoChooser.addOption(
         "Two Plus One Piece Bump",
