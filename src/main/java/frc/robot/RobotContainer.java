@@ -618,13 +618,12 @@ public class RobotContainer {
             Commands.race(
                 new TeleopSwervePlus(this, oi),
                 Commands.sequence(
-                    new AutoAlignToScore(
-                        robotContainer, robotStateMachine, limelightScoringSubSystem),
+                    new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
                     new WaitUntilCommand(
                             () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
                         .withTimeout(3))),
             // Drive to next cone
-            new WaitCommand(1),
+            new WaitCommand(2),
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FINAL_CONE_APPROACH)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());

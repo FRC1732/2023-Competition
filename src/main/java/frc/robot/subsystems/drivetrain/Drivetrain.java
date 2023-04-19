@@ -156,7 +156,8 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * invoked.
    */
   public void zeroGyroscope() {
-    setGyroOffset(0.0);
+    gyroIO.calibrate();
+    // setGyroOffset(0.0);
   }
 
   /**
