@@ -293,6 +293,7 @@ public class RobotContainer {
                 }));
 
     // Raise/Lower Indexer Arm
+    /*
     oi.getIndexerRotateUpButton()
         .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
     oi.getIndexerRotateUpButton()
@@ -301,9 +302,9 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
     oi.getIndexerRotateDownButton()
         .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
-
+                */
     // Indexer Intake/Eject
-    oi.getIndexerIntakeButton()
+    /* oi.getIndexerIntakeButton()
         .onTrue(Commands.runOnce(indexerSubsystem::grabberIntake, indexerSubsystem));
     oi.getIndexerIntakeButton()
         .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
@@ -311,10 +312,10 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem));
     oi.getIndexerEjectButton()
         .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-
+                */
     // Indexer Open/Close
-    oi.getIndexerToggleOpenButton()
-        .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
+    // oi.getIndexerToggleOpenButton()
+    //    .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
 
     // Holder Open
     // oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
@@ -336,22 +337,23 @@ public class RobotContainer {
                     robotRotationMode = RobotRotationMode.SCORE_PIECE;
                   }
                 }));
+    /*
+        oi.getAdjustElevatorUpButton()
+            .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
+        oi.getAdjustElevatorUpButton()
+            .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
 
-    oi.getAdjustElevatorUpButton()
-        .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
-    oi.getAdjustElevatorUpButton()
-        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
-
-    oi.getAdjustElevatorDownButton()
-        .onTrue(Commands.runOnce(elevatorSubsystem::goDown, elevatorSubsystem));
-    oi.getAdjustElevatorDownButton()
-        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
-
+        oi.getAdjustElevatorDownButton()
+            .onTrue(Commands.runOnce(elevatorSubsystem::goDown, elevatorSubsystem));
+        oi.getAdjustElevatorDownButton()
+            .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+    */
     // Intake
-    oi.getIntakeButton()
+    /*oi.getIntakeButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
     oi.getIntakeButton()
         .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
+    */
 
     // Scoring
     oi.getScoreButton()
