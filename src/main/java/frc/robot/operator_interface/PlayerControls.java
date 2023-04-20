@@ -81,7 +81,7 @@ public class PlayerControls implements OperatorInterface {
 
   @Override
   public Trigger getResetGyroButton() {
-    return translateJoystickButtons[3];
+    return translateJoystickButtons[10];
   }
 
   @Override

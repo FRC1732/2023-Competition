@@ -32,6 +32,8 @@ public class AutoAlignToScore extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    robotContainer.robotRotationMode = RobotRotationMode.DRIVER;
+    robotContainer.robotTranslationMode = RobotTranslationMode.DRIVE_FORWARD;
     robotStateMachine.fireEvent(new ScorePressed());
   }
 

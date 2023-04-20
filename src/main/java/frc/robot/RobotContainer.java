@@ -91,7 +91,8 @@ public class RobotContainer {
     DRIVER,
     SCORE_PIECE,
     PIECE_TRACKING,
-    AUTO_PIECE_TRACKING
+    AUTO_PIECE_TRACKING,
+    DRIVE_FORWARD
   }
 
   public enum RobotRotationMode {
@@ -652,14 +653,25 @@ public class RobotContainer {
                     drivetrainSubsystem.resetOdometry(
                         CommandFactory.getAllianceCorrectedPose(Constants.SCORED_NODE_6))),
             new WaitCommand(1.5),
+            // new InstantCommand(
+            //    () -> {
+            //      scoringHeight = ScoringHeight.LOW;
+            //      pieceMode = PieceMode.CUBE;
+            //    }),
             Commands.parallel(
-                    new SwerveToWaypointCommand(
-                        drivetrainSubsystem,
-                        Constants.FINAL_CONE_GRAB,
-                        Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
-                    new WaitCommand(1.75))
-                .andThen(
-                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())))));
+                new SwerveToWaypointCommand(
+                    drivetrainSubsystem,
+                    Constants.FINAL_CONE_GRAB,
+                    Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
+                Commands.sequence(
+                    new WaitCommand(1.75),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed()))))
+            /*Commands.parallel(
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.WAYPOINTS_NEEDED),
+            Commands.sequence(
+                new WaitCommand(1.5),
+                new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed()))))*/ ));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
@@ -709,6 +721,10 @@ public class RobotContainer {
 
   public boolean isVisionOn() {
     return oi.getVisionAssistButton().getAsBoolean();
+  }
+
+  public boolean inCarryState() {
+    return robotStateMachine.getCurrentState().equals("carrying");
   }
 
   public boolean areWeAbleToScore() {
