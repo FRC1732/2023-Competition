@@ -242,8 +242,9 @@ public final class Constants {
   public static final Pose2d CONE_PLACEMENT_6 =
       new Pose2d(0.75, 0.513, Rotation2d.fromDegrees(180));
   public static final Pose2d FINAL_CONE_APPROACH =
-      new Pose2d(5.7, 1.05, Rotation2d.fromDegrees(90));
-  public static final Pose2d FINAL_CONE_GRAB = new Pose2d(5.7, 1.7, Rotation2d.fromDegrees(90));
+      new Pose2d(5.7 + 0.4, 1.05, Rotation2d.fromDegrees(90));
+  public static final Pose2d FINAL_CONE_GRAB =
+      new Pose2d(5.7 + 0.4, 1.7, Rotation2d.fromDegrees(90));
   public static final Pose2d BUMP_CENTER_LANE_ENTER =
       new Pose2d(3.25, 0.75, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_CENTER_LANE_CLOSE =

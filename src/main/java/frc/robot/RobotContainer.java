@@ -652,10 +652,14 @@ public class RobotContainer {
                     drivetrainSubsystem.resetOdometry(
                         CommandFactory.getAllianceCorrectedPose(Constants.SCORED_NODE_6))),
             new WaitCommand(1.5),
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem,
-                Constants.FINAL_CONE_GRAB,
-                Constants.REVERSE_BUMP_CENTER_WAYPOINTS)));
+            Commands.parallel(
+                    new SwerveToWaypointCommand(
+                        drivetrainSubsystem,
+                        Constants.FINAL_CONE_GRAB,
+                        Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
+                    new WaitCommand(1.75))
+                .andThen(
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())))));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
