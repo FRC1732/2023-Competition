@@ -610,12 +610,13 @@ public class RobotContainer {
             new InitializeRobotCommand(this, Constants.BUMP_START),
             // Intake to launch cube
             new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
-            new WaitCommand(1),
+            new WaitCommand(0.5),
             // Intake the first cone
             new SwerveToWaypointCommand(
                 drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
             // Drive to cone node 6
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_PLACEMENT_6),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.CONE_PLACEMENT_6, Constants.BUMP_CENTER_WAYPOINTS),
             new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
             // Score Cone High
             Commands.race(
@@ -627,7 +628,10 @@ public class RobotContainer {
                         .withTimeout(3))),
             // Drive to next cone
             new WaitCommand(2),
-            new SwerveToWaypointCommand(drivetrainSubsystem, Constants.FINAL_CONE_APPROACH)));
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem,
+                Constants.FINAL_CONE_APPROACH,
+                Constants.REVERSE_BUMP_CENTER_WAYPOINTS)));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
