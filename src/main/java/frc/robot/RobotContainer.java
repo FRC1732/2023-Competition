@@ -635,7 +635,16 @@ public class RobotContainer {
                 drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
             // Drive to cone node 6
             new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CONE_PLACEMENT_6, Constants.BUMP_CENTER_WAYPOINTS),
+                    drivetrainSubsystem,
+                    Constants.CONE_PLACEMENT_6,
+                    Constants.BUMP_CENTER_WAYPOINTS)
+                .raceWith(
+                    new WaitUntilCommand(
+                        () ->
+                            Constants.CONE_PLACEMENT_6
+                                    .getTranslation()
+                                    .getDistance(drivetrainSubsystem.getPose().getTranslation())
+                                < 0.25)),
             new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
             new WaitUntilCommand(() -> "carrying".equals(robotStateMachine.getCurrentState())),
             // Score Cone High
