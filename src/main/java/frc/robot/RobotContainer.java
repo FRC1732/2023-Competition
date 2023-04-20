@@ -134,11 +134,11 @@ public class RobotContainer {
     // iteration
     LiveWindow.disableAllTelemetry();
     UseAutoAlign = true;
+    robotStateMachine = new RobotStateMachine(this);
+    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
     updateOI();
     configureDefaultCommands();
     configureAutoCommands();
-    robotStateMachine = new RobotStateMachine(this);
-    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   }
 
   private void configureDriveTrain() {
@@ -621,7 +621,7 @@ public class RobotContainer {
             Commands.race(
                 new TeleopSwervePlus(this, oi),
                 Commands.sequence(
-                    new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
+                    new AutoAlignToScore(this, this.robotStateMachine, limelightScoringSubSystem),
                     new WaitUntilCommand(
                             () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
                         .withTimeout(3))),
