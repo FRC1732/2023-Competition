@@ -317,8 +317,25 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
 
     // Holder Open
-    oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
-    oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+    // oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
+    // oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+
+    oi.getHodlerOpenButton()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  boolean isRotationInTolerance =
+                      Math.abs(
+                              drivetrainSubsystem
+                                  .getPose()
+                                  .getRotation()
+                                  .minus(Rotation2d.fromDegrees(180))
+                                  .getDegrees())
+                          < Constants.SCORING_ROTATION_TOLERANCE;
+                  if (isRotationInTolerance) {
+                    robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  }
+                }));
 
     oi.getAdjustElevatorUpButton()
         .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
