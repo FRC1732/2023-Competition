@@ -46,6 +46,8 @@ public class IndexerSubsystem extends SubsystemBase {
   private GenericEntry motorSpeedEntry;
   private boolean brakeMode;
   private double prevSetpoint = 0;
+  private double[] prevCurrent;
+  private int prevCurrentIndex;
 
   private final IndexerIO io;
   private final IndexerIOInputsAutoLoggedv2 inputs = new IndexerIOInputsAutoLoggedv2();
@@ -66,6 +68,8 @@ public class IndexerSubsystem extends SubsystemBase {
     prevSetpoint = indexerRotationMotor.getEncoder().getPosition();
     indexerRotationMotor.getEncoder().setPosition(Constants.INDEXER_STARTING_POSITION);
     // setupShuffleboard();
+    prevCurrent = new double[3];
+    prevCurrentIndex = 0;
     pidController.setP(Constants.INDEXER_ARM_P_VALUE);
     pidController.setI(Constants.INDEXER_ARM_I_VALUE);
     pidController.setD(Constants.INDEXER_ARM_D_VALUE);
@@ -126,7 +130,13 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
-    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
+    prevCurrent[prevCurrentIndex] = indexerGrabbingMotor.getOutputCurrent();
+    prevCurrentIndex = (prevCurrentIndex + 1) % 3;
+    double total = 0;
+    for (int i = 0; i < 3; i++) {
+      total += prevCurrent[i];
+    }
+    return total / 3 > Constants.INDEXER_PIECE_DETECTION_CURRENT;
   }
 
   @Override
