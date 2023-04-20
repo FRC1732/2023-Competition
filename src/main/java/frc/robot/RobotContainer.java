@@ -346,7 +346,7 @@ public class RobotContainer {
                     CommandScheduler.getInstance()
                         .schedule(
                             new AutoAlignToScore(
-                                robotContainer, robotStateMachine, limelightScoringSubSystem));
+                                this, robotStateMachine, limelightScoringSubSystem));
                   }
                   // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
                   // robotRotationMode = RobotRotationMode.SCORE_PIECE;
@@ -616,6 +616,7 @@ public class RobotContainer {
                 drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
             // Drive to cone node 6
             new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_PLACEMENT_6),
+            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
             // Score Cone High
             Commands.race(
                 new TeleopSwervePlus(this, oi),
