@@ -243,10 +243,12 @@ public final class Constants {
       new Pose2d(0.75, 0.513, Rotation2d.fromDegrees(180));
   public static final Pose2d FINAL_CONE_APPROACH =
       new Pose2d(5.7, 1.05, Rotation2d.fromDegrees(90));
+  public static final Pose2d FINAL_CONE_GRAB = new Pose2d(5.7, 1.7, Rotation2d.fromDegrees(90));
   public static final Pose2d BUMP_CENTER_LANE_ENTER =
       new Pose2d(3.25, 0.75, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_CENTER_LANE_CLOSE =
       new Pose2d(1.75, 0.75, Rotation2d.fromDegrees(180));
+  public static final Pose2d SCORED_NODE_6 = new Pose2d(0.419, 0.51, Rotation2d.fromDegrees(180));
 
   public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =
       Arrays.asList(LAYING_DOWN_4_APPROACH.getTranslation());
@@ -261,7 +263,9 @@ public final class Constants {
           BUMP_CENTER_LANE_ENTER.getTranslation(), BUMP_CENTER_LANE_CLOSE.getTranslation());
   public static final List<Translation2d> REVERSE_BUMP_CENTER_WAYPOINTS =
       Arrays.asList(
-          BUMP_CENTER_LANE_CLOSE.getTranslation(), BUMP_CENTER_LANE_ENTER.getTranslation());
+          BUMP_CENTER_LANE_CLOSE.getTranslation(),
+          BUMP_CENTER_LANE_ENTER.getTranslation(),
+          FINAL_CONE_APPROACH.getTranslation());
 
   // #endregion
 }
