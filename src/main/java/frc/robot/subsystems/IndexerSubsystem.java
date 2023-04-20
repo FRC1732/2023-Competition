@@ -126,7 +126,9 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
-    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
+    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT
+        && indexerRotationMotor.getEncoder().getPosition()
+            < Constants.INDEXER_STARTING_POSITION - 20;
   }
 
   @Override
