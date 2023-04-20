@@ -57,7 +57,7 @@ public class TeleopSwervePlus extends CommandBase {
       kPEntryTranslation,
       xPercentageEntry;
 
-  private final double SLOW_MODE_SCALER = 0.35;
+  private final double SLOW_MODE_SCALER = 0.4;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -178,7 +178,8 @@ public class TeleopSwervePlus extends CommandBase {
           if (oi.getIndexerManualOverrideButton().getAsBoolean()) {
             xPercentage = SLOW_MODE_SCALER * xPercentage;
             yPercentage = SLOW_MODE_SCALER * yPercentage;
-            if (xPercentage == 0.0 && yPercentage == 0.0) {
+            rotationPercentage = SLOW_MODE_SCALER * rotationPercentage;
+            if (xPercentage == 0.0 && yPercentage == 0.0 && rotationPercentage == 0.0) {
               drivetrainSubsystem.setXStance();
               return;
             }

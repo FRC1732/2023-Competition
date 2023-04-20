@@ -333,7 +333,8 @@ public class RobotContainer {
                                   .minus(Rotation2d.fromDegrees(180))
                                   .getDegrees())
                           < Constants.SCORING_ROTATION_TOLERANCE;
-                  if (isRotationInTolerance) {
+                  if (isRotationInTolerance
+                      && robotStateMachine.getCurrentState().equals("carrying")) {
                     robotRotationMode = RobotRotationMode.SCORE_PIECE;
                   }
                 }));
@@ -349,11 +350,10 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
     */
     // Intake
-    /*oi.getIntakeButton()
+    oi.getIntakeButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
     oi.getIntakeButton()
         .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
-    */
 
     // Scoring
     oi.getScoreButton()
