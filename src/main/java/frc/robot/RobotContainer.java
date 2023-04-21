@@ -28,7 +28,6 @@ import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwervePlus;
-import frc.robot.commands.TransitionCommands.ExtenderReseatCommmand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
@@ -324,14 +323,14 @@ public class RobotContainer {
     // oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
     // oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
 
-    oi.getIndexerEjectButton()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  if (this.robotStateMachine.getCurrentState().equals("readyToIntake")) {
-                    CommandScheduler.getInstance().schedule(new ExtenderReseatCommmand(this));
-                  }
-                }));
+    /*oi.getIndexerEjectButton()
+    .onTrue(
+        new InstantCommand(
+            () -> {
+              if (this.robotStateMachine.getCurrentState().equals("readyToIntake")) {
+                CommandScheduler.getInstance().schedule(new ExtenderReseatCommmand(this));
+              }
+            }));*/
     // oi.getIndexerEjectButton()
     //    .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
