@@ -35,13 +35,13 @@ public class TeleopSwervePlus extends CommandBase {
   private PIDController rotationPidController = null;
   private PIDController translationPidController = null;
 
-  private final double KOWALSKI_2022_P = 13;
-  private final double KOWALSKI_2022_I = 0;
-  private final double KOWALSKI_2022_D = 1;
+  // private final double KOWALSKI_2022_P = 13;
+  // private final double KOWALSKI_2022_I = 0;
+  // private final double KOWALSKI_2022_D = 1;
 
-  private static double KP = 10; // p8 d0 was good
-  private static double KI = 0;
-  private static double KD = 0.5;
+  private static double KP = Constants.PIECE_DETECTION_P; // p8 d0 was good
+  private static double KI = Constants.PIECE_DETECTION_I;
+  private static double KD = Constants.PIECE_DETECTION_D;
   private static double deadzone = 0.25;
 
   private static double KP_Translation = Constants.VISION_TRANSLATION_P;
@@ -57,7 +57,7 @@ public class TeleopSwervePlus extends CommandBase {
       kPEntryTranslation,
       xPercentageEntry;
 
-  private final double SLOW_MODE_SCALER = 0.35;
+  private final double SLOW_MODE_SCALER = 0.4;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -138,7 +138,9 @@ public class TeleopSwervePlus extends CommandBase {
           rotationPercentage = doLockToZeroRotation(); // currently LEDS only
           break;
         case DRIVER:
-          if (robotContainer.UseAutoAlign && robotContainer.areWeAbleToScore()) {
+          if (robotContainer.UseAutoAlign
+              && robotContainer.areWeAbleToScore()
+              && robotContainer.inCarryState()) {
             robotContainer.robotRotationMode = RobotRotationMode.SCORE_PIECE;
           } else {
             rotationPidController.reset();
@@ -178,7 +180,8 @@ public class TeleopSwervePlus extends CommandBase {
           if (oi.getIndexerManualOverrideButton().getAsBoolean()) {
             xPercentage = SLOW_MODE_SCALER * xPercentage;
             yPercentage = SLOW_MODE_SCALER * yPercentage;
-            if (xPercentage == 0.0 && yPercentage == 0.0) {
+            rotationPercentage = SLOW_MODE_SCALER * rotationPercentage;
+            if (xPercentage == 0.0 && yPercentage == 0.0 && rotationPercentage == 0.0) {
               drivetrainSubsystem.setXStance();
               return;
             }
@@ -198,6 +201,12 @@ public class TeleopSwervePlus extends CommandBase {
           break;
         case AUTO_PIECE_TRACKING:
           xPercentage = 0.15;
+          yPercentage = 0;
+          robotContainer.drivetrainSubsystem.disableFieldRelative();
+          System.out.println("WE SHOULD BE DRIVING FORWARD");
+          break;
+        case DRIVE_FORWARD:
+          xPercentage = 0.075;
           yPercentage = 0;
           robotContainer.drivetrainSubsystem.disableFieldRelative();
           System.out.println("WE SHOULD BE DRIVING FORWARD");

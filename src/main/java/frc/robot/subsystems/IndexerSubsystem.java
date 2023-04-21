@@ -237,10 +237,18 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void grabberEject() {
-    if (isOpen) {
-      indexerGrabbingMotor.set(0.175);
-    } else {
-      indexerGrabbingMotor.set(-0.3);
+    if (DriverStation.isTeleopEnabled()) {
+      if (isOpen) {
+        indexerGrabbingMotor.set(0.175);
+      } else {
+        indexerGrabbingMotor.set(-0.3);
+      }
+    } else if (DriverStation.isAutonomousEnabled()) {
+      if (isOpen) {
+        indexerGrabbingMotor.set(1);
+      } else {
+        indexerGrabbingMotor.set(-1);
+      }
     }
   }
 

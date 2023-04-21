@@ -113,14 +113,14 @@ public class RGBStatusSubsytem extends SubsystemBase {
       targetElapsedTimeSeconds = 0;
     } else if (hasBeenEnabled
         && DriverStation.isEnabled()
-        && specialMode != SpecialMode.GAME_PIECE_CAPTURED) {
-      specialMode = SpecialMode.NONE;
-      targetElapsedTimeSeconds = 0;
-    } else if (hasBeenEnabled
-        && DriverStation.isEnabled()
         && !robotContainer.UseAutoAlign
         && robotContainer.limelightScoringSubSystem.isRawAligned()) {
       specialMode = SpecialMode.SCORING_POSITION_READY;
+      targetElapsedTimeSeconds = 0;
+    } else if (hasBeenEnabled
+        && DriverStation.isEnabled()
+        && specialMode != SpecialMode.GAME_PIECE_CAPTURED) {
+      specialMode = SpecialMode.NONE;
       targetElapsedTimeSeconds = 0;
     }
     // } else if (specialMode == SpecialMode.SCORING_POSITION_READY) {
