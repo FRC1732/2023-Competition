@@ -246,6 +246,10 @@ public class ExtenderSubsystem extends SubsystemBase {
     }
   }
 
+  public void goToReseat() {
+    setPoint = Constants.EXTENDER_RESEAT_INCHES;
+  }
+
   public void goToStartingPosition() {
     setPoint = Constants.EXTENDER_STARTING_POSITION_INCHES;
   }

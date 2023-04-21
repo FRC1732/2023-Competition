@@ -133,6 +133,7 @@ public final class Constants {
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
   public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
   public static final double EXTENDER_MID_CONE_POSITION_INCHES = 32.25;
+  public static final double EXTENDER_RESEAT_INCHES = 32.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 180000;
   public static final double EXTENDER_DEADBAND = 0.5;
   public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 500000;
@@ -244,11 +245,11 @@ public final class Constants {
   public static final Pose2d FINAL_CONE_APPROACH =
       new Pose2d(5.7 + 0.4, 1.05, Rotation2d.fromDegrees(90));
   public static final Pose2d FINAL_CONE_GRAB =
-      new Pose2d(5.7 + 0.4, 1.7, Rotation2d.fromDegrees(90));
+      new Pose2d(5.7 + 0.4, 1.7 + .3, Rotation2d.fromDegrees(90));
   public static final Pose2d BUMP_CENTER_LANE_ENTER =
-      new Pose2d(3.25, 0.75, Rotation2d.fromDegrees(180));
+      new Pose2d(3.25, 0.75 + .025 * 2, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_CENTER_LANE_CLOSE =
-      new Pose2d(1.75, 0.75, Rotation2d.fromDegrees(180));
+      new Pose2d(1.75, 0.75 + .025 * 2, Rotation2d.fromDegrees(180));
   public static final Pose2d SCORED_NODE_6 = new Pose2d(0.419, 0.51, Rotation2d.fromDegrees(180));
 
   public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =

@@ -28,6 +28,7 @@ import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.InitializeRobotCommand;
 import frc.robot.commands.TeleopSwervePlus;
+import frc.robot.commands.TransitionCommands.ExtenderReseatCommmand;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.state_machine.RobotStateMachine;
@@ -309,11 +310,12 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(indexerSubsystem::grabberIntake, indexerSubsystem));
     oi.getIndexerIntakeButton()
         .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-    oi.getIndexerEjectButton()
+    */
+    /*oi.getIndexerEjectButton()
         .onTrue(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem));
     oi.getIndexerEjectButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-                */
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));*/
+
     // Indexer Open/Close
     // oi.getIndexerToggleOpenButton()
     //    .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
@@ -321,6 +323,17 @@ public class RobotContainer {
     // Holder Open
     // oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
     // oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+
+    oi.getIndexerEjectButton()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (this.robotStateMachine.getCurrentState().equals("readyToIntake")) {
+                    CommandScheduler.getInstance().schedule(new ExtenderReseatCommmand(this));
+                  }
+                }));
+    // oi.getIndexerEjectButton()
+    //    .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
     oi.getHodlerOpenButton()
         .onTrue(
@@ -500,7 +513,8 @@ public class RobotContainer {
             new DriveDistance(
                 drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.3),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     // autoChooser.addOption(
@@ -653,22 +667,22 @@ public class RobotContainer {
                     drivetrainSubsystem.resetOdometry(
                         CommandFactory.getAllianceCorrectedPose(Constants.SCORED_NODE_6))),
             new WaitCommand(1.5),
-            // new InstantCommand(
-            //    () -> {
-            //      scoringHeight = ScoringHeight.LOW;
-            //      pieceMode = PieceMode.CUBE;
-            //    }),
+            new InstantCommand(
+                () -> {
+                  scoringHeight = ScoringHeight.LOW;
+                  pieceMode = PieceMode.CUBE;
+                }),
             Commands.parallel(
                 new SwerveToWaypointCommand(
                     drivetrainSubsystem,
                     Constants.FINAL_CONE_GRAB,
                     Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
                 Commands.sequence(
-                    new WaitCommand(1.75),
+                    new WaitCommand(1.6),
                     new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed()))))
             /*Commands.parallel(
             new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.WAYPOINTS_NEEDED),
+                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.BUMP_CENTER_WAYPOINTS),
             Commands.sequence(
                 new WaitCommand(1.5),
                 new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed()))))*/ ));
