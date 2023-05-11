@@ -126,7 +126,9 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean hasPiece() {
-    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT;
+    return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT
+        && indexerRotationMotor.getEncoder().getPosition()
+            < Constants.INDEXER_STARTING_POSITION - 20;
   }
 
   @Override
@@ -235,10 +237,18 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void grabberEject() {
-    if (isOpen) {
-      indexerGrabbingMotor.set(0.175);
-    } else {
-      indexerGrabbingMotor.set(-0.3);
+    if (DriverStation.isTeleopEnabled()) {
+      if (isOpen) {
+        indexerGrabbingMotor.set(0.175);
+      } else {
+        indexerGrabbingMotor.set(-0.3);
+      }
+    } else if (DriverStation.isAutonomousEnabled()) {
+      if (isOpen) {
+        indexerGrabbingMotor.set(1);
+      } else {
+        indexerGrabbingMotor.set(-1);
+      }
     }
   }
 
@@ -265,7 +275,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void setCarrying() {
-    grabberHoldPiece();
+    grabberSwingUpHoldPiece();
     setUp();
   }
 
@@ -292,6 +302,14 @@ public class IndexerSubsystem extends SubsystemBase {
     }
   }
 
+  public void grabberSwingUpHoldPiece() {
+    if (isOpen) {
+      indexerGrabbingMotor.set(-1 * 0.1);
+    } else {
+      indexerGrabbingMotor.set(Constants.INDEXER_HOLD_UP_SPEED);
+    }
+  }
+
   public void transferPiece() {
     if (isOpen) {
       indexerGrabbingMotor.set(Constants.INDEXER_TRANSFER_SPEED);
@@ -314,6 +332,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void setScoringPosition() {
     setpoint = Constants.INDEXER_SCORING_POSITION;
+  }
+
+  public void setAutoPosition(double point) {
+    setpoint = point;
   }
 
   public void open() {

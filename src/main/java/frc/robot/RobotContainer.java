@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,8 +19,11 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.AutoBalance;
+import frc.robot.commands.AutoDriving.AutoAlignToScore;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
+import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightScoringDectionCommand;
 import frc.robot.commands.DriveDistance;
@@ -40,6 +44,7 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.LimelightObjectDetection;
 import frc.robot.subsystems.LimelightScoring;
+import frc.robot.subsystems.LimelightScoring.ScoringMode;
 import frc.robot.subsystems.RGBStatusSubsytem;
 import frc.robot.subsystems.StateMachineSubsystem;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -87,8 +92,8 @@ public class RobotContainer {
     DRIVER,
     SCORE_PIECE,
     PIECE_TRACKING,
-    SLOW_MODE,
-    AUTO_PIECE_TRACKING
+    AUTO_PIECE_TRACKING,
+    DRIVE_FORWARD
   }
 
   public enum RobotRotationMode {
@@ -103,6 +108,7 @@ public class RobotContainer {
   public ScoringHeight scoringHeight = ScoringHeight.HIGH;
   public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
   public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
+  public boolean UseAutoAlign = true;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -129,12 +135,12 @@ public class RobotContainer {
     // disable all telemetry in the LiveWindow to reduce the processing during each
     // iteration
     LiveWindow.disableAllTelemetry();
-
+    UseAutoAlign = true;
+    robotStateMachine = new RobotStateMachine(this);
+    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
     updateOI();
     configureDefaultCommands();
     configureAutoCommands();
-    robotStateMachine = new RobotStateMachine(this);
-    stateMachineSubsystem = new StateMachineSubsystem(robotStateMachine);
   }
 
   private void configureDriveTrain() {
@@ -235,8 +241,7 @@ public class RobotContainer {
     }
 
     if (extenderSubsystem != null) {
-      // extenderSubsystem.setDefaultCommand(new
-      // DefaultExtenderCommand(extenderSubsystem));
+      extenderSubsystem.setDefaultCommand(new DefaultExtenderCommand(extenderSubsystem));
     }
 
     if (stateMachineSubsystem != null) {
@@ -273,11 +278,24 @@ public class RobotContainer {
 
     // x-stance
     oi.getXStanceButton()
-        .onTrue(Commands.runOnce(drivetrainSubsystem::enableXstance, drivetrainSubsystem));
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  UseAutoAlign = true;
+                  // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  // robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                }));
     oi.getXStanceButton()
-        .onFalse(Commands.runOnce(drivetrainSubsystem::disableXstance, drivetrainSubsystem));
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  UseAutoAlign = false;
+                  robotTranslationMode = RobotTranslationMode.DRIVER;
+                  robotRotationMode = RobotRotationMode.DRIVER;
+                }));
 
     // Raise/Lower Indexer Arm
+    /*
     oi.getIndexerRotateUpButton()
         .onTrue(Commands.runOnce(indexerSubsystem::rotateUp, indexerSubsystem));
     oi.getIndexerRotateUpButton()
@@ -286,35 +304,65 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(indexerSubsystem::rotateDown, indexerSubsystem));
     oi.getIndexerRotateDownButton()
         .onFalse(Commands.runOnce(indexerSubsystem::rotateOff, indexerSubsystem));
-
+                */
     // Indexer Intake/Eject
-    oi.getIndexerIntakeButton()
+    /* oi.getIndexerIntakeButton()
         .onTrue(Commands.runOnce(indexerSubsystem::grabberIntake, indexerSubsystem));
     oi.getIndexerIntakeButton()
         .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
-    oi.getIndexerEjectButton()
+    */
+    /*oi.getIndexerEjectButton()
         .onTrue(Commands.runOnce(indexerSubsystem::grabberEject, indexerSubsystem));
     oi.getIndexerEjectButton()
-        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
+        .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));*/
 
     // Indexer Open/Close
-    oi.getIndexerToggleOpenButton()
-        .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
+    // oi.getIndexerToggleOpenButton()
+    //    .onTrue(Commands.runOnce(indexerSubsystem::toggleOpenClose, indexerSubsystem));
 
     // Holder Open
-    oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
-    oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
+    // oi.getHodlerOpenButton().onTrue(Commands.runOnce(holderSubsystem::open, holderSubsystem));
+    // oi.getHodlerOpenButton().onFalse(Commands.runOnce(holderSubsystem::close, holderSubsystem));
 
-    oi.getAdjustElevatorUpButton()
-        .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
-    oi.getAdjustElevatorUpButton()
-        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+    /*oi.getIndexerEjectButton()
+    .onTrue(
+        new InstantCommand(
+            () -> {
+              if (this.robotStateMachine.getCurrentState().equals("readyToIntake")) {
+                CommandScheduler.getInstance().schedule(new ExtenderReseatCommmand(this));
+              }
+            }));*/
+    // oi.getIndexerEjectButton()
+    //    .onFalse(Commands.runOnce(indexerSubsystem::grabberOff, indexerSubsystem));
 
-    oi.getAdjustElevatorDownButton()
-        .onTrue(Commands.runOnce(elevatorSubsystem::goDown, elevatorSubsystem));
-    oi.getAdjustElevatorDownButton()
-        .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+    oi.getHodlerOpenButton()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  boolean isRotationInTolerance =
+                      Math.abs(
+                              drivetrainSubsystem
+                                  .getPose()
+                                  .getRotation()
+                                  .minus(Rotation2d.fromDegrees(180))
+                                  .getDegrees())
+                          < Constants.SCORING_ROTATION_TOLERANCE;
+                  if (isRotationInTolerance
+                      && robotStateMachine.getCurrentState().equals("carrying")) {
+                    robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  }
+                }));
+    /*
+        oi.getAdjustElevatorUpButton()
+            .onTrue(Commands.runOnce(elevatorSubsystem::goUp, elevatorSubsystem));
+        oi.getAdjustElevatorUpButton()
+            .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
 
+        oi.getAdjustElevatorDownButton()
+            .onTrue(Commands.runOnce(elevatorSubsystem::goDown, elevatorSubsystem));
+        oi.getAdjustElevatorDownButton()
+            .onFalse(Commands.runOnce(elevatorSubsystem::off, elevatorSubsystem));
+    */
     // Intake
     oi.getIntakeButton()
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
@@ -323,11 +371,36 @@ public class RobotContainer {
 
     // Scoring
     oi.getScoreButton()
-        .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new ScorePressed())));
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  UseAutoAlign = oi.getXStanceButton().getAsBoolean();
+                  if (UseAutoAlign && areWeAbleToScore() && scoringHeight != ScoringHeight.LOW) {
+                    CommandScheduler.getInstance()
+                        .schedule(
+                            new AutoAlignToScore(
+                                this, robotStateMachine, limelightScoringSubSystem));
+                  }
+                  // robotTranslationMode = RobotTranslationMode.SCORE_PIECE;
+                  // robotRotationMode = RobotRotationMode.SCORE_PIECE;
+                  else if (!UseAutoAlign
+                      || scoringHeight == ScoringHeight.LOW
+                      || pieceMode == PieceMode.CUBE) {
+
+                    robotStateMachine.fireEvent(new ScorePressed());
+                  }
+                  // }
+                }));
 
     // oi.getDeployHolderButton()
     // .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new
     // FinishScorePressed())));
+
+    // extender buttons
+    // oi.getExtenderStablizerButton()
+    //     .onTrue(Commands.runOnce(extenderSubsystem::engageStablizer, extenderSubsystem));
+    // oi.getExtenderStablizerDisengageButton()
+    //     .onTrue(Commands.runOnce(extenderSubsystem::disengageStablizer, extenderSubsystem));
 
     // Scoring Height buttons
     oi.getLowGoalButton()
@@ -346,6 +419,7 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   ScoringHeight prev = scoringHeight;
+                  limelightScoringSubSystem.setScoringMode(ScoringMode.ReflectiveTapeMid);
                   scoringHeight = ScoringHeight.MEDIUM;
                   if (scoringHeight != prev) {
                     robotStateMachine.fireEvent(new SwitchToMidHigh());
@@ -358,6 +432,7 @@ public class RobotContainer {
                 () -> {
                   ScoringHeight prev = scoringHeight;
                   scoringHeight = ScoringHeight.HIGH;
+                  limelightScoringSubSystem.setScoringMode(ScoringMode.ReflectiveTapeHigh);
                   if (scoringHeight != prev) {
                     robotStateMachine.fireEvent(new SwitchToMidHigh());
                   }
@@ -390,30 +465,31 @@ public class RobotContainer {
 
     // "auto" command for tuning the drive velocity PID
     // autoChooser.addOption(
-    //     "Drive Velocity Tuning",
-    //     Commands.sequence(
-    //         Commands.runOnce(drivetrainSubsystem::disableFieldRelative, drivetrainSubsystem),
-    //         Commands.deadline(
-    //             Commands.waitSeconds(5.0),
-    //             Commands.run(
-    //                 () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
+    // "Drive Velocity Tuning",
+    // Commands.sequence(
+    // Commands.runOnce(drivetrainSubsystem::disableFieldRelative,
+    // drivetrainSubsystem),
+    // Commands.deadline(
+    // Commands.waitSeconds(5.0),
+    // Commands.run(
+    // () -> drivetrainSubsystem.drive(1.5, 0.0, 0.0), drivetrainSubsystem))));
 
     // "auto" command for characterizing the drivetrain
     // autoChooser.addOption(
-    //     "Drive Characterization",
-    //     new FeedForwardCharacterization(
-    //         drivetrainSubsystem,
-    //         true,
-    //         new FeedForwardCharacterizationData("drive"),
-    //         drivetrainSubsystem::runCharacterizationVolts,
-    //         drivetrainSubsystem::getCharacterizationVelocity));
+    // "Drive Characterization",
+    // new FeedForwardCharacterization(
+    // drivetrainSubsystem,
+    // true,
+    // new FeedForwardCharacterizationData("drive"),
+    // drivetrainSubsystem::runCharacterizationVolts,
+    // drivetrainSubsystem::getCharacterizationVelocity));
 
     autoChooser.addOption(
         "Place High",
         Commands.sequence(
             new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
 
-    autoChooser.addDefaultOption(
+    autoChooser.addOption(
         "Place High, Taxi",
         Commands.sequence(
             new InitializeRobotCommand(this),
@@ -437,24 +513,43 @@ public class RobotContainer {
             new DriveDistance(
                 drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.3),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
-    // autoChooser.addOption(
-    //     "Auto Balance Test",
-    //     Commands.sequence(
-    //         // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
-    // Rotation2d(Math.PI)),
-    //         // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
-    // CustomWaitCommand(6.5)),
-    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3, 0.4),
-    //         // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5, 0.4),
-    //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+    autoChooser.addOption(
+        "Place High, Taxi, AutoBalance",
+        Commands.sequence(
+            new InitializeRobotCommand(this),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+            Commands.sequence(
+                new DriveDistance(
+                    drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+                new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
+            new WaitCommand(2),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     // autoChooser.addOption(
-    //     "Two Piece, Balance",
-    //     Commands.sequence(
-    //         new InitializeRobotCommand(this), CommandFactory.getScoreWithHolderCommand(this)));
+    // "Auto Balance Test",
+    // Commands.sequence(
+    // // new InitializeRobotCommand(this, pieceMode, scoringHeight, new
+    // Rotation2d(Math.PI)),
+    // // CommandFactory.getScoreWithHolderCommand(this).raceWith(new
+    // CustomWaitCommand(6.5)),
+    // // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD,
+    // 3, 0.4),
+    // // new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.FORWARD,
+    // 1.5, 0.4),
+    // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+
+    // autoChooser.addOption(
+    // "Two Piece, Balance",
+    // Commands.sequence(
+    // new InitializeRobotCommand(this),
+    // CommandFactory.getScoreWithHolderCommand(this)));
 
     autoChooser.addOption(
         "Two Piece, Taxi",
@@ -464,7 +559,7 @@ public class RobotContainer {
                 () ->
                     CommandScheduler.getInstance()
                         .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-            new WaitCommand(2.2),
+            new WaitCommand(1.2),
             new SwerveToWaypointCommand(
                 drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, Constants.FLAT_LANE_OUT_WAYPOINTS),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
@@ -487,21 +582,137 @@ public class RobotContainer {
                     new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
                     new WaitCommand(2.55)))));
     // new SwerveToWaypointCommand(
-    //     drivetrainSubsystem,
-    //     Constants.NEUTRAL_PIECE_1,
-    //     Constants.FLAT_LANE_OUT_WAYPOINTS)));
+    // drivetrainSubsystem,
+    // Constants.NEUTRAL_PIECE_1,
+    // Constants.FLAT_LANE_OUT_WAYPOINTS)));
 
     // autoChooser.addOption(
-    //     "Bump-side Two Piece, Taxi",
+    // "Bump-side Two Piece, Taxi",
+    // Commands.sequence(
+    // new InitializeRobotCommand(this, Constants.CONE_NODE_1),
+    // new InstantCommand(
+    // () ->
+    // CommandScheduler.getInstance()
+    // .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+    // new WaitCommand(3),
+    // new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+    // new SwerveToWaypointCommand(drivetrainSubsystem,
+    // Constants.CONE_NODE_1plus)));
+
+    // autoChooser.addOption(
+    //     "Three Piece Bump",
     //     Commands.sequence(
-    //         new InitializeRobotCommand(this, Constants.CONE_NODE_1),
-    //         new InstantCommand(
-    //             () ->
-    //                 CommandScheduler.getInstance()
-    //                     .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-    //         new WaitCommand(3),
-    //         new InstantCommand(() -> pieceMode = PieceMode.CUBE),
-    //         new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_NODE_1plus)));
+    //         // Start
+    //         new InitializeRobotCommand(this, Constants.BUMP_START),
+    //         // Intake to launch cube
+    //         new InstantCommand(() -> scoringHeight = ScoringHeight.LOW),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+    //         new WaitCommand(0.5),
+    //         // Intake the first cone
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
+    //         // Drop off the cone
+    //         new SwerveToWaypointCommand(drivetrainSubsystem, Constants.CONE_DROPOFF),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
+    //         // Drive to next cone
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem,
+    //             Constants.LAYING_DOWN_3_APPROACH_2,
+    //             Constants.LAYING_DOWN_3_WAYPOINTS),
+    //         new InstantCommand(() -> scoringHeight = ScoringHeight.HIGH),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+    //         // Intake cone while moving back
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PICKUP, Constants.PICKUP_WAYPOINTS),
+    //         new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+    //         // Go to scoring location
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PLACEMENT_5,
+    // Constants.PLACEMENT_5_WAYPOINTS),
+    //         // Score Cone High
+    //         Commands.race(
+    //             new TeleopSwervePlus(this, oi),
+    //             Commands.sequence(
+    //                 new AutoAlignToScore(this, robotStateMachine, limelightScoringSubSystem),
+    //                 new WaitUntilCommand(
+    //                         () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+    //                     .withTimeout(3))),
+    //         // Transfer Cone and move to next scoring location
+    //         new SwerveToWaypointCommand(
+    //             drivetrainSubsystem, Constants.CONE_PLACEMENT_6,
+    // Constants.PLACEMENT_5_WAYPOINTS),
+    //         // Score Cone High
+    //         Commands.race(
+    //             new TeleopSwervePlus(this, oi),
+    //             Commands.sequence(
+    //                 new AutoAlignToScore(
+    //                     robotContainer, robotStateMachine, limelightScoringSubSystem),
+    //                 new WaitUntilCommand(
+    //                         () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+    //                     .withTimeout(3)))));
+
+    autoChooser.addDefaultOption(
+        "Two Plus One Piece Bump",
+        Commands.sequence(
+            // Start
+            new InitializeRobotCommand(this, Constants.BUMP_START),
+            // Intake to launch cube
+            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+            new WaitCommand(0.5),
+            // Intake the first cone
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.LAYING_DOWN_4, Constants.LAYING_DOWN_4_WAYPOINTS),
+            // Drive to cone node 6
+            new SwerveToWaypointCommand(
+                    drivetrainSubsystem,
+                    Constants.CONE_PLACEMENT_6,
+                    Constants.BUMP_CENTER_WAYPOINTS)
+                .raceWith(
+                    new WaitUntilCommand(
+                        () ->
+                            Constants.CONE_PLACEMENT_6
+                                    .getTranslation()
+                                    .getDistance(drivetrainSubsystem.getPose().getTranslation())
+                                < 0.25)),
+            new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+            new WaitUntilCommand(() -> "carrying".equals(robotStateMachine.getCurrentState())),
+            // Score Cone High
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new AutoAlignToScore(this, this.robotStateMachine, limelightScoringSubSystem),
+                    new WaitUntilCommand(
+                            () -> "readyToIntake".equals(robotStateMachine.getCurrentState()))
+                        .withTimeout(3))),
+            // Drive to next cone
+            new InstantCommand(
+                () ->
+                    drivetrainSubsystem.resetOdometry(
+                        CommandFactory.getAllianceCorrectedPose(Constants.SCORED_NODE_6))),
+            new WaitCommand(1.5),
+            new InstantCommand(
+                () -> {
+                  scoringHeight = ScoringHeight.LOW;
+                  pieceMode = PieceMode.CONE;
+                }),
+            Commands.parallel(
+                new SwerveToWaypointCommand(
+                    drivetrainSubsystem,
+                    Constants.FINAL_CONE_GRAB,
+                    Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
+                Commands.sequence(
+                    new WaitCommand(1.6),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())))),
+            Commands.race(
+                new SwerveToWaypointCommand(
+                    drivetrainSubsystem,
+                    Constants.BUMP_CENTER_LANE_CLOSE,
+                    Constants.BUMP_CENTER_WAYPOINTS_2),
+                Commands.sequence(
+                    new WaitCommand(1.7),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed()))),
+                new WaitCommand(.2))));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }
@@ -535,7 +746,7 @@ public class RobotContainer {
       LimelightHelpers.profileJSON = true;
       LimelightHelpers.getObjectMapper();
 
-      limelightObjectDetectionSubsystem = new LimelightObjectDetection();
+      limelightObjectDetectionSubsystem = new LimelightObjectDetection(this);
       limelightScoringSubSystem = new LimelightScoring();
     }
   }
@@ -547,5 +758,31 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public boolean isVisionOn() {
+    return oi.getVisionAssistButton().getAsBoolean();
+  }
+
+  public boolean inCarryState() {
+    return robotStateMachine.getCurrentState().equals("carrying");
+  }
+
+  public boolean areWeAbleToScore() {
+    boolean isTyInTolerance = limelightScoringSubSystem.isWithinTolerance();
+    boolean isDistanceInTolerance = limelightScoringSubSystem.isWithinDistanceTolerance();
+    boolean isRotationInTolerance =
+        Math.abs(
+                drivetrainSubsystem
+                    .getPose()
+                    .getRotation()
+                    .minus(Rotation2d.fromDegrees(180))
+                    .getDegrees())
+            < Constants.SCORING_ROTATION_TOLERANCE;
+
+    return robotStateMachine.getCurrentState().equals("carrying")
+        && isTyInTolerance
+        && isDistanceInTolerance
+        && isRotationInTolerance;
   }
 }

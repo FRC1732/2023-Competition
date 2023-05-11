@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.Map;
 
 public class LimelightScoring extends SubsystemBase {
@@ -65,7 +66,7 @@ public class LimelightScoring extends SubsystemBase {
   private void configureShuffleBoard() {
     ShuffleboardTab tab;
     tab = Shuffleboard.getTab(LIMELIGHTNAME);
-
+    setScoringMode(ScoringMode.ReflectiveTapeHigh);
     LLFeed = new HttpCamera(LIMELIGHTNAME, "http://10.17.32.11:5800/stream.mjpg");
     server = CameraServer.addSwitchedCamera("Object Camera");
     server.setSource(LLFeed);
@@ -114,7 +115,7 @@ public class LimelightScoring extends SubsystemBase {
       reflectiveTv = tv.getDouble(0);
       reflectiveTx = tx.getDouble(0);
       reflectiveTy = ty.getDouble(0);
-      reflectiveTy = ta.getDouble(0);
+      reflectiveTa = ta.getDouble(0);
     }
     pipelineVal = (int) pipeline.getDouble(-1);
   }
@@ -136,13 +137,79 @@ public class LimelightScoring extends SubsystemBase {
     return -1;
   }
 
-  public boolean isAligned() {
+  public boolean isRawAligned() {
     double tx = getTx();
-    // Low goal is off by 1 degree
     if (getTy() < 0) {
-      tx = tx - 1;
+      tx -= 1;
     }
     return hasTarget() && Math.abs(tx) < 1.75;
+  }
+
+  public boolean isAligned() {
+    double tx = getTx();
+    return hasTarget() && Math.abs(tx - interpXSetpoint()) < 1.75;
+  }
+
+  public boolean isWithinTolerance() {
+    double tx = getTx();
+    return hasTarget()
+        && Math.abs(tx - interpXSetpoint()) < Constants.SCORING_TRANSLATION_TOLERANCE;
+  }
+
+  public double interpDistance() {
+    double ty = getTy();
+    if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
+      double x1 = 9.6;
+      double y1 = 0;
+      double x2 = 13.06;
+      double y2 = 33.375;
+      double temp = interp(x1, y1, x2, y2, ty);
+      System.out.println(currentScoringMode + " INTERP DIST H" + ty + " " + temp);
+      return temp;
+    } else {
+      double x1 = -18.15;
+      double y1 = 0;
+      double x2 = -3;
+      double y2 = 33.375;
+      double temp = interp(x1, y1, x2, y2, ty);
+      System.out.println(currentScoringMode + "INTERP DIST M" + ty + " " + temp);
+      return temp;
+    }
+  }
+
+  public double interpXSetpoint() {
+    double ty = getTy();
+    if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
+      double x1 = 9.6;
+      double y1 = 1.41;
+      double x2 = 13.06;
+      double y2 = .43;
+      return interp(x1, y1, x2, y2, ty);
+    } else {
+      double x1 = -18.15;
+      double y1 = 2.48;
+      double x2 = -3;
+      double y2 = .89;
+      return interp(x1, y1, x2, y2, ty);
+    }
+  }
+
+  private double interp(double x1, double y1, double x2, double y2, double lookup) {
+    double slope = (y2 - y1) / (x2 - x1);
+    double b = y1 - slope * x1;
+    return lookup * slope + b;
+  }
+
+  public boolean isWithinDistanceTolerance() {
+    return hasTarget() && interpDistance() < Constants.SCORING_DISTANCE_TOLERANCE;
+  }
+
+  public boolean isAtInterpDistanceSetpoint() {
+    return hasTarget()
+        && interpDistance()
+            < Constants
+                .SCORING_ABLE_TO_PLACE_TOLERANCE; // TODO: include x setpoint tolerance & rotation
+    // tolerance
   }
 
   /**
@@ -189,9 +256,12 @@ public class LimelightScoring extends SubsystemBase {
     // set the pipeline to match the scoring mode.
     if (currentScoringMode == ScoringMode.AprilTag) {
       // FIXME: verify pipeline indices
-      pipeline.setDouble(1);
-    } else if (currentScoringMode == ScoringMode.ReflectiveTape) {
+      pipeline.setDouble(2);
+    } else if (currentScoringMode == ScoringMode.ReflectiveTapeHigh) {
       pipeline.setDouble(0);
+
+    } else if (currentScoringMode == ScoringMode.ReflectiveTapeMid) {
+      pipeline.setDouble(1);
     }
   }
 
@@ -201,7 +271,8 @@ public class LimelightScoring extends SubsystemBase {
 
   public enum ScoringMode {
     AprilTag,
-    ReflectiveTape,
+    ReflectiveTapeMid,
+    ReflectiveTapeHigh,
     Undefined;
   }
 }

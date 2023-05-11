@@ -41,6 +41,14 @@ public class DeployExtenderCommand extends CommandBase {
     if (prevScoringHeight != robotContainer.scoringHeight) {
       robotContainer.scoringHeight = prevScoringHeight;
     }
+    if (robotContainer.scoringHeight == ScoringHeight.HIGH
+        && robotContainer.extenderSubsystem.isCloseToSetpointHigh()) {
+      robotContainer.holderSubsystem.open();
+    }
+    if (robotContainer.scoringHeight == ScoringHeight.MEDIUM
+        && robotContainer.extenderSubsystem.isCloseToSetpointMedium()) {
+      robotContainer.holderSubsystem.open();
+    }
   }
 
   @Override

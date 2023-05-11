@@ -109,7 +109,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
 
     this.autoThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.centerGravity = new Translation2d(-0.05, 0); // default to (0,0)
+    this.centerGravity = new Translation2d(0, 0); // default to (0,0)
 
     this.zeroGyroscope();
 
@@ -156,7 +156,8 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * invoked.
    */
   public void zeroGyroscope() {
-    setGyroOffset(0.0);
+    gyroIO.calibrate();
+    // setGyroOffset(0.0);
   }
 
   /**
@@ -168,6 +169,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * @return the rotation of the robot
    */
   private Rotation2d getRotation() {
+    // System.out.println("Gyro Connected? " + gyroInputs.connected);
     if (gyroInputs.connected) {
       return Rotation2d.fromDegrees(gyroInputs.positionDeg + this.gyroOffset);
     } else {
@@ -439,9 +441,7 @@ public class Drivetrain extends AutoSwerveDriveSubsystem {
    * @param states the specified swerve module state for each swerve module
    */
   public void setSwerveModuleStates(SwerveModuleState[] states) {
-    if (states[1] != null) {
-      states[1].speedMetersPerSecond *= 0.86;
-    }
+
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     for (SwerveModule swerveModule : swerveModules) {

@@ -10,18 +10,4 @@ public class DefaultExtenderCommand extends CommandBase {
     addRequirements(extenderSubsystem);
     this.extenderSubsystem = extenderSubsystem;
   }
-
-  public void initialize() {}
-
-  public void execute() {
-    extenderSubsystem.moveIn();
-  }
-
-  public void end(boolean interrupted) {
-    extenderSubsystem.stop();
-  }
-
-  public boolean isFinished() {
-    return extenderSubsystem.getMagSwitch();
-  }
 }

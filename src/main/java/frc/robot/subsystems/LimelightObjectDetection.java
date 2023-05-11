@@ -9,10 +9,15 @@ import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.PieceMode;
 import frc.robot.subsystems.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Detector;
 import java.util.Map;
@@ -36,10 +41,37 @@ public class LimelightObjectDetection extends SubsystemBase {
   private double coneConfidence = 0.0;
   private double cubeConfidence = 0.0;
 
+  private NetworkTable table;
+  private NetworkTableEntry tv;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  private NetworkTableEntry pipeline;
+
+  private PieceMode currentPieceMode;
+  private RobotContainer robotContainer;
+
+  private double limelightTv;
+  private double limelightTx;
+  private double limelightTy;
+  private double limelightTa;
+  private int pipelineVal;
+
+  private void configureNetworkTableEntries() {
+    table = NetworkTableInstance.getDefault().getTable(LIMELIGHTNAME);
+    tv = table.getEntry("tv");
+    tx = table.getEntry("tx");
+    ty = table.getEntry("ty");
+    ta = table.getEntry("ta");
+    pipeline = table.getEntry("pipeline");
+  }
+
   /** Creates a new Limelight. */
-  public LimelightObjectDetection() {
+  public LimelightObjectDetection(RobotContainer robotContainer) {
+    configureNetworkTableEntries();
     configureShuffleBoard();
     LimelightHelpers.getFirstParse();
+    this.robotContainer = robotContainer;
   }
 
   private void configureShuffleBoard() {
@@ -77,9 +109,33 @@ public class LimelightObjectDetection extends SubsystemBase {
   public void periodic() {
     // read and store values periodically
     if (detectionOn) {
+      if (currentPieceMode != robotContainer.pieceMode) {
+        setPieceMode(robotContainer.pieceMode);
+      }
+
       // note: because parsing the JSON method takes ~2.5ms, only do it when needed.
-      llresults = LimelightHelpers.getLatestResults(LIMELIGHTNAME);
-      processLlResults(llresults);
+      // llresults = LimelightHelpers.getLatestResults(LIMELIGHTNAME);
+      // processLlResults(llresults);
+      limelightTv = tv.getDouble(0);
+      limelightTx = tx.getDouble(0);
+      limelightTy = ty.getDouble(0);
+      limelightTa = ta.getDouble(0);
+      boolean found = false;
+      if (limelightTv > 0) {
+        found = true;
+      } else {
+        coneTarget = false;
+        cubeTarget = false;
+      }
+
+      if (currentPieceMode == PieceMode.CONE && found) {
+        conePose2d = new Translation2d(limelightTx, limelightTy);
+        coneTarget = true;
+      }
+      if (currentPieceMode == PieceMode.CUBE && found) {
+        cubePose2d = new Translation2d(limelightTx, limelightTy);
+        cubeTarget = true;
+      }
 
       if (llresults != null) {
         // System.out.println(LimelightHelpers.getJSONDump(LIMELIGHTNAME));
@@ -114,8 +170,50 @@ public class LimelightObjectDetection extends SubsystemBase {
     return coneTarget;
   }
 
+  public void setPieceMode(PieceMode mode) {
+    currentPieceMode = mode;
+
+    // set the pipeline to match the scoring mode.
+    if (currentPieceMode == PieceMode.CUBE) {
+      // FIXME: verify pipeline indices
+      pipeline.setDouble(1);
+    } else if (currentPieceMode == PieceMode.CONE) {
+      pipeline.setDouble(0);
+    }
+  }
+
   public Translation2d getClosestConeTarget() {
     return conePose2d;
+  }
+
+  /**
+   * Provides X (horizontal) value from limelight target when in Reflective Tape mode. Undefined
+   * when in AprilTag mode.
+   *
+   * @return a horizontal "distance" from center of camera. Positive to the right.
+   */
+  public double getTx() {
+    return limelightTx;
+  }
+
+  /**
+   * Provides Y (vertical) value from limelight target when in Reflective Tape mode. Undefined when
+   * in AprilTag mode.
+   *
+   * @return a vertical "distance" from center of camera. Positive is up.
+   */
+  public double getTy() {
+    return limelightTy;
+  }
+
+  public double getTa() {
+    return limelightTa;
+  }
+
+  public double getPercentDist() {
+    double closeDist = 3.5;
+    double farDist = 35.0;
+    return Math.min(1, Math.abs((getTy() - closeDist) / (farDist - closeDist)));
   }
 
   private LimelightTarget_Detector[] fetchTargetDetector() {

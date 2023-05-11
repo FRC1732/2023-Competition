@@ -4,7 +4,6 @@
 
 #define NUMPIXELS 69  // number of neopixels in strip
 #define NUM_SEG 23    // number of neopixels in a segment
-#define DELAY_TIME 200
 #define INTENSITY 255
 
 Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
@@ -23,6 +22,13 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_DATA, NEO_GRB + NEO_KHZ800);
 
 int mode = 0;
 int timer = 0;
+
+#define IDLE_CYCLE 100
+#define IDLE_BLOCK 8
+uint32_t lowBlue = pixels.Color(0, 0, INTENSITY / 2);
+uint32_t highBlue = pixels.Color(0, 0, INTENSITY);
+uint32_t lowGold = pixels.Color(INTENSITY / 2, INTENSITY / 4, 0);
+uint32_t highGold = pixels.Color(INTENSITY, INTENSITY / 2, 0);
 
 void setup() {
   Serial.begin(250000);
@@ -65,70 +71,76 @@ void loop() {
   switch (mode) {
     case 0:
       // no signal sent
-      setColor(false, false, false);
+      idleMode();
       break;
 
     case 1:
+    case 1 + 16:
       // Score Low - no game piece
-      setColorLow(false, true, false);
+      setColorLow(false, true, false, b4);
       break;
 
     case 2:
+    case 2 + 16:
       // Score Mid - no game piece
-      setColorMid(false, true, false);
+      setColorMid(false, true, false, b4);
       break;
 
     case 3:
+    case 3 + 16:
       // Score High - no game piece
-      setColorHigh(false, true, false);
+      setColorHigh(false, true, false, b4);
       break;
 
     case 4:
+    case 4 + 16:
       // No Score Cube
       setColor(true, false, true);
       break;
 
     case 5:
+    case 5 + 16:
       // Cube Low
-      setColorLow(true, false, true);
+      setColorLow(true, false, true, b4);
       break;
 
     case 6:
+    case 6 + 16:
       // Mid Cube
-      setColorMid(true, false, true);
+      setColorMid(true, false, true, b4);
       break;
 
     case 7:
+    case 7 + 16:
       // High Cube
-      setColorHigh(true, false, true);
+      setColorHigh(true, false, true, b4);
       break;
 
     case 8:
+    case 8 + 16:
       // No Score Cone
       setColor(true, true, false);
       break;
 
     case 9:
+    case 9 + 16:
       // Cone Low
-      setColorLow(true, true, false);
+      setColorLow(true, true, false, b4);
       break;
 
     case 10:
+    case 10 + 16:
       // Cone Mid
-      setColorMid(true, true, false);
+      setColorMid(true, true, false, b4);
       break;
 
     case 11:
+    case 11 + 16:
       // Cone High
-      setColorHigh(true, true, false);
+      setColorHigh(true, true, false, b4);
       break;
 
-    case 12:
-      // Blue and Yellow
-      setColorBY(false, false, true);
-      break;
-
-    case 17:
+    case 28:
       // Game piece Captured
       flashFast(false, true, false);
       break;
@@ -178,33 +190,36 @@ void flashFast(bool red, bool green, bool blue) {
   }
 }
 
-void setColorLow(bool red, bool green, bool blue) {
+void setColorLow(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
     if (i < NUM_SEG) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+      if (withVis || i % 2 == 0) {
+        pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+      }
     }
   }
   pixels.show();
 }
 
-void setColorMid(bool red, bool green, bool blue) {
+void setColorMid(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    //if (i < 46 && i > 22) {
     if (i < NUM_SEG * 2) {
-      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+      if (withVis || i % 2 == 0) {
+        pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+      }
     }
   }
   pixels.show();
 }
 
-void setColorHigh(bool red, bool green, bool blue) {
+void setColorHigh(bool red, bool green, bool blue, bool withVis) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-    //if (i < NUMPIXELS && i > 45) {
-    pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
-    //}
+    if (withVis || i % 2 == 0) {
+      pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)red, INTENSITY * (int)green * .50, INTENSITY * (int)blue));
+    }
   }
   pixels.show();
 }
@@ -222,5 +237,34 @@ void setColorBY(bool red, bool green, bool blue) {
       pixels.setPixelColor(i, pixels.Color(INTENSITY * (int)invRed, INTENSITY * (int)invGreen * .50, INTENSITY * (int)invBlue));
     }
   }
+  pixels.show();
+}
+
+void idleMode() {
+  pixels.clear();
+
+  if (timer > IDLE_BLOCK * IDLE_CYCLE || timer < 0) {
+    timer = 0;
+  }
+
+  int offset = timer / IDLE_CYCLE;
+
+  for (int i = 0; i < NUMPIXELS; i++) {
+    uint32_t color;
+    int pos = (offset + i) % IDLE_BLOCK;
+    if (pos == 0 || pos == 3) {
+      color = lowBlue;
+    } else if (pos == 1 || pos == 2) {
+      color = highBlue;
+    } else if (pos == 4 || pos == 7) {
+      color = lowGold;
+    } else if (pos == 5 || pos == 6) {
+      color = highGold;
+    } else {
+      color = pixels.Color(0, 0, 0);
+    }
+    pixels.setPixelColor(i, color);
+  }
+
   pixels.show();
 }

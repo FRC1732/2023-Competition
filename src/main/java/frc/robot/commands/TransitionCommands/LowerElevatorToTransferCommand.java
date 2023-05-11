@@ -23,7 +23,7 @@ public class LowerElevatorToTransferCommand extends CommandBase {
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
     robotContainer.indexerSubsystem.pushAgainstHardstop();
-    robotContainer.indexerSubsystem.grabberOff();
+    robotContainer.indexerSubsystem.grabberSwingUpHoldPiece();
   }
 
   @Override
@@ -40,13 +40,15 @@ public class LowerElevatorToTransferCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    robotContainer.extenderSubsystem.disengageStablizer();
     robotContainer.indexerSubsystem.grabberOff();
     robotContainer.indexerSubsystem.rotateOff();
     robotContainer.holderSubsystem.open();
+    robotContainer.elevatorSubsystem.off();
   }
 
   @Override
   public boolean isFinished() {
-    return robotContainer.elevatorSubsystem.isAtSetpoint();
+    return robotContainer.elevatorSubsystem.isLowerThanTransfer(robotContainer.pieceMode);
   }
 }

@@ -55,7 +55,7 @@ public class DriveWithReflectiveAlign extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    limelightScoring.setScoringMode(ScoringMode.ReflectiveTape);
+    limelightScoring.setScoringMode(ScoringMode.ReflectiveTapeHigh);
     thetaController.reset(limelightScoring.getTx()); // FIXME: is Tx available yet?
   }
 

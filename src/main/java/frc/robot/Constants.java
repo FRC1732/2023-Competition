@@ -57,9 +57,7 @@ public final class Constants {
   public static final int CAN_PNEUMATIC_ID = 60;
   public static final int INDEXER_SOLENOID_ID = 0;
   public static final int HOLDER_SOLENOID_ID = 1;
-
-  public static final int ELEVATOR_MAGNETIC_LIMIT_SWITCH_CHANNEL = 0; // FIXME: get port
-  public static final int EXTENDER_MAGNETIC_LIMIT_SWITCH = 0; // FIXME: get port
+  public static final int EXTENDER_STABLIZER_ID = 2;
 
   public static final int ELEVATOR_BASE_MOTOR_ONE_CAN_ID = 50;
   public static final int ELEVATOR_BASE_MOTOR_TWO_CAN_ID = 51;
@@ -80,9 +78,11 @@ public final class Constants {
   public static final double INDEXER_INTAKE_SPEED = -0.5;
   public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
+  public static final double INDEXER_HOLD_UP_SPEED = 0.25;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.2;
   public static final double INDEXER_CONE_POSITION = -115;
+  public static final double INDEXER_CONE_AUTO_POSITION = -45;
   public static final double INDEXER_CUBE_POSITION = -110;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_STARTING_POSITION = 0;
@@ -103,23 +103,24 @@ public final class Constants {
 
   // public static final int ELEVATOR_TICKS_PER_ROTATION = 8192;
   // public static final int ELEVATOR_MEAUSREMENT_PERIOD_MS = 1;
-  public static final double ELEVATOR_INCHES_PER_ROTATION = 0.275199;
+  public static final double ELEVATOR_INCHES_PER_ROTATION = 0.275199 * (5.0 / 3.0);
   public static final double ELEVATOR_STARTING_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
-  public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1;
-  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.5;
+  public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1.5;
+  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 2.0;
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 9;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
   public static final double ELEVATOR_MAX_SPEED_RPM = 150000;
   public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 160000;
   public static final double ELEVATOR_DEADBAND = 0.5;
-  public static final double ELEVATOR_P_VALUE = 0.00025;
+  public static final double ELEVATOR_P_VALUE = 0.0002;
   public static final double ELEVATOR_I_VALUE = 0;
   public static final double ELEVATOR_D_VALUE = 0;
   public static final double ELEVATOR_PID_MAX_OUTPUT = 1;
   public static final double ELEVATOR_PID_MIN_OUTPUT = -1;
+  public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.2;
 
   // #endregion
 
@@ -131,17 +132,31 @@ public final class Constants {
   public static final double EXTENDER_STARTING_POSITION_INCHES = 0;
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
-  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 53;
-  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 34.25;
-  public static final double EXTENDER_MAX_SPEED_RPM = 50000;
+  public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
+  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 32.25;
+  public static final double EXTENDER_RESEAT_INCHES = 32.25;
+  public static final double EXTENDER_MAX_SPEED_RPM = 180000;
   public static final double EXTENDER_DEADBAND = 0.5;
-  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 70000;
+  public static final double EXTENDER_MAX_ACCELERATION_RPM2 = 500000;
   public static final double EXTENDER_P_VALUE = 0.000075;
   public static final double EXTENDER_I_VALUE = 0;
   public static final double EXTENDER_D_VALUE = 0;
   public static final double EXTENDER_PID_MAX_OUTPUT = 1;
   public static final double EXTENDER_PID_MIN_OUTPUT = -1;
 
+  public static final double SCORING_DISTANCE_TOLERANCE = 36;
+  public static final double SCORING_TRANSLATION_TOLERANCE = 8;
+  public static final double SCORING_ROTATION_TOLERANCE = 40;
+  public static final double SCORING_ABLE_TO_PLACE_TOLERANCE = 5;
+
+  public static final double AUTO_SCORE_SLOW_FORWARD_SPEED = .075;
+
+  public static final double PIECE_DETECTION_P = 7;
+  public static final double PIECE_DETECTION_I = 0;
+  public static final double PIECE_DETECTION_D = 0;
+  public static final double PIECE_DETECTION_DEADZONE = 0;
+
+  public static final double VISION_TRANSLATION_P = .05;
   // #endregion
 
   // #region Limelight Constants
@@ -209,6 +224,53 @@ public final class Constants {
       Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
   public static final List<Translation2d> BUMP_LANE_IN_WAYPOINTS =
       Arrays.asList(BUMP_LANE_FAR.getTranslation(), BUMP_LANE_NEAR.getTranslation());
+
+  public static final Pose2d BUMP_START = new Pose2d(3.021, 1.081, Rotation2d.fromDegrees(0));
+  public static final Pose2d LAYING_DOWN_4_APPROACH =
+      new Pose2d(4.25, 0.917, Rotation2d.fromDegrees(0));
+  public static final Pose2d LAYING_DOWN_4 = new Pose2d(5.25, 0.917, Rotation2d.fromDegrees(0));
+  public static final Pose2d CONE_DROPOFF = new Pose2d(3.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3_APPROACH_1 =
+      new Pose2d(6.357, 1.468, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3_APPROACH_2 =
+      new Pose2d(6.357, 2.05, Rotation2d.fromDegrees(180));
+  public static final Pose2d LAYING_DOWN_3 = new Pose2d(6, 2.05, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_DROPOFF_APPROACH =
+      new Pose2d(3.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PICKUP = new Pose2d(3.45, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_APPROACH =
+      new Pose2d(0.75, 0.662, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_5 = new Pose2d(0.75, 1.63, Rotation2d.fromDegrees(180));
+  public static final Pose2d CONE_PLACEMENT_6 =
+      new Pose2d(0.75 - 0.1, 0.513 - .0254 * 4, Rotation2d.fromDegrees(180));
+  public static final Pose2d FINAL_CONE_APPROACH =
+      new Pose2d(5.7 - .2, 1.05, Rotation2d.fromDegrees(90));
+  public static final Pose2d FINAL_CONE_GRAB =
+      new Pose2d(5.7 + 0.654, 1.7 + .3, Rotation2d.fromDegrees(90));
+  public static final Pose2d BUMP_CENTER_LANE_ENTER =
+      new Pose2d(3.25, 0.75 + .025 * 3, Rotation2d.fromDegrees(180));
+  public static final Pose2d BUMP_CENTER_LANE_CLOSE =
+      new Pose2d(1.75, 0.75 + .025 * 3, Rotation2d.fromDegrees(180));
+  public static final Pose2d SCORED_NODE_6 = new Pose2d(0.419, 0.51, Rotation2d.fromDegrees(180));
+
+  public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_4_APPROACH.getTranslation());
+  public static final List<Translation2d> LAYING_DOWN_3_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_3_APPROACH_1.getTranslation());
+  public static final List<Translation2d> PICKUP_WAYPOINTS =
+      Arrays.asList(LAYING_DOWN_3.getTranslation(), CONE_DROPOFF_APPROACH.getTranslation());
+  public static final List<Translation2d> PLACEMENT_5_WAYPOINTS =
+      Arrays.asList(CONE_PLACEMENT_APPROACH.getTranslation());
+  public static final List<Translation2d> BUMP_CENTER_WAYPOINTS =
+      Arrays.asList(
+          BUMP_CENTER_LANE_ENTER.getTranslation(), BUMP_CENTER_LANE_CLOSE.getTranslation());
+  public static final List<Translation2d> BUMP_CENTER_WAYPOINTS_2 =
+      Arrays.asList(FINAL_CONE_APPROACH.getTranslation(), BUMP_CENTER_LANE_ENTER.getTranslation());
+  public static final List<Translation2d> REVERSE_BUMP_CENTER_WAYPOINTS =
+      Arrays.asList(
+          BUMP_CENTER_LANE_CLOSE.getTranslation(),
+          BUMP_CENTER_LANE_ENTER.getTranslation(),
+          FINAL_CONE_APPROACH.getTranslation());
 
   // #endregion
 }

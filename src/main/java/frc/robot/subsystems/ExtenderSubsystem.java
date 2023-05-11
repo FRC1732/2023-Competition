@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Helpers.DoubleNearEquals;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -21,7 +24,9 @@ import frc.robot.RobotContainer.PieceMode;
 @SuppressWarnings("unused")
 public class ExtenderSubsystem extends SubsystemBase {
   private CANSparkMax extenderMotor;
-  private DigitalInput extenderMagneticLimitSwitch;
+  private Solenoid extenderStablizer;
+  private boolean forksOn;
+  private boolean forksOverride = false;
   private SparkMaxPIDController pidController;
 
   private GenericEntry positionSet;
@@ -40,10 +45,16 @@ public class ExtenderSubsystem extends SubsystemBase {
   // private SuppliedValueWidget updatePID;
   private boolean brakeMode;
   private double prevSetpoint;
+  private boolean forkqueue = false;
+
   /** Creates a new IntakeSubsystem. */
   public ExtenderSubsystem() {
+    extenderStablizer =
+        new Solenoid(
+            Constants.CAN_PNEUMATIC_ID,
+            PneumaticsModuleType.REVPH,
+            Constants.EXTENDER_STABLIZER_ID);
     extenderMotor = new CANSparkMax(Constants.EXTENDER_MOTOR_CAN_ID, MotorType.kBrushless);
-    extenderMagneticLimitSwitch = new DigitalInput(Constants.EXTENDER_MAGNETIC_LIMIT_SWITCH);
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.setInverted(true);
     extenderMotor.getEncoder().setPositionConversionFactor(Constants.EXTENDER_INCHES_PER_ROTATION);
@@ -53,7 +64,9 @@ public class ExtenderSubsystem extends SubsystemBase {
     // pidController.setFeedbackDevice(extenderMotor.getEncoder());
     pidController.setReference(0, ControlType.kSmartMotion);
     prevSetpoint = 0;
-    // setupShuffleboard();
+    forkqueue = false;
+
+    setupShuffleboard();
 
     pidController.setP(Constants.EXTENDER_P_VALUE);
     pidController.setI(Constants.EXTENDER_I_VALUE);
@@ -88,8 +101,16 @@ public class ExtenderSubsystem extends SubsystemBase {
     extenderMotor.set(0.1);
   }
 
-  public boolean getMagSwitch() {
-    return extenderMagneticLimitSwitch.get();
+  public void engageStablizer() {
+    forkqueue = true;
+    // forksOverride = true;
+  }
+
+  public void disengageStablizer() {
+    forksOn = false;
+    forkqueue = false;
+    // forksOverride = true;
+    extenderStablizer.set(forksOn);
   }
 
   public boolean isAtSetpoint() {
@@ -101,75 +122,111 @@ public class ExtenderSubsystem extends SubsystemBase {
     return temp;
   }
 
+  public boolean isCloseToSetpointHigh() {
+    boolean temp = (setPoint - extenderMotor.getEncoder().getPosition()) < 6;
+    if (temp) {
+      System.out.println("Extender is close to setpoint");
+    } else {
+      System.out.println("Extender is not close to setpoint");
+    }
+    return temp;
+  }
+
+  public boolean isCloseToSetpointMedium() {
+    boolean temp = (setPoint - extenderMotor.getEncoder().getPosition()) < 4;
+    if (temp) {
+      System.out.println("Extender is close to setpoint");
+    } else {
+      System.out.println("Extender is not close to setpoint");
+    }
+    return temp;
+  }
+
   @Override
   public void periodic() {
-    // if (DriverStation.isEnabled() && !brakeMode) {
-    //   brakeMode = true;
-    //   setBrakeMode();
-    // } else if (DriverStation.isDisabled() && brakeMode) {
-    //   brakeMode = false;
-    //   setCoastMode();
+    double currentPostion = extenderMotor.getEncoder().getPosition();
+    //  if (!forksOverride) {
+    if (DoubleNearEquals(setPoint, Constants.EXTENDER_STARTING_POSITION_INCHES)
+        && DoubleNearEquals(currentPostion, Constants.EXTENDER_STARTING_POSITION_INCHES, 0.25)) {
+      forksOn = forkqueue;
+    } else {
+      forksOn = false;
+    }
     // }
-    /*if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
-      double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
-      double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
-      double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
-      double iz = kIz.getDouble(0);
-      double ff = kFF.getDouble(0);
-      double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
-      double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
-      double maxVelocity = kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
-      double maxAccel = kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
-      double setpoint = positionSet.getDouble(0);
-      if (preP != p) {
-        pidController.setP(p);
-        preP = p;
-      }
+    extenderStablizer.set(forksOn);
 
-      if (preI != i) {
-        pidController.setI(i);
-        preI = i;
-      }
-
-      if (preD != d) {
-        pidController.setD(d);
-        preD = d;
-      }
-
-      if (preIz != iz) {
-        // pidController.setIZone(iz);
-        preIz = iz;
-      }
-
-      if (preFF != ff) {
-        // pidController.setFF(ff);
-        preFF = ff;
-      }
-
-      if (preMinOutput != minOut || preMaxOutput != maxOut) {
-        pidController.setOutputRange(minOut, maxOut);
-        preMinOutput = minOut;
-        preMaxOutput = maxOut;
-      }
-
-      if (preMaxVelocity != maxVelocity) {
-        pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
-        preMaxVelocity = maxVelocity;
-      }
-
-      if (preMaxAccel != maxAccel) {
-        pidController.setSmartMotionMaxAccel(maxAccel, 0);
-        preMaxAccel = maxAccel;
-      }
-
-      if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
-        pidController.setReference(setpoint, ControlType.kSmartMotion);
-        prevSetpoint = setpoint;
-      }
-    }*/
+    // if (DriverStation.isEnabled() && !brakeMode) {
+    // brakeMode = true;
+    // setBrakeMode();
+    // } else if (DriverStation.isDisabled() && brakeMode) {
+    // brakeMode = false;
+    // setCoastMode();
+    // }
+    /*
+     * if (DriverStation.isEnabled()) { // } && Constants.TUNING_MODE) {
+     * double p = kP.getDouble(Constants.EXTENDER_P_VALUE);
+     * double i = kI.getDouble(Constants.EXTENDER_I_VALUE);
+     * double d = kD.getDouble(Constants.EXTENDER_D_VALUE);
+     * double iz = kIz.getDouble(0);
+     * double ff = kFF.getDouble(0);
+     * double minOut = kMinOutput.getDouble(Constants.EXTENDER_PID_MIN_OUTPUT);
+     * double maxOut = kMaxOutput.getDouble(Constants.EXTENDER_PID_MAX_OUTPUT);
+     * double maxVelocity =
+     * kMaxVelocity.getDouble(Constants.ELEVATOR_MAX_SPEED_RPM);
+     * double maxAccel =
+     * kMaxAccel.getDouble(Constants.ELEVATOR_MAX_ACCELERATION_RPM2);
+     * double setpoint = positionSet.getDouble(0);
+     * if (preP != p) {
+     * pidController.setP(p);
+     * preP = p;
+     * }
+     *
+     * if (preI != i) {
+     * pidController.setI(i);
+     * preI = i;
+     * }
+     *
+     * if (preD != d) {
+     * pidController.setD(d);
+     * preD = d;
+     * }
+     *
+     * if (preIz != iz) {
+     * // pidController.setIZone(iz);
+     * preIz = iz;
+     * }
+     *
+     * if (preFF != ff) {
+     * // pidController.setFF(ff);
+     * preFF = ff;
+     * }
+     *
+     * if (preMinOutput != minOut || preMaxOutput != maxOut) {
+     * pidController.setOutputRange(minOut, maxOut);
+     * preMinOutput = minOut;
+     * preMaxOutput = maxOut;
+     * }
+     *
+     * if (preMaxVelocity != maxVelocity) {
+     * pidController.setSmartMotionMaxVelocity(maxVelocity, 0);
+     * preMaxVelocity = maxVelocity;
+     * }
+     *
+     * if (preMaxAccel != maxAccel) {
+     * pidController.setSmartMotionMaxAccel(maxAccel, 0);
+     * preMaxAccel = maxAccel;
+     * }
+     *
+     * if (Math.abs(prevSetpoint - setpoint) >= 10e-7) {
+     * pidController.setReference(setpoint, ControlType.kSmartMotion);
+     * prevSetpoint = setpoint;
+     * }
+     * }
+     */
     if (Math.abs(prevSetpoint - setPoint) >= 10e-7) {
       pidController.setReference(setPoint, ControlType.kSmartMotion);
       prevSetpoint = setPoint;
+      forksOverride = false;
     }
   }
 
@@ -189,6 +246,10 @@ public class ExtenderSubsystem extends SubsystemBase {
     }
   }
 
+  public void goToReseat() {
+    setPoint = Constants.EXTENDER_RESEAT_INCHES;
+  }
+
   public void goToStartingPosition() {
     setPoint = Constants.EXTENDER_STARTING_POSITION_INCHES;
   }
@@ -201,7 +262,9 @@ public class ExtenderSubsystem extends SubsystemBase {
     tab.addDouble("Vel", () -> extenderMotor.getEncoder().getVelocity());
     tab.addDouble("PosFactor", () -> extenderMotor.getEncoder().getPositionConversionFactor());
     tab.addDouble("VelFactor", () -> extenderMotor.getEncoder().getVelocityConversionFactor());
-    if (true) { // Constants.TUNING_MODE) {
+    tab.addBoolean("Forks On", () -> forksOn);
+    tab.addBoolean("Forks Overrid", () -> forksOverride);
+    if (false) { // Constants.TUNING_MODE) {
       kP = tab.add("P", Constants.EXTENDER_P_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kI = tab.add("I", Constants.EXTENDER_I_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();
       kD = tab.add("D", Constants.EXTENDER_D_VALUE).withWidget(BuiltInWidgets.kTextView).getEntry();

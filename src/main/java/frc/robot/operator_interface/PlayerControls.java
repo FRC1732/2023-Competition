@@ -81,7 +81,7 @@ public class PlayerControls implements OperatorInterface {
 
   @Override
   public Trigger getResetGyroButton() {
-    return translateJoystickButtons[3];
+    return translateJoystickButtons[10];
   }
 
   @Override
@@ -171,6 +171,16 @@ public class PlayerControls implements OperatorInterface {
   @Override
   public Trigger getIndexerManualOverrideButton() {
     return operatorJoystickButtons[12];
+  }
+
+  @Override
+  public Trigger getExtenderStablizerButton() {
+    return translateJoystickButtons[2];
+  }
+
+  @Override
+  public Trigger getExtenderStablizerDisengageButton() {
+    return rotateJoystickButtons[2];
   }
 
   // #endregion

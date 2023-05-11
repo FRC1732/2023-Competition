@@ -17,6 +17,11 @@ public class GyroIOPigeon2 implements GyroIO {
     gyro = new Pigeon2(id, CAN_BUS_NAME);
   }
 
+  public void calibrate() {
+    // Needs to do something in the future
+    return;
+  }
+
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     gyro.getRawGyro(xyzDps);

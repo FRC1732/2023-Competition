@@ -23,6 +23,7 @@ public class ResetToReadyCommand extends CommandBase {
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
     robotContainer.indexerSubsystem.setReady();
+    robotContainer.extenderSubsystem.engageStablizer();
     if (prevPieceMode == PieceMode.CONE) {
       robotContainer.indexerSubsystem.close();
     } else {

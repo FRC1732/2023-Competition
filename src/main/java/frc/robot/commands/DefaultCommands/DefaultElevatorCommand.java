@@ -23,8 +23,4 @@ public class DefaultElevatorCommand extends CommandBase {
   public void end(boolean interrupted) {
     elevatorSubsystem.off();
   }
-
-  public boolean isFinished() {
-    return elevatorSubsystem.getMagLimitSwitch();
-  }
 }

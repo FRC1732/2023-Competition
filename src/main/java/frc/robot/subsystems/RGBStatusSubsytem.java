@@ -5,11 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.PieceMode;
-import frc.robot.RobotContainer.RobotRotationMode;
 import frc.robot.RobotContainer.ScoringHeight;
 
 public class RGBStatusSubsytem extends SubsystemBase {
@@ -23,8 +23,13 @@ public class RGBStatusSubsytem extends SubsystemBase {
    *   Cone - Bit 3
    *   Cube - Bit 2
    *
-   * Output 4 is the modifer for every other mode we want to represent
-   *   Capture Game Piece - Bit 4 and 0
+   * Output 4 is vision on/off
+   *   Vision on/off - Bit 4
+   *
+   * Special modes fill in around whats left
+   *   Idle Mode - All bits offs
+   *   Capture Game Piece - Bits 4, 3, and 2
+   *   Scoring Target Ready - Combination of Scoring Height, no game piece and vision bit on
    *
    */
 
@@ -43,6 +48,9 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   private RobotContainer robotContainer;
 
+  private boolean hasBeenEnabled = false;
+  private boolean previousDriverstationState;
+
   /** Creates a new RGBStatus. */
   public RGBStatusSubsytem(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
@@ -51,6 +59,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     specialMode = SpecialMode.NONE;
     targetElapsedTimeSeconds = 0;
     timer = new Timer();
+    previousDriverstationState = false;
   }
 
   @Override
@@ -69,31 +78,87 @@ public class RGBStatusSubsytem extends SubsystemBase {
       scoreHeight = ScoreHeight.LOW;
     }
 
-    if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE
-        && robotContainer.limelightScoringSubSystem.isAligned()) {
-      setScoreHieghtBits();
-
-      out2.set(!false);
-      out3.set(!false);
-      out4.set(!false);
-      return;
+    if (!hasBeenEnabled && DriverStation.isEnabled()) {
+      hasBeenEnabled = true;
     }
+
+    if (hasBeenEnabled && DriverStation.isDisabled()) {
+      specialMode = SpecialMode.GAME_IDLE_MODE;
+      targetElapsedTimeSeconds = 0;
+    }
+
+    if (hasBeenEnabled && DriverStation.isEnabled()) {
+      hasBeenEnabled = true;
+    }
+
+    if (previousDriverstationState != DriverStation.isEnabled()) {
+      previousDriverstationState = DriverStation.isEnabled();
+      if (DriverStation.isEnabled()) {
+        specialMode = SpecialMode.NONE;
+        targetElapsedTimeSeconds = 0;
+      } else {
+        specialMode = SpecialMode.GAME_IDLE_MODE;
+        targetElapsedTimeSeconds = 0;
+      }
+    }
+
+    // if (robotContainer.robotRotationMode == RobotRotationMode.SCORE_PIECE) {
+
+    if (hasBeenEnabled
+        && DriverStation.isEnabled()
+        && robotContainer.UseAutoAlign
+        && robotContainer.areWeAbleToScore()
+        && specialMode != SpecialMode.GAME_PIECE_CAPTURED) {
+      specialMode = SpecialMode.SCORING_POSITION_READY;
+      targetElapsedTimeSeconds = 0;
+    } else if (hasBeenEnabled
+        && DriverStation.isEnabled()
+        && !robotContainer.UseAutoAlign
+        && robotContainer.limelightScoringSubSystem.isRawAligned()) {
+      specialMode = SpecialMode.SCORING_POSITION_READY;
+      targetElapsedTimeSeconds = 0;
+    } else if (hasBeenEnabled
+        && DriverStation.isEnabled()
+        && specialMode != SpecialMode.GAME_PIECE_CAPTURED) {
+      specialMode = SpecialMode.NONE;
+      targetElapsedTimeSeconds = 0;
+    }
+    // } else if (specialMode == SpecialMode.SCORING_POSITION_READY) {
+    //   specialMode = SpecialMode.NONE;
+    //   targetElapsedTimeSeconds = 0;
+    // }
 
     // Invert the digital sigs; HIGH is 0, LOW is 1
     if (specialMode != SpecialMode.NONE) {
-      if (timer.hasElapsed(targetElapsedTimeSeconds)) {
+      if (targetElapsedTimeSeconds > 0 && timer.hasElapsed(targetElapsedTimeSeconds)) {
         specialMode = SpecialMode.NONE;
         timer.stop();
       } else {
         switch (specialMode) {
           case GAME_PIECE_CAPTURED:
-            // bits 4 and 0 -- 17
+            // bits 4, 3, 2 -- 28
+            out0.set(!false);
+            out1.set(!false);
+            out2.set(!true);
+            out3.set(!true);
             out4.set(!true);
-            out0.set(!true);
+            break;
 
+          case GAME_IDLE_MODE:
+            // all bits off
+            out0.set(!false);
             out1.set(!false);
             out2.set(!false);
             out3.set(!false);
+            out4.set(!false);
+            break;
+
+          case SCORING_POSITION_READY:
+            setScoreHeightBits();
+
+            out2.set(!false);
+            out3.set(!false);
+            out4.set(!true);
             break;
 
           case NONE:
@@ -104,10 +169,9 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
 
     if (specialMode == SpecialMode.NONE) {
-      out4.set(!false);
-
-      setScoreHieghtBits();
+      setScoreHeightBits();
       setGamePieceBits();
+      out4.set(!robotContainer.isVisionOn());
     }
   }
 
@@ -131,7 +195,7 @@ public class RGBStatusSubsytem extends SubsystemBase {
     }
   }
 
-  private void setScoreHieghtBits() {
+  private void setScoreHeightBits() {
     switch (scoreHeight) {
       case HIGH: // 3
         out0.set(!true);
@@ -194,6 +258,8 @@ public class RGBStatusSubsytem extends SubsystemBase {
 
   protected enum SpecialMode {
     NONE,
-    GAME_PIECE_CAPTURED;
+    GAME_PIECE_CAPTURED,
+    GAME_IDLE_MODE,
+    SCORING_POSITION_READY;
   }
 }
