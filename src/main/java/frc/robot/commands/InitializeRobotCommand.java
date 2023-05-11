@@ -34,6 +34,7 @@ public class InitializeRobotCommand extends CommandBase {
 
   public InitializeRobotCommand(RobotContainer robotContainer, Pose2d startingPose) {
     this.robotContainer = robotContainer;
+    this.robotContainer.gyro.calibrate();
     this.pieceMode = PieceMode.CONE;
     this.scoringHeight = ScoringHeight.HIGH;
     this.startingPose = startingPose;

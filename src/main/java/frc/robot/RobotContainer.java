@@ -19,6 +19,7 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriving.AutoAlignToScore;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
@@ -516,6 +517,21 @@ public class RobotContainer {
                 drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
+    autoChooser.addOption(
+        "Place High, Taxi, AutoBalance",
+        Commands.sequence(
+            new InitializeRobotCommand(this),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+            Commands.sequence(
+                new DriveDistance(
+                    drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+                new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
+            new WaitCommand(2),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+
     // autoChooser.addOption(
     // "Auto Balance Test",
     // Commands.sequence(
@@ -543,7 +559,7 @@ public class RobotContainer {
                 () ->
                     CommandScheduler.getInstance()
                         .schedule(CommandFactory.getScoreWithHolderCommand(this))),
-            new WaitCommand(2.2),
+            new WaitCommand(1.2),
             new SwerveToWaypointCommand(
                 drivetrainSubsystem, Constants.NEUTRAL_PIECE_1, Constants.FLAT_LANE_OUT_WAYPOINTS),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
@@ -678,7 +694,7 @@ public class RobotContainer {
             new InstantCommand(
                 () -> {
                   scoringHeight = ScoringHeight.LOW;
-                  pieceMode = PieceMode.CUBE;
+                  pieceMode = PieceMode.CONE;
                 }),
             Commands.parallel(
                 new SwerveToWaypointCommand(
@@ -687,13 +703,16 @@ public class RobotContainer {
                     Constants.REVERSE_BUMP_CENTER_WAYPOINTS),
                 Commands.sequence(
                     new WaitCommand(1.6),
-                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed()))))
-            /*Commands.parallel(
-            new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.BUMP_CENTER_WAYPOINTS),
-            Commands.sequence(
-                new WaitCommand(1.5),
-                new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed()))))*/ ));
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())))),
+            Commands.race(
+                new SwerveToWaypointCommand(
+                    drivetrainSubsystem,
+                    Constants.BUMP_CENTER_LANE_CLOSE,
+                    Constants.BUMP_CENTER_WAYPOINTS_2),
+                Commands.sequence(
+                    new WaitCommand(1.7),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed()))),
+                new WaitCommand(.2))));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

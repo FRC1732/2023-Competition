@@ -275,7 +275,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void setCarrying() {
-    grabberHoldPiece();
+    grabberSwingUpHoldPiece();
     setUp();
   }
 
@@ -299,6 +299,14 @@ public class IndexerSubsystem extends SubsystemBase {
       indexerGrabbingMotor.set(-1 * 0.1);
     } else {
       indexerGrabbingMotor.set(Constants.INDEXER_HOLD_SPEED);
+    }
+  }
+
+  public void grabberSwingUpHoldPiece() {
+    if (isOpen) {
+      indexerGrabbingMotor.set(-1 * 0.1);
+    } else {
+      indexerGrabbingMotor.set(Constants.INDEXER_HOLD_UP_SPEED);
     }
   }
 

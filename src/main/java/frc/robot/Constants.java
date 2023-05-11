@@ -78,6 +78,7 @@ public final class Constants {
   public static final double INDEXER_INTAKE_SPEED = -0.5;
   public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
+  public static final double INDEXER_HOLD_UP_SPEED = 0.25;
   public static final double INDEXER_PIECE_DETECTION_CURRENT = 25;
   public static final double INDEXER_TRANSFER_SPEED = 0.2;
   public static final double INDEXER_CONE_POSITION = -115;
@@ -241,15 +242,15 @@ public final class Constants {
       new Pose2d(0.75, 0.662, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_PLACEMENT_5 = new Pose2d(0.75, 1.63, Rotation2d.fromDegrees(180));
   public static final Pose2d CONE_PLACEMENT_6 =
-      new Pose2d(0.75 - 0.1, 0.513, Rotation2d.fromDegrees(180));
+      new Pose2d(0.75 - 0.1, 0.513 - .0254 * 4, Rotation2d.fromDegrees(180));
   public static final Pose2d FINAL_CONE_APPROACH =
-      new Pose2d(5.7 + 0.4, 1.05, Rotation2d.fromDegrees(90));
+      new Pose2d(5.7 - .2, 1.05, Rotation2d.fromDegrees(90));
   public static final Pose2d FINAL_CONE_GRAB =
-      new Pose2d(5.7 + 0.4, 1.7 + .3, Rotation2d.fromDegrees(90));
+      new Pose2d(5.7 + 0.654, 1.7 + .3, Rotation2d.fromDegrees(90));
   public static final Pose2d BUMP_CENTER_LANE_ENTER =
-      new Pose2d(3.25, 0.75 + .025 * 2, Rotation2d.fromDegrees(180));
+      new Pose2d(3.25, 0.75 + .025 * 3, Rotation2d.fromDegrees(180));
   public static final Pose2d BUMP_CENTER_LANE_CLOSE =
-      new Pose2d(1.75, 0.75 + .025 * 2, Rotation2d.fromDegrees(180));
+      new Pose2d(1.75, 0.75 + .025 * 3, Rotation2d.fromDegrees(180));
   public static final Pose2d SCORED_NODE_6 = new Pose2d(0.419, 0.51, Rotation2d.fromDegrees(180));
 
   public static final List<Translation2d> LAYING_DOWN_4_WAYPOINTS =
@@ -263,6 +264,8 @@ public final class Constants {
   public static final List<Translation2d> BUMP_CENTER_WAYPOINTS =
       Arrays.asList(
           BUMP_CENTER_LANE_ENTER.getTranslation(), BUMP_CENTER_LANE_CLOSE.getTranslation());
+  public static final List<Translation2d> BUMP_CENTER_WAYPOINTS_2 =
+      Arrays.asList(FINAL_CONE_APPROACH.getTranslation(), BUMP_CENTER_LANE_ENTER.getTranslation());
   public static final List<Translation2d> REVERSE_BUMP_CENTER_WAYPOINTS =
       Arrays.asList(
           BUMP_CENTER_LANE_CLOSE.getTranslation(),

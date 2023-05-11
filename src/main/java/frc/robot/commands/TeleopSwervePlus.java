@@ -57,7 +57,7 @@ public class TeleopSwervePlus extends CommandBase {
       kPEntryTranslation,
       xPercentageEntry;
 
-  private final double SLOW_MODE_SCALER = 0.4;
+  private final double SLOW_MODE_SCALER = 0.20;
 
   /**
    * Create a new TeleopSwerve command object.
