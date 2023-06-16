@@ -128,7 +128,7 @@ public class IndexerSubsystem extends SubsystemBase {
   public boolean hasPiece() {
     return indexerGrabbingMotor.getOutputCurrent() > Constants.INDEXER_PIECE_DETECTION_CURRENT
         && indexerRotationMotor.getEncoder().getPosition()
-            < Constants.INDEXER_STARTING_POSITION - 20;
+            < Constants.INDEXER_STARTING_POSITION - 5;
   }
 
   @Override
@@ -226,7 +226,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void grabberIntake(double percent) {
     if (isOpen) {
-      indexerGrabbingMotor.set(-0.20 - (0.55 * percent));
+      indexerGrabbingMotor.set(-0.25);
+      // indexerGrabbingMotor.set(-0.20 - (0.55 * percent));
     } else {
       indexerGrabbingMotor.set(0.25);
     }
