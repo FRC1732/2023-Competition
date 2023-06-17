@@ -226,8 +226,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void grabberIntake(double percent) {
     if (isOpen) {
-      indexerGrabbingMotor.set(-0.25);
-      // indexerGrabbingMotor.set(-0.20 - (0.55 * percent));
+      indexerGrabbingMotor.set(-0.20 - (0.55 * percent));
     } else {
       indexerGrabbingMotor.set(0.25);
     }
@@ -265,14 +264,14 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerRotationMotor.stopMotor();
   }
 
-  public void intake(PieceMode pieceMode) {
+  public void intake(PieceMode pieceMode, boolean humanPlayer) {
     if (pieceMode == PieceMode.CONE) {
       close();
     } else {
       open();
     }
     grabberIntake();
-    setDown();
+    setDown(humanPlayer);
   }
 
   public void setCarrying() {
@@ -285,13 +284,13 @@ public class IndexerSubsystem extends SubsystemBase {
     setUp();
   }
 
-  public void setHoldingLow() {
+  public void setHoldingLow(boolean humanPlayer) {
     grabberHoldPiece();
-    setScoringPosition();
+    setScoringPosition(humanPlayer);
   }
 
   public void score() {
-    setScoringPosition();
+    setScoringPosition(false);
     grabberEject();
   }
 
@@ -319,11 +318,11 @@ public class IndexerSubsystem extends SubsystemBase {
     }
   }
 
-  public void setDown() {
+  public void setDown(boolean humanPlayer) {
     if (isOpen) {
       setpoint = Constants.INDEXER_CUBE_POSITION;
     } else {
-      setpoint = Constants.INDEXER_CONE_POSITION;
+      setpoint = humanPlayer ? Constants.INDEXER_CONE_HP_POSITION : Constants.INDEXER_CONE_POSITION;
     }
   }
 
@@ -331,8 +330,9 @@ public class IndexerSubsystem extends SubsystemBase {
     setpoint = Constants.INDEXER_STARTING_POSITION;
   }
 
-  public void setScoringPosition() {
-    setpoint = Constants.INDEXER_SCORING_POSITION;
+  public void setScoringPosition(boolean humanPlayer) {
+    setpoint =
+        humanPlayer ? Constants.INDEXER_SCORING_HP_POSITION : Constants.INDEXER_SCORING_POSITION;
   }
 
   public void setAutoPosition(double point) {

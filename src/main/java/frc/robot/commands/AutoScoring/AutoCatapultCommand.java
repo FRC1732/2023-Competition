@@ -13,9 +13,7 @@ public class AutoCatapultCommand extends InstantCommand {
   }
 
   @Override
-  public void initialize() {
-    robotContainer.indexerSubsystem.setDown();
-  }
+  public void initialize() {}
 
   @Override
   public void end(boolean interrupted) {

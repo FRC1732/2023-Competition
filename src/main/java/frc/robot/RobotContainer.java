@@ -109,6 +109,7 @@ public class RobotContainer {
   public RobotTranslationMode robotTranslationMode = RobotTranslationMode.DRIVER;
   public RobotRotationMode robotRotationMode = RobotRotationMode.DRIVER;
   public boolean UseAutoAlign = true;
+  public boolean collectAtHumanPlayer = false;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to
   // ensure accurate logging
@@ -368,6 +369,9 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakePressed())));
     oi.getIntakeButton()
         .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
+
+    oi.getHumanPlayerIntakeButton().onTrue(Commands.runOnce(() -> collectAtHumanPlayer = true));
+    oi.getHumanPlayerIntakeButton().onFalse(Commands.runOnce(() -> collectAtHumanPlayer = false));
 
     // Scoring
     oi.getScoreButton()

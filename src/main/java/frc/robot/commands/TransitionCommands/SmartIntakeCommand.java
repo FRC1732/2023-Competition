@@ -31,7 +31,7 @@ public class SmartIntakeCommand extends CommandBase {
     robotContainer.elevatorSubsystem.setToNeutralPosition();
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
-    robotContainer.indexerSubsystem.intake(prevPieceMode);
+    robotContainer.indexerSubsystem.intake(prevPieceMode, robotContainer.collectAtHumanPlayer);
     robotContainer.robotRotationMode = RobotRotationMode.PIECE_TRACKING;
     robotContainer.robotTranslationMode = RobotTranslationMode.PIECE_TRACKING;
   }
@@ -40,7 +40,7 @@ public class SmartIntakeCommand extends CommandBase {
   public void execute() {
     if (prevPieceMode != robotContainer.pieceMode) {
       prevPieceMode = robotContainer.pieceMode;
-      robotContainer.indexerSubsystem.intake(prevPieceMode);
+      robotContainer.indexerSubsystem.intake(prevPieceMode, robotContainer.collectAtHumanPlayer);
     }
     if (prevPieceMode == PieceMode.CUBE) {
       robotContainer.indexerSubsystem.grabberIntake(

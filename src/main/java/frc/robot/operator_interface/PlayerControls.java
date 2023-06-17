@@ -174,6 +174,11 @@ public class PlayerControls implements OperatorInterface {
   }
 
   @Override
+  public Trigger getHumanPlayerIntakeButton() {
+    return operatorJoystickButtons[11];
+  }
+
+  @Override
   public Trigger getExtenderStablizerButton() {
     return translateJoystickButtons[2];
   }
