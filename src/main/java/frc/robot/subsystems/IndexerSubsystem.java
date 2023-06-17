@@ -284,13 +284,13 @@ public class IndexerSubsystem extends SubsystemBase {
     setUp();
   }
 
-  public void setHoldingLow(boolean humanPlayer) {
+  public void setHoldingLow(boolean humanPlayer, PieceMode pieceMode) {
     grabberHoldPiece();
-    setScoringPosition(humanPlayer);
+    setScoringPosition(humanPlayer, pieceMode);
   }
 
   public void score() {
-    setScoringPosition(false);
+    setScoringPosition(false, PieceMode.CUBE);
     grabberEject();
   }
 
@@ -330,9 +330,11 @@ public class IndexerSubsystem extends SubsystemBase {
     setpoint = Constants.INDEXER_STARTING_POSITION;
   }
 
-  public void setScoringPosition(boolean humanPlayer) {
+  public void setScoringPosition(boolean humanPlayer, PieceMode pieceMode) {
     setpoint =
-        humanPlayer ? Constants.INDEXER_SCORING_HP_POSITION : Constants.INDEXER_SCORING_POSITION;
+        humanPlayer && pieceMode == PieceMode.CONE
+            ? Constants.INDEXER_SCORING_HP_POSITION
+            : Constants.INDEXER_SCORING_POSITION;
   }
 
   public void setAutoPosition(double point) {

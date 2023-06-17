@@ -22,7 +22,8 @@ public class HoldGamePieceLowCommand extends CommandBase {
     robotContainer.elevatorSubsystem.setToNeutralPosition();
     robotContainer.extenderSubsystem.goToStartingPosition();
     robotContainer.holderSubsystem.open();
-    robotContainer.indexerSubsystem.setHoldingLow(robotContainer.collectAtHumanPlayer);
+    robotContainer.indexerSubsystem.setHoldingLow(
+        robotContainer.collectAtHumanPlayer, robotContainer.pieceMode);
   }
 
   @Override
