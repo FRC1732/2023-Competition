@@ -79,6 +79,8 @@ public class TeleopSwervePlus extends CommandBase {
 
   @Override
   public void execute() {
+    System.out.println("translation mode: " + robotContainer.robotTranslationMode.name());
+    System.out.println("rotation mode: " + robotContainer.robotRotationMode.name());
     // System.out.println(kPEntry);
     if (TeleopSwervePlus.kPEntry != null) {
       double kP = kPEntry.getDouble(Constants.PIECE_DETECTION_P); // p8 d0 was good
@@ -117,6 +119,7 @@ public class TeleopSwervePlus extends CommandBase {
     if (oi.getVisionAssistButton().getAsBoolean() || DriverStation.isAutonomousEnabled()) {
       // make sure we are parsing the JSON when we need it...
       if (robotContainer.robotRotationMode == RobotRotationMode.PIECE_TRACKING) {
+        System.out.println("do detection");
         robotContainer.limelightObjectDetectionSubsystem.doDetection();
       } else {
         robotContainer.limelightObjectDetectionSubsystem.stopDetection();

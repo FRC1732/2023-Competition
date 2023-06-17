@@ -570,9 +570,9 @@ public class RobotContainer {
             Commands.race(
                 new TeleopSwervePlus(this, oi),
                 Commands.sequence(
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
                     new InstantCommand(
                         () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
-                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
                     new WaitUntilCommand(
                             () -> "carrying".equals(robotStateMachine.getCurrentState()))
                         .withTimeout(3),
