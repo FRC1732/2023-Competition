@@ -149,7 +149,7 @@ public class PlayerControls implements OperatorInterface {
   }
 
   @Override
-  public Trigger getIndexerIntakeButton() {
+  public Trigger getHolderPneumaticsButton() {
     return operatorJoystickButtons[4];
   }
 

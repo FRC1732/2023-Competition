@@ -84,7 +84,7 @@ public final class Constants {
   public static final double INDEXER_CONE_POSITION = -115;
   public static final double INDEXER_CONE_HP_POSITION = -15;
   public static final double INDEXER_CONE_AUTO_POSITION = -45;
-  public static final double INDEXER_CUBE_POSITION = -110;
+  public static final double INDEXER_CUBE_POSITION = -105;
   public static final double INDEXER_SCORING_POSITION = -45;
   public static final double INDEXER_SCORING_HP_POSITION = -20;
   public static final double INDEXER_STARTING_POSITION = 0;
@@ -110,7 +110,7 @@ public final class Constants {
   public static final double ELEVATOR_MIN_POSITION_INCHES = 0;
   public static final double ELEVATOR_MAX_POSITION_INCHES = 35.75;
   public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1.5;
-  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 2.0;
+  public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.5;
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 12;
   public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
@@ -274,9 +274,10 @@ public final class Constants {
           BUMP_CENTER_LANE_ENTER.getTranslation(),
           FINAL_CONE_APPROACH.getTranslation());
 
-
-  public static final Pose2d RED_CONE_NODE_1 = new Pose2d(0.419, 4.977, Rotation2d.fromDegrees(180));
-  public static final Pose2d RED_NEUTRAL_PIECE_1 = new Pose2d(4.75, 4.85, Rotation2d.fromDegrees(-15));
+  public static final Pose2d RED_CONE_NODE_1 =
+      new Pose2d(0.419, 4.977, Rotation2d.fromDegrees(180));
+  public static final Pose2d RED_NEUTRAL_PIECE_1 =
+      new Pose2d(4.75, 4.85, Rotation2d.fromDegrees(-15));
   public static final List<Translation2d> RED_FLAT_LANE_OUT_WAYPOINTS =
       Arrays.asList(FLAT_LANE_NEAR.getTranslation(), FLAT_LANE_FAR.getTranslation());
   // #endregion

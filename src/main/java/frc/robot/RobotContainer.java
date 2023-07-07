@@ -19,7 +19,6 @@ import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIoADIS16470;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoDriving.AutoAlignToScore;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
 import frc.robot.commands.CommandFactory;
@@ -370,6 +369,9 @@ public class RobotContainer {
     oi.getIntakeButton()
         .onFalse(Commands.runOnce(() -> robotStateMachine.fireEvent(new IntakeReleased())));
 
+    oi.getHolderPneumaticsButton().onTrue(Commands.runOnce(() -> holderSubsystem.toggle()));
+    oi.getHolderPneumaticsButton().onFalse(Commands.runOnce(() -> holderSubsystem.toggle()));
+
     oi.getHumanPlayerIntakeButton().onTrue(Commands.runOnce(() -> collectAtHumanPlayer = true));
     oi.getHumanPlayerIntakeButton().onFalse(Commands.runOnce(() -> collectAtHumanPlayer = false));
 
@@ -510,7 +512,7 @@ public class RobotContainer {
     // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     autoChooser.addOption(
-        "Place High, Taxi, Balance",
+        "Blue Place High, Taxi, Balance",
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
@@ -522,34 +524,46 @@ public class RobotContainer {
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     autoChooser.addOption(
-        "Blue Place High, Taxi, AutoBalance",
+        "Red Place High, Taxi, Balance",
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
             new DriveDistance(
                 drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
-            Commands.sequence(
-                new DriveDistance(
-                    drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
-                new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
-            new WaitCommand(2),
-            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
-    autoChooser.addOption(
-        "Red Place High, Taxi, AutoBalance",
-        Commands.sequence(
-            new InitializeRobotCommand(this),
-            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(
-                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
-            Commands.sequence(
-                new DriveDistance(
-                    drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
-                new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
-            new WaitCommand(2),
-            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+    // autoChooser.addOption(
+    //     "Blue Place High, Taxi, AutoBalance",
+    //     Commands.sequence(
+    //         new InitializeRobotCommand(this),
+    //         CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+    //         new DriveDistance(
+    //             drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+    //         new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+    //         Commands.sequence(
+    //             new DriveDistance(
+    //                 drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+    //             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
+    //         new WaitCommand(2),
+    //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+
+    // autoChooser.addOption(
+    //     "Red Place High, Taxi, AutoBalance",
+    //     Commands.sequence(
+    //         new InitializeRobotCommand(this),
+    //         CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+    //         new DriveDistance(
+    //             drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+    //         new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+    //         Commands.sequence(
+    //             new DriveDistance(
+    //                 drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+    //             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
+    //         new WaitCommand(2),
+    //         new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
     // autoChooser.addOption(
     // "Auto Balance Test",
     // Commands.sequence(
@@ -613,7 +627,9 @@ public class RobotContainer {
                         .schedule(CommandFactory.getScoreWithHolderCommand(this))),
             new WaitCommand(1.2),
             new SwerveToWaypointCommand(
-                drivetrainSubsystem, Constants.RED_NEUTRAL_PIECE_1, Constants.RED_FLAT_LANE_OUT_WAYPOINTS),
+                drivetrainSubsystem,
+                Constants.RED_NEUTRAL_PIECE_1,
+                Constants.RED_FLAT_LANE_OUT_WAYPOINTS),
             new InstantCommand(() -> pieceMode = PieceMode.CUBE),
             Commands.race(
                 new TeleopSwervePlus(this, oi),
