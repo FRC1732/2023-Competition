@@ -501,13 +501,21 @@ public class RobotContainer {
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
 
     autoChooser.addOption(
-        "Place High, Balance",
+        "Blue Place High, Balance",
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.425, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
     // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
+
+    autoChooser.addOption(
+        "Red Place High, Balance",
+        Commands.sequence(
+            new InitializeRobotCommand(this),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.425, 0.3),
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     autoChooser.addOption(
         "Place High, Taxi, Balance",
@@ -522,7 +530,7 @@ public class RobotContainer {
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     autoChooser.addOption(
-        "Place High, Taxi, AutoBalance",
+        "Blue Place High, Taxi, AutoBalance",
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
@@ -536,6 +544,20 @@ public class RobotContainer {
             new WaitCommand(2),
             new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
+    autoChooser.addOption(
+        "Red Place High, Taxi, AutoBalance",
+        Commands.sequence(
+            new InitializeRobotCommand(this),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+            Commands.sequence(
+                new DriveDistance(
+                    drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+                new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)),
+            new WaitCommand(2),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
     // autoChooser.addOption(
     // "Auto Balance Test",
     // Commands.sequence(
@@ -556,7 +578,7 @@ public class RobotContainer {
     // CommandFactory.getScoreWithHolderCommand(this)));
 
     autoChooser.addOption(
-        "Two Piece, Taxi",
+        "Blue, Two Piece, Taxi",
         Commands.sequence(
             new InitializeRobotCommand(this, Constants.CONE_NODE_1),
             new InstantCommand(
@@ -589,6 +611,36 @@ public class RobotContainer {
     // drivetrainSubsystem,
     // Constants.NEUTRAL_PIECE_1,
     // Constants.FLAT_LANE_OUT_WAYPOINTS)));
+    autoChooser.addOption(
+        "Red, Two Piece, Taxi",
+        Commands.sequence(
+            new InitializeRobotCommand(this, Constants.RED_CONE_NODE_1),
+            new InstantCommand(
+                () ->
+                    CommandScheduler.getInstance()
+                        .schedule(CommandFactory.getScoreWithHolderCommand(this))),
+            new WaitCommand(1.2),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.RED_NEUTRAL_PIECE_1, Constants.RED_FLAT_LANE_OUT_WAYPOINTS),
+            new InstantCommand(() -> pieceMode = PieceMode.CUBE),
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakePressed())),
+                    new InstantCommand(
+                        () -> robotTranslationMode = RobotTranslationMode.AUTO_PIECE_TRACKING),
+                    new WaitUntilCommand(
+                            () -> "carrying".equals(robotStateMachine.getCurrentState()))
+                        .withTimeout(3),
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new IntakeReleased())),
+                    new InstantCommand(() -> robotTranslationMode = RobotTranslationMode.DRIVER))),
+            new SwerveToWaypointCommand(
+                drivetrainSubsystem, Constants.CUBE_NODE_1, Constants.FLAT_LANE_IN_WAYPOINTS),
+            Commands.race(
+                new TeleopSwervePlus(this, oi),
+                Commands.sequence(
+                    new InstantCommand(() -> robotStateMachine.fireEvent(new ScorePressed())),
+                    new WaitCommand(2.55)))));
 
     // autoChooser.addOption(
     // "Bump-side Two Piece, Taxi",
