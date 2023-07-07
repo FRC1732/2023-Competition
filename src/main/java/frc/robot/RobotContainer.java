@@ -501,21 +501,13 @@ public class RobotContainer {
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 3)));
 
     autoChooser.addOption(
-        "Blue Place High, Balance",
+        "Place High, Balance",
         Commands.sequence(
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.425, 0.3),
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
     // new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
-
-    autoChooser.addOption(
-        "Red Place High, Balance",
-        Commands.sequence(
-            new InitializeRobotCommand(this),
-            CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
-            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.425, 0.3),
-            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
 
     autoChooser.addOption(
         "Place High, Taxi, Balance",
