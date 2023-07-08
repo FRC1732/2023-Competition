@@ -135,7 +135,7 @@ public final class Constants {
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
   public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
-  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 32.25;
+  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.75; //was 32.25
   public static final double EXTENDER_RESEAT_INCHES = 32.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 180000;
   public static final double EXTENDER_DEADBAND = 0.5;
@@ -178,7 +178,7 @@ public final class Constants {
   public static final double AUTOBALANCE_SET_POINT_RADIANS =
       AUTOBALANCE_SET_POINT_RADIANS_COMPETITION;
 
-  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 7.0;
+  public static final double AUTOBALANCE_LEVEL_TOLERANCE_DEGRESS = 9.0;
 
   // #endregion
 

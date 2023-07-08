@@ -21,6 +21,7 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.commands.AutoDriving.AutoAlignToScore;
 import frc.robot.commands.AutoDriving.SwerveToWaypointCommand;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.CommandFactory;
 import frc.robot.commands.DefaultCommands.DefaultExtenderCommand;
 import frc.robot.commands.DefaultCommands.DefaultLimelightObjectDectionCommand;
@@ -529,11 +530,25 @@ public class RobotContainer {
             new InitializeRobotCommand(this),
             CommandFactory.getScoreWithHolderCommand(this).withTimeout(6.5),
             new DriveDistance(
-                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4, 0.3, false),
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4 - 1 * .0254, 0.3, false), //dist was 1.4
             new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
             new DriveDistance(
-                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5 * .0254, 0.3),
+                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5.5 * .0254, 0.3), //dist was 1.5 + 5*.0254
             new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem)));
+
+    autoChooser.addOption(
+        " Place High, Taxi, AutoBalance",
+        Commands.sequence(
+            new InitializeRobotCommand(this),
+            CommandFactory.getScoreWithHolderCommand(this).withTimeout(5.5),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.4 - 1 * .0254, 0.3, false), //dist was 1.4
+            new DriveDistance(drivetrainSubsystem, DriveDistance.Direction.BACKWARD, 1.3, 0.2),
+            new DriveDistance(
+                drivetrainSubsystem, DriveDistance.Direction.FORWARD, 1.5 + 5.5 * .0254, 0.3), //dist was 1.5 + 5*.0254
+            new InstantCommand(() -> drivetrainSubsystem.setXStance(), drivetrainSubsystem),
+            new WaitCommand(1),
+            new AutoBalance(adis16470Gyro, drivetrainSubsystem)));
 
     // autoChooser.addOption(
     //     "Blue Place High, Taxi, AutoBalance",

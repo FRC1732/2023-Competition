@@ -94,7 +94,7 @@ public class AutoBalance extends CommandBase {
     } else {
       count = 0;
       drivetrain.disableXstance();
-      drivetrain.drivePercentage(x, 0, 0);
+      drivetrain.drivePercentage(-1 * x, 0, 0);
     }
   }
 
