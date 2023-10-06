@@ -34,7 +34,7 @@ public final class Constants {
 
   public static final boolean DEBUGGING = false;
 
-  public static final String CAN_BUS_NAME = "po";
+  public static final String CAN_BUS_NAME = "Oogway";
 
   public static final double MAX_PRESSURE = 120.0;
   public static final double MIN_PRESSURE = 100.0;
@@ -67,14 +67,14 @@ public final class Constants {
 
   // #endregion CAN IDs
 
-  public static final double MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
+  public static final double MAX_VELOCITY_RADIANS_PERd_SECOND = 0.0;
   public static final double MAX_ANGULAR_ACCELERATION = 0;
 
   public static final double DEADBAND = 0.05;
-  public static final double TRAINING_WHEELS = 1.00;
+  public static final double TRAINING_WHEELS = 0.50;
 
   // #region Indexer Constants
-
+  
   public static final double INDEXER_INTAKE_SPEED = -0.5;
   public static final double INDEXER_PLACEMENT_SPEED = 0.15;
   public static final double INDEXER_HOLD_SPEED = 0.025;
@@ -112,7 +112,7 @@ public final class Constants {
   public static final double ELEVATOR_CUBE_TRANSFER_POSITION_INCHES = 1.5;
   public static final double ELEVATOR_CONE_TRANSFER_POSITION_INCHES = 1.5;
   public static final double ELEVATOR_NEUTRAL_POSITION_INCHES = 12;
-  public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 23.75;
+  public static final double ELEVATOR_MID_CONE_POSITION_INCHES = 24.25; // 23.75
   public static final double ELEVATOR_HIGH_CONE_POSITION_INCHES = 35.50;
   public static final double ELEVATOR_MAX_SPEED_RPM = 150000;
   public static final double ELEVATOR_MAX_ACCELERATION_RPM2 = 160000;
@@ -135,7 +135,7 @@ public final class Constants {
   public static final double EXTENDER_MIN_POSITION_INCHES = 0;
   public static final double EXTENDER_MAX_POSITION_INCHES = 47.5;
   public static final double EXTENDER_HIGH_CONE_POSITION_INCHES = 50.25;
-  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.75; //was 32.25
+  public static final double EXTENDER_MID_CONE_POSITION_INCHES = 30.75; // was 32.25
   public static final double EXTENDER_RESEAT_INCHES = 32.25;
   public static final double EXTENDER_MAX_SPEED_RPM = 180000;
   public static final double EXTENDER_DEADBAND = 0.5;
