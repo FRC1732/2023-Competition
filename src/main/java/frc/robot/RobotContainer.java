@@ -275,7 +275,7 @@ public class RobotContainer {
                 drivetrainSubsystem::getFieldRelative));
 
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrainSubsystem::zeroGyroscope));
+    //oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrainSubsystem::zeroGyroscope));
 
     // x-stance
     oi.getXStanceButton()
